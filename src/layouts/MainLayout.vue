@@ -10,35 +10,31 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-
         <q-toolbar-title>
-          Quasar App
+          {{ productName }}
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
-
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
-      bordered
     >
-      <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
-
-        <EssentialLink
-          v-for="link in linksList"
-          :key="link.title"
-          v-bind="link"
+      <div class="q-pa-sm">
+        <q-file
+          class="q-mb-sm"
+          label="Загрузить данные"
+          type="file"
+          dense
+          @update:model-value="readFile($event)"
         />
-      </q-list>
+        <q-btn
+          class="full-width"
+          label="Выгрузить данные"
+          color="primary"
+          @click="download()"
+        />
+      </div>
     </q-drawer>
-
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -46,61 +42,42 @@
 </template>
 
 <script setup lang="ts">
+import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { ref } from 'vue';
-import EssentialLink, { EssentialLinkProps } from 'components/EssentialLink.vue';
+import { fileToJson } from 'src/core/utils/files';
+import { IStorageTraining, useMainStore } from 'stores/main-store';
+import { productName } from '../../package.json';
 
 defineOptions({
   name: 'MainLayout',
 });
 
-const linksList: EssentialLinkProps[] = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
-  },
-];
+const mainStore = useMainStore();
 
 const leftDrawerOpen = ref(false);
 
-function toggleLeftDrawer() {
+const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
-}
+};
+
+const download = () => {
+  const encodedUri = encodeURIComponent(JSON.stringify({
+    version: 1,
+    trainings: mainStore.trainings.map((e) => e.getStruct()),
+  }));
+  const link = document.createElement('a');
+
+  link.setAttribute('href', `data:text/json;charset=utf-8,${encodedUri}`);
+  link.setAttribute('download', 'trainings.json');
+  document.body.appendChild(link); // Required for FF
+  link.click();
+  document.body.removeChild(link); // Required for FF
+};
+
+const readFile = async (value: File) => {
+  const result = await fileToJson<IStorageTraining>(value);
+
+  mainStore.trainings = result.trainings.map((e) => new TrainingModel(e));
+  mainStore.saveTrainings();
+};
 </script>
