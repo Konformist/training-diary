@@ -3,7 +3,7 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn
-          v-if="$route.name !== 'Trainings'"
+          v-if="$route.name !== 'Main'"
           flat
           dense
           round

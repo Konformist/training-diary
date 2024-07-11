@@ -8,7 +8,7 @@
       label="Назад"
       color="secondary"
       dense
-      @click="moveTrainings()"
+      @click="$router.back()"
     />
     <q-input
       class="q-mb-sm"
@@ -104,10 +104,6 @@ defineOptions({
 const router = useRouter();
 const mainStore = useMainStore();
 
-const moveTrainings = () => {
-  router.push({ name: 'Trainings' });
-};
-
 const dateTime = computed({
   get() {
     return mainStore.currentTraining ? date.formatDate(mainStore.currentTraining.date, 'YYYY-MM-DDTHH:mm') : '';
@@ -141,6 +137,6 @@ const saveTraining = () => {
   }
 
   mainStore.saveTrainings();
-  moveTrainings();
+  router.back();
 };
 </script>

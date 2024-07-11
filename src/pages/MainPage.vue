@@ -50,7 +50,7 @@ import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { useMainStore } from 'stores/main-store';
 
 defineOptions({
-  name: 'TrainingsPage',
+  name: 'MainPage',
 });
 
 const router = useRouter();
