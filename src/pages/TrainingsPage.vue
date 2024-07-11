@@ -56,8 +56,6 @@ defineOptions({
 const router = useRouter();
 const mainStore = useMainStore();
 
-mainStore.loadTrainings();
-
 const addTraining = () => {
   mainStore.currentTraining = new TrainingModel();
   router.push({ name: 'Training' });

@@ -3,16 +3,25 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn
+          v-if="$route.name !== 'Trainings'"
           flat
           dense
           round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
+          icon="arrow_back"
+          aria-label="Settings"
+          @click="$router.back()"
         />
         <q-toolbar-title>
           {{ productName }}
         </q-toolbar-title>
+        <q-btn
+          flat
+          dense
+          round
+          icon="settings"
+          aria-label="Settings"
+          @click="$router.push({ name: 'Settings' })"
+        />
       </q-toolbar>
     </q-header>
     <q-drawer
@@ -25,7 +34,8 @@
           label="Загрузить данные"
           type="file"
           dense
-          @update:model-value="readFile($event)"
+          v-model="fileDB"
+          @update:model-value="readFile()"
         />
         <q-btn
           class="full-width"
@@ -56,9 +66,11 @@ const mainStore = useMainStore();
 
 const leftDrawerOpen = ref(false);
 
-const toggleLeftDrawer = () => {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
-};
+// const toggleLeftDrawer = () => {
+//   leftDrawerOpen.value = !leftDrawerOpen.value;
+// };
+
+const fileDB = ref<File>();
 
 const download = () => {
   const encodedUri = encodeURIComponent(JSON.stringify({
@@ -74,8 +86,10 @@ const download = () => {
   document.body.removeChild(link); // Required for FF
 };
 
-const readFile = async (value: File) => {
-  const result = await fileToJson<IStorageTraining>(value);
+const readFile = async () => {
+  if (!fileDB.value) return;
+
+  const result = await fileToJson<IStorageTraining>(fileDB.value);
 
   mainStore.trainings = result.trainings.map((e) => new TrainingModel(e));
   mainStore.saveTrainings();

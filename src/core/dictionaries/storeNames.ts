@@ -1,3 +1,3 @@
 export enum StoreNames {
-  TRAININGS = 'TRAININGS',
+  TRAININGS = 'trainings',
 }

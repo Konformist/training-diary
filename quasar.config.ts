@@ -79,7 +79,7 @@ export default configure((/* ctx */) => ({
   // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
   devServer: {
     // https: true
-    open: true, // opens browser window automatically
+    open: false, // opens browser window automatically
   },
 
   // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
@@ -101,6 +101,7 @@ export default configure((/* ctx */) => ({
     // Quasar plugins
     plugins: [
       'LocalStorage',
+      'Notify',
     ],
   },
 
