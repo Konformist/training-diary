@@ -54,6 +54,12 @@ const backupWeb = () => {
   document.body.appendChild(link); // Required for FF
   link.click();
   document.body.removeChild(link); // Required for FF
+
+  Notify.create({
+    caption: 'Данные успешно применены',
+    type: 'positive',
+    closeBtn: true,
+  });
 };
 
 const backupFile = async () => {
@@ -65,10 +71,15 @@ const backupFile = async () => {
       encoding: Encoding.UTF8,
       data: JSON.stringify(mainStore.savedData),
     });
+    Notify.create({
+      caption: 'Данные успешно выгружены',
+      type: 'positive',
+      closeBtn: true,
+    });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     Notify.create({
-      caption: 'Не удалось сохранить данные',
+      caption: 'Не удалось выгрузить данные',
       message: e,
       type: 'negative',
     });

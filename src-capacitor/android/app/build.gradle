@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "com.trainingdiary.app"
+    namespace "com.konstantin.trainingdiary"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.trainingdiary.app"
+        applicationId "com.konstantin.trainingdiary"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

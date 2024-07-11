@@ -1,4 +1,4 @@
-package com.trainingdiary.app;
+package com.konstantin.trainingdiary;
 
 import com.getcapacitor.BridgeActivity;
 
