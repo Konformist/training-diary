@@ -102,6 +102,7 @@ export default configure((/* ctx */) => ({
     plugins: [
       'LocalStorage',
       'Notify',
+      'Dialog',
     ],
   },
 

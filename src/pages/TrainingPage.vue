@@ -3,13 +3,6 @@
     v-if="mainStore.currentTraining"
     padding
   >
-    <q-btn
-      class="full-width q-mb-sm"
-      label="Назад"
-      color="secondary"
-      dense
-      @click="$router.back()"
-    />
     <q-input
       class="q-mb-sm"
       label="Время тренировки"

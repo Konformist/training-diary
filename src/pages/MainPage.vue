@@ -1,37 +1,37 @@
 <template>
-  <q-page padding>
-    <q-card
-      v-for="(item, index) in mainStore.trainings"
-      :key="index"
-      class="q-mb-sm"
-      flat
-      @click="editTraining(item)"
-    >
-      <q-card-section>
-        <p class="q-my-xs">
-          Дата тренировки {{ date.formatDate(item.date, 'DD.MM.YYYY HH:mm') }}
-        </p>
-      </q-card-section>
-      <q-card-section>
-        <template
-          v-for="(subitem, subindex) in item.exercises"
-          :key="subindex"
-        >
-          <p class="q-my-xs">
-            {{ subitem.name }}: {{ subitem.approaches }}x{{ subitem.repetitions }}x{{ subitem.weight }}
-          </p>
+  <q-page>
+    <q-list separator>
+      <q-slide-item
+        v-for="(item, index) in mainStore.trainings"
+        :key="index"
+        left-color="red"
+        right-color="green"
+        @left="delTraining($event, index)"
+        @right="editTraining(item)"
+      >
+        <template #left>
+          <q-icon name="delete" />
         </template>
-      </q-card-section>
-      <q-card-section>
-        <q-btn
-          class="full-width"
-          label="Удалить"
-          color="negative"
-          dense
-          @click="delTraining(index)"
-        />
-      </q-card-section>
-    </q-card>
+        <template #right>
+          <q-icon name="edit" />
+        </template>
+        <q-item>
+          <q-item-section>
+            <q-item-label>
+              Тренировка за {{ date.formatDate(item.date, 'DD.MM.YYYY') }}
+            </q-item-label>
+            <q-item-label
+              v-for="(subitem, subindex) in item.exercises"
+              :key="subindex"
+              class="q-my-none"
+              caption
+            >
+              {{ subitem.name }}: {{ subitem.approaches }}x{{ subitem.repetitions }}x{{ subitem.weight }}
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-slide-item>
+    </q-list>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
         fab
@@ -45,7 +45,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { date } from 'quasar';
+import { date, useQuasar } from 'quasar';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { useMainStore } from 'stores/main-store';
 
@@ -53,6 +53,7 @@ defineOptions({
   name: 'MainPage',
 });
 
+const $q = useQuasar();
 const router = useRouter();
 const mainStore = useMainStore();
 
@@ -61,13 +62,20 @@ const addTraining = () => {
   router.push({ name: 'Training' });
 };
 
-const editTraining = (item:TrainingModel) => {
+const editTraining = (item: TrainingModel) => {
   mainStore.currentTraining = item;
   router.push({ name: 'Training' });
 };
 
-const delTraining = (index: number) => {
-  mainStore.trainings.splice(index, 1);
-  mainStore.saveTrainings();
+const delTraining = (event: { reset: () => void }, index: number) => {
+  $q.dialog({
+    message: 'Вы действительно хотите удалить тренировку?',
+    cancel: true,
+  }).onOk(() => {
+    mainStore.trainings.splice(index, 1);
+    mainStore.saveTrainings();
+  }).onDismiss(() => {
+    event.reset();
+  });
 };
 </script>

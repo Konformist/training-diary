@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { LocalStorage, Notify, Platform } from 'quasar';
+import { LocalStorage, Notify } from 'quasar';
 import { StoreNames } from 'src/core/dictionaries/storeNames';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { ITrainingStruct } from 'src/core/entities/training/TrainingStruct';
@@ -28,22 +28,16 @@ export const useMainStore = defineStore('main', {
   },
   actions: {
     async migrationDB() {
-      if (Platform.is.capacitor) {
-        const result = LocalStorage.getItem<IStorageTraining>('TRAININGS');
+      const result = LocalStorage.getItem<IStorageTraining>('TRAININGS');
 
-        if (result) {
-          this.loadTrainingsWeb();
-          await this.saveTrainingFile();
-          LocalStorage.removeItem('TRAININGS');
-        }
+      if (result) {
+        this.loadTrainingsWeb();
+        await this.saveTrainings();
+        LocalStorage.removeItem('TRAININGS');
       }
     },
 
-    saveTrainingsWeb() {
-      LocalStorage.setItem(StoreNames.TRAININGS, this.savedData);
-    },
-
-    async saveTrainingFile() {
+    async saveTrainings() {
       try {
         await Filesystem.writeFile({
           directory: Directory.External,
@@ -62,21 +56,13 @@ export const useMainStore = defineStore('main', {
       }
     },
 
-    async saveTrainings() {
-      if (Platform.is.capacitor) {
-        await this.saveTrainingFile();
-      } else {
-        this.saveTrainingsWeb();
-      }
-    },
-
     loadTrainingsWeb() {
       const result = LocalStorage.getItem<IStorageTraining>(StoreNames.TRAININGS);
 
       this.trainings = (result?.trainings || []).map((e) => new TrainingModel(e));
     },
 
-    async loadTrainingsFile() {
+    async loadTrainings() {
       try {
         const result = await Filesystem.readFile({
           directory: Directory.External,
@@ -87,15 +73,7 @@ export const useMainStore = defineStore('main', {
         this.trainings = (JSON.parse(result.data as string) as IStorageTraining).trainings
           .map((e) => new TrainingModel(e));
       } catch (e) {
-        this.saveTrainingFile();
-      }
-    },
-
-    async loadTrainings() {
-      if (Platform.is.capacitor) {
-        await this.loadTrainingsFile();
-      } else {
-        this.loadTrainingsWeb();
+        this.saveTrainings();
       }
     },
   },
