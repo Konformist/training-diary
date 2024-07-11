@@ -23,13 +23,13 @@
             style="flex-grow: 1;"
             label="Название упражнения"
             dense
-            v-model="item.name"
+            v-model.trim="item.name"
           />
           <q-input
             style="flex-grow: 1;"
             label="Мышечная группа"
             dense
-            v-model="item.muscle_group"
+            v-model.trim="item.muscle_group"
           />
           <q-btn
             class="self-center"
