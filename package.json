@@ -15,25 +15,26 @@
     "build:capacitor": "quasar build -m capacitor -T android --ide"
   },
   "dependencies": {
-    "pinia": "^2.0.11",
     "@quasar/extras": "^1.16.4",
+    "pinia": "^2.0.11",
     "quasar": "^2.16.0",
     "vue": "^3.4.18",
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
+    "@quasar/app-vite": "^2.0.0-beta.12",
+    "@quasar/icongenie": "^4.0.0",
+    "@types/node": "^20.5.9",
     "@typescript-eslint/eslint-plugin": "^7.16.0",
     "@typescript-eslint/parser": "^7.16.0",
-    "vite-plugin-checker": "^0.7.1",
-    "vue-tsc": "^2.0.1",
+    "autoprefixer": "^10.4.2",
     "eslint": "^8.57.0",
-    "eslint-plugin-vue": "^9.0.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.20.1",
-    "@types/node": "^20.5.9",
-    "@quasar/app-vite": "^2.0.0-beta.12",
-    "autoprefixer": "^10.4.2",
-    "typescript": "~5.5.3"
+    "eslint-plugin-vue": "^9.0.0",
+    "typescript": "~5.5.3",
+    "vite-plugin-checker": "^0.7.1",
+    "vue-tsc": "^2.0.1"
   },
   "engines": {
     "node": "^24 || ^22 || ^20 || ^18",
