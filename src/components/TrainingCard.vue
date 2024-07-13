@@ -19,7 +19,7 @@
         class="q-my-none flex no-wrap"
         caption
       >
-        <div class="item-list--caption ellipsis">{{ subitem.name }}:</div>
+        <div class="item-list--caption ellipsis">{{ subitem.name }}</div>
         <div class="item-list--size text-right">{{ subitem.approaches || '-' }}</div>
         <div class="item-list--size text-right">{{ subitem.repetitions || '-' }}</div>
         <div class="item-list--size text-right">{{ subitem.weight || '-' }}</div>

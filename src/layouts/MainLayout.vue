@@ -25,7 +25,13 @@
       </q-toolbar>
     </q-header>
     <q-page-container>
-      <router-view />
+      <transition
+        appear
+        enter-active-class="animated slideInRight"
+        leave-active-class="animated slideOutRight"
+      >
+        <router-view />
+      </transition>
     </q-page-container>
     <q-drawer
       elevated

@@ -1,7 +1,8 @@
 <template>
   <q-card flat bordered>
-    <q-card-section class="flex no-wrap q-gutter-sm">
+    <q-card-section class="flex no-wrap">
       <q-select
+        class="q-mr-sm"
         style="flex-grow: 1; min-width: 0;"
         label="Название упражнения"
         :options="mainStore.combos.exercises"
@@ -17,9 +18,11 @@
         @update:model-value="mainStore.saveTrainings()"
       />
       <q-select
-        style="width: 80px; flex-shrink: 0;"
+        class="q-mr-sm"
+        style="width: 65px; flex-shrink: 0;"
         label="Мышцы"
         :options="mainStore.combos.muscle_group"
+        hide-dropdown-icon
         dense
         emit-value
         map-options
@@ -27,7 +30,7 @@
         @update:model-value="mainStore.saveTrainings()"
       />
       <q-input
-        style="width: 52px; flex-shrink: 0;"
+        class="item-card--size q-mr-sm"
         label="Подходы"
         type="number"
         dense
@@ -35,7 +38,7 @@
         @change="mainStore.saveTrainings()"
       />
       <q-input
-        style="width: 52px; flex-shrink: 0;"
+        class="item-card--size q-mr-sm"
         label="Повтор."
         type="number"
         dense
@@ -43,7 +46,7 @@
         @change="mainStore.saveTrainings()"
       />
       <q-input
-        style="width: 52px; flex-shrink: 0;"
+        class="item-card--size q-mr-sm"
         label="Вес, кг"
         type="number"
         dense
@@ -56,6 +59,7 @@
         round
         dense
         flat
+        size="small"
         color="negative"
         @click="$emit('delete')"
       />
@@ -84,3 +88,10 @@ const props = defineProps<{
 
 const insertItem = ref(props.item);
 </script>
+
+<style lang="scss" scoped>
+.item-card--size {
+  width: 42px;
+  flex-shrink: 0;
+}
+</style>

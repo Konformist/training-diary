@@ -60,8 +60,6 @@ const mainStore = useMainStore();
 const selectDate = ref(date.formatDate(new Date(), DATE_MASK));
 
 const addTraining = () => {
-  // eslint-disable-next-line no-console
-  console.log(selectDate.value);
   const newTraining = new TrainingModel();
   const lastTraining = mainStore.trainings[mainStore.trainings.length - 1];
 
