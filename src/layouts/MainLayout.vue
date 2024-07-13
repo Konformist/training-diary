@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header>
+    <q-header elevated>
       <q-toolbar>
         <q-btn
           v-if="$route.name !== 'Main'"
