@@ -3,23 +3,38 @@
     <q-input
       class="q-mb-sm"
       label="Название тренировки"
-      outlined
-      v-model.trim="currentTraining.name"
+      standout
+      v-model.lazy.trim="currentTraining.name"
     />
     <q-input
       class="q-mb-sm"
       label="Дата и время тренировки"
       type="datetime-local"
-      outlined
+      standout
       v-model.lazy="dateTime"
-    />
+    >
+      <template v-slot:prepend>
+        <q-icon name="event" class="cursor-pointer">
+          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+            <q-date v-model="dateTime" :mask="DATE_TIME_MASK" />
+          </q-popup-proxy>
+        </q-icon>
+      </template>
+      <template v-slot:append>
+        <q-icon name="access_time" class="cursor-pointer">
+          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+            <q-time v-model="dateTime" :mask="DATE_TIME_MASK" format24h />
+          </q-popup-proxy>
+        </q-icon>
+      </template>
+    </q-input>
     <q-input
       class="q-mb-sm"
       label="Комментарий к тренировке"
-      outlined
       type="textarea"
       rows="3"
-      v-model.trim="currentTraining.comment"
+      standout
+      v-model.lazy.trim="currentTraining.comment"
     />
     <ExerciseCard
       v-for="item in currentTraining.exercises"
@@ -66,7 +81,7 @@ const dateTime = computed({
     return date.formatDate(currentTraining.value.date, DATE_TIME_MASK);
   },
   set(value) {
-    currentTraining.value.date = date.extractDate(value, DATE_TIME_MASK).getTime();
+    if (value) currentTraining.value.date = date.extractDate(value, DATE_TIME_MASK).getTime();
   },
 });
 

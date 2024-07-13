@@ -4,45 +4,33 @@
       class="q-mb-sm"
       label="Упражнение"
       :options="mainStore.combos.exercises"
-      outlined
+      standout
       emit-value
       map-options
       v-model="exercise"
       @update:model-value="updateCharts()"
     />
-    <q-card
-      class="q-mb-sm"
-      flat bordered
-    >
+    <q-card class="q-mb-sm">
       <q-card-section>
-        Вес, кг
-      </q-card-section>
-      <q-card-section>
+        <div class="q-mb-sm">Вес, кг</div>
         <canvas
           ref="chartWeightRef"
           style="width: 100%; height: 200px;"
         />
       </q-card-section>
     </q-card>
-    <q-card
-      class="q-mb-sm"
-      flat bordered
-    >
+    <q-card class="q-mb-sm">
       <q-card-section>
-        Повторы
-      </q-card-section>
-      <q-card-section>
+        <div class="q-mb-sm">Повторы</div>
         <canvas
           ref="chartRepetitionsRef"
           style="width: 100%; height: 200px;"
         />
       </q-card-section>
     </q-card>
-    <q-card flat bordered>
+    <q-card>
       <q-card-section>
-        Подходы
-      </q-card-section>
-      <q-card-section>
+        <div class="q-mb-sm">Подходы</div>
         <canvas
           ref="chartApproachesRef"
           style="width: 100%; height: 200px;"
@@ -104,9 +92,7 @@ const chartData = computed(() => mainStore.trainings.reduce((acc, training) => {
   return acc;
 }, [] as IChartData[]));
 
-const trainingDates = computed(() => [
-  ...new Set(chartData.value.map((e) => date.formatDate(e.date, DATE_MASK))),
-]);
+const trainingDates = computed(() => mainStore.trainingDates.map((e) => date.formatDate(e, DATE_MASK)));
 
 let chartWeight: Chart<'line', DefaultDataPoint<'line'>, string>;
 let chartRepetitions: Chart<'line', DefaultDataPoint<'line'>, string>;

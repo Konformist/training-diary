@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
-import { Notify } from 'quasar';
+import { date, Notify } from 'quasar';
+import { DATE_MASK } from 'src/core/dictionaries/dates';
 import { StoreNames, VERSION_DB } from 'src/core/dictionaries/storeNames';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { ITrainingStruct } from 'src/core/entities/training/TrainingStruct';
@@ -25,9 +26,14 @@ export const useMainStore = defineStore('main', {
     return {
       version: VERSION_DB,
       trainings: [] as TrainingModel[],
+      selectDate: date.formatDate(new Date(), DATE_MASK),
     };
   },
   getters: {
+    trainingDates(): number[] {
+      return [...new Set(this.trainings.map((e) => e.date))];
+    },
+
     savedData(): IStorageTraining {
       return {
         version: this.version,

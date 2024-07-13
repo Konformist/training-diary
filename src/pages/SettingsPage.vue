@@ -4,7 +4,7 @@
       class="q-mb-sm"
       label="Загрузить данные"
       type="file"
-      dense
+      standout
       v-model="fileDB"
       @update:model-value="readFile()"
     />
@@ -12,7 +12,6 @@
       class="full-width"
       label="Выгрузить данные"
       color="secondary"
-      dense
       @click="backup()"
     />
   </q-page>

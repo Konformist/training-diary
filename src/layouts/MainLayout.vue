@@ -25,13 +25,14 @@
       </q-toolbar>
     </q-header>
     <q-page-container>
-      <transition
-        appear
-        enter-active-class="animated slideInRight"
-        leave-active-class="animated slideOutRight"
-      >
-        <router-view />
-      </transition>
+      <router-view v-slot="{ Component }">
+        <transition
+          mode="out-in"
+          enter-active-class="animated slideInLeft"
+        >
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </q-page-container>
     <q-drawer
       elevated

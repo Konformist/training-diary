@@ -1,5 +1,5 @@
 <template>
-  <q-card flat bordered>
+  <q-card>
     <q-card-section class="flex no-wrap">
       <q-select
         class="q-mr-sm"
