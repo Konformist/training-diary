@@ -86,6 +86,17 @@ export default configure((/* ctx */) => ({
   framework: {
     config: {
       dark: 'auto',
+      brand: {
+        primary: '#a30000',
+        secondary: '#5200a3',
+        accent: '#0000a3',
+        dark: '#1d1d1d',
+        'dark-page': '#121212',
+        positive: '#21BA45',
+        negative: '#C10015',
+        info: '#31CCEC',
+        warning: '#F2C037',
+      },
     },
 
     // iconSet: 'material-icons', // Quasar icon set

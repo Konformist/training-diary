@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { LocalStorage, Notify } from 'quasar';
-import { StoreNames } from 'src/core/dictionaries/storeNames';
+import { Notify } from 'quasar';
+import { StoreNames, VERSION_DB } from 'src/core/dictionaries/storeNames';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { ITrainingStruct } from 'src/core/entities/training/TrainingStruct';
 // eslint-disable-next-line import/no-relative-packages
@@ -11,29 +11,72 @@ export interface IStorageTraining {
   trainings: ITrainingStruct[]
 }
 
+export interface ICombo {
+  label: string
+  value: string
+}
+
+export interface IComboExercise extends ICombo {
+  muscle_group: string
+}
+
 export const useMainStore = defineStore('main', {
   state() {
     return {
-      currentTraining: null as TrainingModel|null,
+      version: VERSION_DB,
       trainings: [] as TrainingModel[],
     };
   },
   getters: {
     savedData(): IStorageTraining {
       return {
-        version: 1,
+        version: this.version,
         trainings: this.trainings.map((e) => e.getStruct()),
+      };
+    },
+
+    combos(): { muscle_group: ICombo[], exercises: IComboExercise[] } {
+      const muscleGroup = [
+        { label: 'Грудь', value: 'Грудь' },
+        { label: 'Спина', value: 'Спина' },
+        { label: 'Бицепс', value: 'Бицепс' },
+        { label: 'Трицепс', value: 'Трицепс' },
+        { label: 'Пресс', value: 'Пресс' },
+        { label: 'Ноги', value: 'Ноги' },
+      ];
+
+      const exercises = [...this.trainings
+        .reduce((acc, training) => {
+          training.exercises.forEach((exercise) => {
+            acc.set(exercise.name, {
+              label: exercise.name,
+              value: exercise.name,
+              muscle_group: exercise.muscle_group,
+            });
+          });
+
+          return acc;
+        }, new Map<string, IComboExercise>())
+        .values()];
+
+      return {
+        muscle_group: muscleGroup,
+        exercises,
       };
     },
   },
   actions: {
     async migrationDB() {
-      const result = LocalStorage.getItem<IStorageTraining>('TRAININGS');
+      if (VERSION_DB > this.version) {
+        this.version = VERSION_DB;
+        this.trainings.forEach((training, index) => {
+          training.id = index + 1;
+          training.exercises.forEach((exercise, i) => {
+            exercise.id = i + 1;
+          });
+        });
 
-      if (result) {
-        this.loadTrainingsWeb();
         await this.saveTrainings();
-        LocalStorage.removeItem('TRAININGS');
       }
     },
 
@@ -56,12 +99,6 @@ export const useMainStore = defineStore('main', {
       }
     },
 
-    loadTrainingsWeb() {
-      const result = LocalStorage.getItem<IStorageTraining>(StoreNames.TRAININGS);
-
-      this.trainings = (result?.trainings || []).map((e) => new TrainingModel(e));
-    },
-
     async loadTrainings() {
       try {
         const result = await Filesystem.readFile({
@@ -69,9 +106,10 @@ export const useMainStore = defineStore('main', {
           path: `db/${StoreNames.TRAININGS}.json`,
           encoding: Encoding.UTF8,
         });
+        const parsed = (JSON.parse(result.data as string) as IStorageTraining);
 
-        this.trainings = (JSON.parse(result.data as string) as IStorageTraining).trainings
-          .map((e) => new TrainingModel(e));
+        this.version = parsed.version;
+        this.trainings = parsed.trainings.map((e) => new TrainingModel(e));
       } catch (e) {
         this.saveTrainings();
       }

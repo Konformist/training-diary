@@ -1,5 +1,7 @@
 /** Упражнение */
 export interface IExerciseStruct {
+  /** ID упражнения */
+  id: number
   /** Название упражнения */
   name: string
   /** Мышечная группа */
@@ -14,6 +16,12 @@ export interface IExerciseStruct {
 
 /** Тренировка */
 export interface ITrainingStruct {
+  /** ID тренировки */
+  id: number
+  /** Название тренировки */
+  name: string
+  /** Комментарий к тренировке */
+  comment: string
   /** Дата тренировки Timestamp */
   date: number
   /** Упражнения */

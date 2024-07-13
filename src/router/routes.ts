@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'Training',
-        path: 'training',
+        path: 'training/:id?',
         component: () => import('pages/TrainingPage.vue'),
       },
       {

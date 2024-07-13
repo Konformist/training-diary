@@ -1,135 +1,85 @@
 <template>
-  <q-page
-    v-if="mainStore.currentTraining"
-    padding
-  >
+  <q-page padding>
     <q-input
       class="q-mb-sm"
-      label="Время тренировки"
+      label="Название тренировки"
+      outlined
+      v-model.trim="currentTraining.name"
+    />
+    <q-input
+      class="q-mb-sm"
+      label="Дата и время тренировки"
       type="datetime-local"
-      dense
       outlined
       v-model.lazy="dateTime"
     />
-    <q-card
-      v-for="(item, index) in mainStore.currentTraining.exercises"
-      :key="index"
+    <q-input
       class="q-mb-sm"
-      flat
-    >
-      <q-card-section>
-        <div class="flex no-wrap q-gutter-sm q-mb-sm">
-          <q-input
-            style="flex-grow: 1;"
-            label="Название упражнения"
-            dense
-            v-model.trim="item.name"
-          />
-          <q-input
-            style="flex-grow: 1;"
-            label="Мышечная группа"
-            dense
-            v-model.trim="item.muscle_group"
-          />
-          <q-btn
-            class="self-center"
-            icon="clear"
-            color="negative"
-            dense
-            rounded
-            @click="delExercise(index)"
-          />
-        </div>
-        <div class="flex no-wrap q-gutter-sm">
-          <q-input
-            style="flex-grow: 1;"
-            label="Подходы"
-            type="number"
-            dense
-            v-model="item.approaches"
-          />
-          <q-input
-            style="flex-grow: 1;"
-            label="Повторения"
-            type="number"
-            dense
-            v-model="item.repetitions"
-          />
-          <q-input
-            style="flex-grow: 1;"
-            label="Вес, кг"
-            type="number"
-            dense
-            v-model="item.weight"
-          />
-        </div>
-      </q-card-section>
-    </q-card>
-    <q-btn
-      class="full-width"
-      label="Добавить упражнение"
-      color="primary"
-      dense
-      @click="addExercise()"
+      label="Комментарий к тренировке"
+      outlined
+      type="textarea"
+      rows="3"
+      v-model.trim="currentTraining.comment"
     />
-    <q-btn
-      class="full-width q-mt-sm"
-      label="Сохранить"
-      color="secondary"
-      dense
-      :disable="!mainStore.currentTraining.exercises.length"
-      @click="saveTraining()"
+    <ExerciseCard
+      v-for="item in currentTraining.exercises"
+      :key="item.id"
+      class="q-mb-sm"
+      :item="item"
+      @delete="delExercise(item.id)"
     />
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-btn
+        fab
+        icon="add"
+        color="primary"
+        @click="addExercise()"
+      />
+    </q-page-sticky>
   </q-page>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import { date } from 'quasar';
 import ExerciseModel from 'src/core/entities/training/ExerciseModel';
-import { computed } from 'vue';
+import TrainingModel from 'src/core/entities/training/TrainingModel';
+import ExerciseCard from 'components/ExerciseCard.vue';
 import { useMainStore } from 'stores/main-store';
-import { useRouter } from 'vue-router';
 
 defineOptions({
   name: 'TrainingPage',
 });
 
-const router = useRouter();
+const route = useRoute();
 const mainStore = useMainStore();
+
+const currentTraining = computed<TrainingModel>(() => (
+  mainStore.trainings.find((e) => e.id === +route.params.id)
+   || new TrainingModel()
+));
 
 const dateTime = computed({
   get() {
-    return mainStore.currentTraining ? date.formatDate(mainStore.currentTraining.date, 'YYYY-MM-DDTHH:mm') : '';
+    return date.formatDate(currentTraining.value.date, 'YYYY-MM-DDTHH:mm');
   },
   set(value) {
-    if (mainStore.currentTraining) {
-      mainStore.currentTraining.date = date.extractDate(value, 'YYYY-MM-DDTHH:mm').getTime();
-    }
+    currentTraining.value.date = date.extractDate(value, 'YYYY-MM-DDTHH:mm').getTime();
   },
 });
 
 const addExercise = () => {
-  if (mainStore.currentTraining) {
-    mainStore.currentTraining.exercises.push(new ExerciseModel());
-  }
-};
+  const newExercise = new ExerciseModel();
+  const lastExercise = currentTraining.value.exercises[currentTraining.value.exercises.length - 1];
 
-const delExercise = (index: number) => {
-  if (mainStore.currentTraining) {
-    mainStore.currentTraining.exercises.splice(index, 1);
-  }
-};
-
-const saveTraining = () => {
-  if (!mainStore.currentTraining) {
-    return;
-  }
-
-  if (!mainStore.trainings.includes(mainStore.currentTraining)) {
-    mainStore.trainings.push(mainStore.currentTraining);
-  }
-
+  newExercise.id = lastExercise ? lastExercise.id + 1 : 1;
+  currentTraining.value.exercises.push(newExercise);
   mainStore.saveTrainings();
-  router.back();
+};
+
+const delExercise = (id: number) => {
+  currentTraining.value.exercises = currentTraining.value.exercises.filter((e) => e.id !== id);
+  mainStore.saveTrainings();
 };
 </script>
