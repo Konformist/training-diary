@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
-import { date, Notify } from 'quasar';
+import {
+  Dark, date, LocalStorage, Notify,
+} from 'quasar';
 import { DATE_MASK } from 'src/core/dictionaries/dates';
 import { StoreNames, VERSION_DB } from 'src/core/dictionaries/storeNames';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
@@ -10,6 +12,11 @@ import { Directory, Filesystem, Encoding } from '../../src-capacitor/node_module
 export interface IStorageTraining {
   version: number
   trainings: ITrainingStruct[]
+}
+
+export interface IStorageSettings {
+  version: number
+  darkMode: boolean|'auto'
 }
 
 export interface ICombo {
@@ -25,13 +32,22 @@ export const useMainStore = defineStore('main', {
   state() {
     return {
       version: VERSION_DB,
+      darkMode: 'auto' as boolean|'auto',
       trainings: [] as TrainingModel[],
+
       selectDate: date.formatDate(new Date(), DATE_MASK),
     };
   },
   getters: {
     trainingDates(): number[] {
       return [...new Set(this.trainings.map((e) => e.date))];
+    },
+
+    savedOptions(): IStorageSettings {
+      return {
+        version: this.version,
+        darkMode: this.darkMode,
+      };
     },
 
     savedData(): IStorageTraining {
@@ -73,16 +89,19 @@ export const useMainStore = defineStore('main', {
   },
   actions: {
     async migrationDB() {
-      if (VERSION_DB > this.version) {
-        this.version = VERSION_DB;
-        this.trainings.forEach((training, index) => {
-          training.id = index + 1;
-          training.exercises.forEach((exercise, i) => {
-            exercise.id = i + 1;
-          });
-        });
+      // empty
+    },
 
-        await this.saveTrainings();
+    saveSettings() {
+      LocalStorage.setItem(StoreNames.SETTINGS, this.savedOptions);
+    },
+
+    loadSettings() {
+      const result = LocalStorage.getItem<IStorageSettings>(StoreNames.SETTINGS);
+
+      if (result) {
+        this.darkMode = result.darkMode;
+        Dark.set(this.darkMode);
       }
     },
 

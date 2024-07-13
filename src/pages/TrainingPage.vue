@@ -32,7 +32,7 @@
       class="q-mb-sm"
       label="Комментарий к тренировке"
       type="textarea"
-      rows="3"
+      autogrow
       standout
       v-model.lazy.trim="currentTraining.comment"
     />

@@ -1,30 +1,29 @@
 <template>
   <q-page>
-    <div class="q-pa-sm">
-      <q-date
-        class="full-width"
-        style="height: 400px;"
-        minimal
-        :mask="DATE_MASK"
-        :events="trainingDates"
-        event-color="red"
-        v-model="selectDate"
-      />
-    </div>
     <q-list separator>
-      <q-slide-item
+      <template
         v-for="item in listTrainings"
-        :key="item.id"
-        left-color="red"
-        right-color="green"
-        @left="delTraining($event, item.id)"
-        @click="moveTraining(item.id)"
+        :key="typeof item === 'string' ? item : item.id"
       >
-        <template #left>
-          <q-icon name="delete" />
-        </template>
-        <TrainingCard :item="item" />
-      </q-slide-item>
+        <q-item-label
+          v-if="typeof item === 'string'"
+          header
+        >
+          {{ item }}
+        </q-item-label>
+        <q-slide-item
+          v-else
+          left-color="red"
+          right-color="green"
+          @left="delTraining($event, item.id)"
+          @click="moveTraining(item.id)"
+        >
+          <template #left>
+            <q-icon name="delete" />
+          </template>
+          <TrainingCard :item="item" />
+        </q-slide-item>
+      </template>
     </q-list>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
@@ -47,18 +46,28 @@ import { date, useQuasar } from 'quasar';
 import { useMainStore } from 'stores/main-store';
 
 defineOptions({
-  name: 'MainPage',
+  name: 'TrainingsPage',
 });
 
 const $q = useQuasar();
 const router = useRouter();
 const mainStore = useMainStore();
 
-const trainingDates = computed(() => mainStore.trainingDates.map((e) => date.formatDate(e, 'YYYY/MM/DD')));
+const listTrainings = computed(() => {
+  let dateSave: string;
 
-const listTrainings = computed(() => (
-  mainStore.trainings.filter((e) => (date.formatDate(e.date, DATE_MASK) === mainStore.selectDate))
-));
+  return [...mainStore.trainings]
+    .reverse()
+    .reduce((acc, cur) => {
+      const curDate = date.formatDate(cur.date, DATE_MASK);
+      if (curDate !== dateSave) {
+        acc.push(curDate);
+      }
+      acc.push(cur);
+
+      return acc;
+    }, [] as Array<TrainingModel|string>);
+});
 
 const moveTraining = (id: number) => {
   router.push({ name: 'Training', params: { id } });
@@ -86,15 +95,4 @@ const delTraining = (event: { reset: () => void }, id: number) => {
     event.reset();
   });
 };
-
-const selectDate = computed({
-  get() {
-    return mainStore.selectDate;
-  },
-  set(value) {
-    if (value) {
-      mainStore.selectDate = value;
-    }
-  },
-});
 </script>

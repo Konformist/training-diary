@@ -1,8 +1,9 @@
 <template>
   <q-item>
     <q-item-section>
-      <q-item-label>
-        Тренировка за {{ date.formatDate(item.date, 'DD.MM.YYYY') }}
+      <q-item-label class="flex">
+        <div style="flex-grow: 1;">{{ item.name }}</div>
+        <div>{{ date.formatDate(item.date, 'HH:mm') }}</div>
       </q-item-label>
       <q-item-label
         class="q-my-none flex no-wrap"

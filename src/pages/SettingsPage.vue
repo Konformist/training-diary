@@ -1,5 +1,17 @@
 <template>
   <q-page padding>
+    <q-btn-toggle
+      class="full-width q-mb-sm"
+      :options="[
+        { value: 'auto', label: 'Системная' },
+        { value: false, label: 'Светлая' },
+        { value: true, label: 'Темная' },
+      ]"
+      toggle-color="secondary"
+      spread
+      :model-value="mainStore.darkMode"
+      @update:model-value="setDarkMode($event)"
+    />
     <q-file
       class="q-mb-sm"
       label="Загрузить данные"
@@ -18,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { Notify, Platform } from 'quasar';
+import { Dark, Notify, Platform } from 'quasar';
 import { StoreNames } from 'src/core/dictionaries/storeNames';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { fileToJson } from 'src/core/utils/files';
@@ -87,5 +99,11 @@ const backupFile = async () => {
 const backup = () => {
   if (Platform.is.capacitor) backupFile();
   else backupWeb();
+};
+
+const setDarkMode = (value: boolean|'auto') => {
+  Dark.set(value);
+  mainStore.darkMode = value;
+  mainStore.saveSettings();
 };
 </script>

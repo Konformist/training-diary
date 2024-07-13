@@ -12,6 +12,7 @@ defineOptions({
 const mainStore = useMainStore();
 
 const init = async () => {
+  mainStore.loadSettings();
   await mainStore.loadTrainings();
   await mainStore.migrationDB();
 };

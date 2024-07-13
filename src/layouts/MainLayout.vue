@@ -40,6 +40,14 @@
       v-model="drawerRight"
     >
       <q-list>
+        <q-item :to="{ name: 'Trainings' }">
+          <q-item-section avatar>
+            <q-icon name="format_list_bulleted" />
+          </q-item-section>
+          <q-item-section avatar>
+            Все тренировки
+          </q-item-section>
+        </q-item>
         <q-item :to="{ name: 'Statistics' }">
           <q-item-section avatar>
             <q-icon name="show_chart" />

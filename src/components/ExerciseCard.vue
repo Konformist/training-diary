@@ -5,7 +5,7 @@
         class="q-mr-sm"
         style="flex-grow: 1; min-width: 0;"
         label="Название упражнения"
-        :options="mainStore.combos.exercises"
+        :options="comboExercises"
         dense
         use-input
         fill-input
@@ -16,6 +16,7 @@
         new-value-mode="add-unique"
         v-model="insertItem.name"
         @update:model-value="mainStore.saveTrainings()"
+        @filter="comboExercisesFilter"
       />
       <q-select
         class="q-mr-sm"
@@ -34,7 +35,7 @@
         label="Подходы"
         type="number"
         dense
-        v-model="insertItem.approaches"
+        v-model.number="insertItem.approaches"
         @change="mainStore.saveTrainings()"
       />
       <q-input
@@ -42,7 +43,7 @@
         label="Повтор."
         type="number"
         dense
-        v-model="insertItem.repetitions"
+        v-model.number="insertItem.repetitions"
         @change="mainStore.saveTrainings()"
       />
       <q-input
@@ -50,7 +51,7 @@
         label="Вес, кг"
         type="number"
         dense
-        v-model="insertItem.weight"
+        v-model.number="insertItem.weight"
         @change="mainStore.saveTrainings()"
       />
       <q-btn
@@ -87,6 +88,16 @@ const props = defineProps<{
 }>();
 
 const insertItem = ref(props.item);
+
+const comboExercises = ref([...mainStore.combos.exercises]);
+const comboExercisesFilter = (value: string, update: (fn: () => void) => void) => {
+  update(() => {
+    const search = value.toLowerCase().trim();
+    comboExercises.value = search
+      ? mainStore.combos.exercises.filter((e) => e.label.toLowerCase().includes(search))
+      : mainStore.combos.exercises;
+  });
+};
 </script>
 
 <style lang="scss" scoped>

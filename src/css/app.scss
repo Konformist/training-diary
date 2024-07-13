@@ -1,9 +1,17 @@
 // app global css in SCSS form
 input[type="date"],
 input[type="datetime-local"] {
+  &,
+  &:hover,
+  &:focus {
+    appearance: none;
+    -moz-appearance: textfield;
+  }
+
   &::-webkit-inner-spin-button,
   &::-webkit-calendar-picker-indicator {
     display: none;
+    margin: 0;
     -webkit-appearance: none;
   }
 }
