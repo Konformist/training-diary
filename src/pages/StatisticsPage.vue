@@ -58,6 +58,7 @@ import {
 } from 'chart.js';
 import { DefaultDataPoint } from 'chart.js/dist/types';
 import { date } from 'quasar';
+import { DATE_MASK } from 'src/core/dictionaries/dates';
 import { computed, onMounted, ref } from 'vue';
 import { useMainStore } from 'stores/main-store';
 
@@ -104,7 +105,7 @@ const chartData = computed(() => mainStore.trainings.reduce((acc, training) => {
 }, [] as IChartData[]));
 
 const trainingDates = computed(() => [
-  ...new Set(chartData.value.map((e) => date.formatDate(e.date, 'YYYY-MM-DD'))),
+  ...new Set(chartData.value.map((e) => date.formatDate(e.date, DATE_MASK))),
 ]);
 
 let chartWeight: Chart<'line', DefaultDataPoint<'line'>, string>;

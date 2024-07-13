@@ -40,6 +40,7 @@
 </template>
 
 <script setup lang="ts">
+import { DATE_TIME_MASK } from 'src/core/dictionaries/dates';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { date } from 'quasar';
@@ -62,10 +63,10 @@ const currentTraining = computed<TrainingModel>(() => (
 
 const dateTime = computed({
   get() {
-    return date.formatDate(currentTraining.value.date, 'YYYY-MM-DDTHH:mm');
+    return date.formatDate(currentTraining.value.date, DATE_TIME_MASK);
   },
   set(value) {
-    currentTraining.value.date = date.extractDate(value, 'YYYY-MM-DDTHH:mm').getTime();
+    currentTraining.value.date = date.extractDate(value, DATE_TIME_MASK).getTime();
   },
 });
 
