@@ -18,11 +18,10 @@
               Тренировка за {{ date.formatDate(item.date, 'DD.MM.YYYY') }}
             </q-item-label>
             <q-item-label
-              class="q-my-none flex"
+              class="q-my-none flex no-wrap"
               caption
             >
-              <div class="text-bold">Упражнение</div>
-              <div class="col-grow" />
+              <div class="item-list--caption text-bold ellipsis">Упражнение</div>
               <div class="item-list--size text-right text-bold">Подходы</div>
               <div class="item-list--size text-right text-bold">Повторы</div>
               <div class="item-list--size text-right text-bold">Вес, кг</div>
@@ -30,11 +29,10 @@
             <q-item-label
               v-for="(subitem, subindex) in item.exercises"
               :key="subindex"
-              class="q-my-none flex"
+              class="q-my-none flex no-wrap"
               caption
             >
-              <div>{{ subitem.name }}:</div>
-              <div class="col-grow" />
+              <div class="item-list--caption ellipsis">{{ subitem.name }}:</div>
               <div class="item-list--size text-right">{{ subitem.approaches || '-' }}</div>
               <div class="item-list--size text-right">{{ subitem.repetitions || '-' }}</div>
               <div class="item-list--size text-right">{{ subitem.weight || '-' }}</div>
@@ -96,7 +94,13 @@ const delTraining = (event: { reset: () => void }, id: number) => {
 </script>
 
 <style lang="scss" scoped>
+.item-list--caption {
+  min-width: 0;
+  flex-grow: 1;
+}
+
 .item-list--size {
   width: 64px;
+  flex-shrink: 0;
 }
 </style>

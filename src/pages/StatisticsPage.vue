@@ -1,0 +1,178 @@
+<template>
+  <q-page padding>
+    <q-select
+      class="q-mb-sm"
+      label="Упражнение"
+      :options="mainStore.combos.exercises"
+      outlined
+      emit-value
+      map-options
+      v-model="exercise"
+      @update:model-value="updateCharts()"
+    />
+    <q-card
+      class="q-mb-sm"
+      flat bordered
+    >
+      <q-card-section>
+        Вес, кг
+      </q-card-section>
+      <q-card-section>
+        <canvas
+          ref="chartWeightRef"
+          style="width: 100%; height: 200px;"
+        />
+      </q-card-section>
+    </q-card>
+    <q-card
+      class="q-mb-sm"
+      flat bordered
+    >
+      <q-card-section>
+        Повторы
+      </q-card-section>
+      <q-card-section>
+        <canvas
+          ref="chartRepetitionsRef"
+          style="width: 100%; height: 200px;"
+        />
+      </q-card-section>
+    </q-card>
+    <q-card flat bordered>
+      <q-card-section>
+        Подходы
+      </q-card-section>
+      <q-card-section>
+        <canvas
+          ref="chartApproachesRef"
+          style="width: 100%; height: 200px;"
+        />
+      </q-card-section>
+    </q-card>
+  </q-page>
+</template>
+
+<script setup lang="ts">
+import {
+  Chart, LinearScale, CategoryScale, LineController, LineElement, PointElement, Tooltip,
+} from 'chart.js';
+import { DefaultDataPoint } from 'chart.js/dist/types';
+import { date } from 'quasar';
+import { computed, onMounted, ref } from 'vue';
+import { useMainStore } from 'stores/main-store';
+
+Chart.registry.add(Tooltip);
+Chart.registry.addControllers(LineController);
+Chart.registry.addScales(LinearScale, CategoryScale);
+Chart.registry.addElements(LineElement, PointElement);
+Chart.defaults.color = '#fff';
+Chart.defaults.datasets.line.borderColor = '#ff6a6a';
+Chart.defaults.scale.grid.color = '#666';
+
+const mainStore = useMainStore();
+
+defineOptions({
+  name: 'StatisticsPage',
+});
+
+const exercise = ref(mainStore.combos.exercises[0]?.value || '');
+
+interface IChartData {
+  /** Дата Timestamp */
+  date: number
+  /** Количество подходов */
+  approaches: number
+  /** Количество повторений */
+  repetitions: number
+  /** Вес в подходе */
+  weight: number
+}
+
+const chartData = computed(() => mainStore.trainings.reduce((acc, training) => {
+  training.exercises.forEach((item) => {
+    if (item.name === exercise.value) {
+      acc.push({
+        date: training.date,
+        approaches: item.approaches,
+        repetitions: item.repetitions,
+        weight: item.weight,
+      });
+    }
+  });
+
+  return acc;
+}, [] as IChartData[]));
+
+const trainingDates = computed(() => [
+  ...new Set(chartData.value.map((e) => date.formatDate(e.date, 'YYYY-MM-DD'))),
+]);
+
+let chartWeight: Chart<'line', DefaultDataPoint<'line'>, string>;
+let chartRepetitions: Chart<'line', DefaultDataPoint<'line'>, string>;
+let chartApproaches: Chart<'line', DefaultDataPoint<'line'>, string>;
+
+const updateCharts = () => {
+  if (chartWeight) {
+    chartWeight.data.labels = trainingDates.value;
+    chartWeight.data.datasets[0].data = chartData.value.map((e) => ({ x: e.date, y: e.weight }));
+    chartWeight.update();
+  }
+
+  if (chartRepetitions) {
+    chartRepetitions.data.labels = trainingDates.value;
+    chartRepetitions.data.datasets[0].data = chartData.value.map((e) => ({ x: e.date, y: e.repetitions }));
+    chartRepetitions.update();
+  }
+
+  if (chartApproaches) {
+    chartApproaches.data.labels = trainingDates.value;
+    chartApproaches.data.datasets[0].data = chartData.value.map((e) => ({ x: e.date, y: e.approaches }));
+    chartApproaches.update();
+  }
+};
+
+const chartWeightRef = ref<HTMLCanvasElement>();
+const chartRepetitionsRef = ref<HTMLCanvasElement>();
+const chartApproachesRef = ref<HTMLCanvasElement>();
+
+onMounted(() => {
+  if (chartWeightRef.value) {
+    chartWeight = new Chart<'line', DefaultDataPoint<'line'>, string>(chartWeightRef.value, {
+      type: 'line',
+      data: {
+        labels: trainingDates.value,
+        datasets: [{
+          label: 'Вес, кг',
+          data: chartData.value.map((e) => ({ x: e.date, y: e.weight })),
+        }],
+      },
+    });
+  }
+
+  if (chartRepetitionsRef.value) {
+    chartRepetitions = new Chart<'line', DefaultDataPoint<'line'>, string>(chartRepetitionsRef.value, {
+      type: 'line',
+      data: {
+        labels: trainingDates.value,
+        datasets: [{
+          label: 'Повторы',
+          data: chartData.value.map((e) => ({ x: e.date, y: e.repetitions })),
+        }],
+      },
+    });
+  }
+
+  if (chartApproachesRef.value) {
+    chartApproaches = new Chart<'line', DefaultDataPoint<'line'>, string>(chartApproachesRef.value, {
+      type: 'line',
+      data: {
+        labels: trainingDates.value,
+        datasets: [{
+          label: 'Подходы',
+          data: chartData.value.map((e) => ({ x: e.date, y: e.approaches })),
+        }],
+      },
+    });
+  }
+});
+</script>

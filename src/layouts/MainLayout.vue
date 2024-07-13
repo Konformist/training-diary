@@ -18,22 +18,50 @@
           flat
           dense
           round
-          icon="settings"
-          aria-label="Settings"
-          @click="$router.push({ name: 'Settings' })"
+          icon="menu"
+          aria-label="Menu"
+          @click="drawerRight = !drawerRight"
         />
       </q-toolbar>
     </q-header>
     <q-page-container>
       <router-view />
     </q-page-container>
+    <q-drawer
+      elevated
+      side="right"
+      v-model="drawerRight"
+    >
+      <q-list>
+        <q-item :to="{ name: 'Statistics' }">
+          <q-item-section avatar>
+            <q-icon name="show_chart" />
+          </q-item-section>
+          <q-item-section avatar>
+            Статистика
+          </q-item-section>
+        </q-item>
+        <q-separator />
+        <q-item :to="{ name: 'Settings' }">
+          <q-item-section avatar>
+            <q-icon name="settings" />
+          </q-item-section>
+          <q-item-section avatar>
+            Настройки
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-drawer>
   </q-layout>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { productName } from '../../package.json';
 
 defineOptions({
   name: 'MainLayout',
 });
+
+const drawerRight = ref(false);
 </script>

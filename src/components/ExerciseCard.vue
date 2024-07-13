@@ -13,7 +13,7 @@
         emit-value
         map-options
         new-value-mode="add-unique"
-        v-model.trim="insertItem.name"
+        v-model="insertItem.name"
         @update:model-value="mainStore.saveTrainings()"
       />
       <q-select

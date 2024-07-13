@@ -54,11 +54,10 @@ const backupWeb = () => {
   document.body.appendChild(link); // Required for FF
   link.click();
   document.body.removeChild(link); // Required for FF
-
   Notify.create({
-    caption: 'Данные успешно применены',
+    caption: 'Данные успешно выгружены',
     type: 'positive',
-    closeBtn: true,
+    timeout: 1000,
   });
 };
 
@@ -74,7 +73,7 @@ const backupFile = async () => {
     Notify.create({
       caption: 'Данные успешно выгружены',
       type: 'positive',
-      closeBtn: true,
+      timeout: 1000,
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
