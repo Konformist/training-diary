@@ -5,13 +5,15 @@
       label="Название тренировки"
       standout
       v-model.lazy.trim="currentTraining.name"
+      @change="mainStore.saveTrainings()"
     />
     <q-input
       class="q-mb-sm"
       label="Дата и время тренировки"
       type="datetime-local"
       standout
-      v-model.lazy="dateTime"
+      v-model="dateTime"
+      @change="dateTimeInput()"
     >
       <template v-slot:prepend>
         <q-icon name="event" class="cursor-pointer">
@@ -35,6 +37,7 @@
       autogrow
       standout
       v-model.lazy.trim="currentTraining.comment"
+      @change="mainStore.saveTrainings()"
     />
     <ExerciseCard
       v-for="item in currentTraining.exercises"
@@ -56,7 +59,7 @@
 
 <script setup lang="ts">
 import { DATE_TIME_MASK } from 'src/core/dictionaries/dates';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { date } from 'quasar';
 import ExerciseModel from 'src/core/entities/training/ExerciseModel';
@@ -76,14 +79,13 @@ const currentTraining = computed<TrainingModel>(() => (
    || new TrainingModel()
 ));
 
-const dateTime = computed({
-  get() {
-    return date.formatDate(currentTraining.value.date, DATE_TIME_MASK);
-  },
-  set(value) {
-    if (value) currentTraining.value.date = date.extractDate(value, DATE_TIME_MASK).getTime();
-  },
-});
+const dateTime = ref(date.formatDate(currentTraining.value.date, DATE_TIME_MASK));
+const dateTimeInput = () => {
+  if (dateTime.value) {
+    currentTraining.value.date = date.extractDate(dateTime.value, DATE_TIME_MASK).getTime();
+    mainStore.saveTrainings();
+  }
+};
 
 const addExercise = () => {
   const newExercise = new ExerciseModel();
