@@ -2,10 +2,13 @@
   <q-card>
     <q-card-section class="flex no-wrap">
       <q-select
+        ref="exerciseRef"
         class="q-mr-sm"
         style="flex-grow: 1; min-width: 0;"
         label="Название упражнения"
         :options="comboExercises"
+        option-value="id"
+        option-label="name"
         dense
         use-input
         fill-input
@@ -13,20 +16,9 @@
         hide-dropdown-icon
         emit-value
         map-options
-        new-value-mode="add-unique"
-        v-model="insertItem.name"
+        @new-value="newExerciseValue($event)"
+        v-model="insertItem.exercise_id"
         @filter="comboExercisesFilter"
-      />
-      <q-select
-        class="q-mr-sm"
-        style="width: 65px; flex-shrink: 0;"
-        label="Мышцы"
-        :options="mainStore.combos.muscle_group"
-        hide-dropdown-icon
-        dense
-        emit-value
-        map-options
-        v-model="insertItem.muscle_group"
       />
       <q-input
         class="item-card--size q-mr-sm"
@@ -64,14 +56,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { QSelect } from 'quasar';
+import ExerciseModel from 'src/core/entities/exercise/ExerciseModel';
+import { computed, ref } from 'vue';
 import { useMainStore } from 'stores/main-store';
-import type ExerciseModel from 'src/core/entities/training/ExerciseModel';
+import type TrainingExerciseModel from 'src/core/entities/training/TrainingExerciseModel';
 
 const mainStore = useMainStore();
 
 defineOptions({
-  name: 'ExerciseCard',
+  name: 'TrainingExerciseCard',
 });
 
 defineEmits<{
@@ -79,19 +73,41 @@ defineEmits<{
 }>();
 
 const props = defineProps<{
-  item: ExerciseModel
+  item: TrainingExerciseModel
 }>();
 
 const insertItem = ref(props.item);
 
-const comboExercises = ref([...mainStore.combos.exercises]);
-const comboExercisesFilter = (value: string, update: (fn: () => void) => void) => {
-  update(() => {
-    const search = value.toLowerCase().trim();
-    comboExercises.value = search
-      ? mainStore.combos.exercises.filter((e) => e.label.toLowerCase().includes(search))
-      : mainStore.combos.exercises;
+const isIncludeString = (value: string, search: string) => (
+  value.toLowerCase().trim().includes(search.toLowerCase().trim())
+);
+
+const searchExercises = ref('');
+const comboExercises = computed(() => (
+  mainStore.exercises.filter((e) => isIncludeString(e.name, searchExercises.value))
+));
+
+const exerciseRef = ref<typeof QSelect>();
+const newExerciseValue = (value: string) => {
+  const item = mainStore.exercises.find((e) => isIncludeString(e.name, value));
+
+  if (item) {
+    return;
+  }
+
+  const exercise = new ExerciseModel({
+    id: (mainStore.exercises[mainStore.exercises.length - 1]?.id || 0) + 1,
+    name: value,
+    muscle_group_id: 0,
   });
+
+  mainStore.exercises.push(exercise);
+  insertItem.value.exercise_id = exercise.id;
+  exerciseRef.value?.hidePopup();
+};
+
+const comboExercisesFilter = (value: string, update: (fn: () => void) => void) => {
+  update(() => { searchExercises.value = value; });
 };
 </script>
 

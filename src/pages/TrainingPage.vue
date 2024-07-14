@@ -22,7 +22,7 @@
       standout
       v-model.lazy.trim="currentTraining.comment"
     />
-    <ExerciseCard
+    <TrainingExerciseCard
       v-for="item in currentTraining.exercises"
       :key="item.id"
       class="q-mb-sm"
@@ -51,9 +51,9 @@ import { ref } from 'vue';
 import { onBeforeRouteLeave, useRoute } from 'vue-router';
 import { date, is, useQuasar } from 'quasar';
 import { DATE_TIME_MASK } from 'src/core/dictionaries/dates';
-import ExerciseModel from 'src/core/entities/training/ExerciseModel';
+import TrainingExerciseModel from 'src/core/entities/training/TrainingExerciseModel';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
-import ExerciseCard from 'components/ExerciseCard.vue';
+import TrainingExerciseCard from 'components/TrainingExerciseCard.vue';
 import { useMainStore } from 'stores/main-store';
 
 defineOptions({
@@ -75,7 +75,7 @@ const dateTimeInput = () => {
 };
 
 const addExercise = () => {
-  const newExercise = new ExerciseModel();
+  const newExercise = new TrainingExerciseModel();
   const lastExercise = currentTraining.value.exercises[currentTraining.value.exercises.length - 1];
 
   newExercise.id = lastExercise ? lastExercise.id + 1 : 1;
@@ -103,12 +103,16 @@ onBeforeRouteLeave(async () => {
 
   return new Promise((resolve) => {
     $q.dialog({
-      message: 'Есть несохранённые данные. Всё-равно перейти?',
-      cancel: true,
+      message: 'Есть несохранённые данные',
+      persistent: true,
+      ok: 'Сохранить',
+      cancel: 'Не сохранять',
+      color: 'primary',
     }).onOk(() => {
+      saveTraining();
       resolve(true);
     }).onCancel(() => {
-      resolve(false);
+      resolve(true);
     });
   });
 });

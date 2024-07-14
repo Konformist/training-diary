@@ -21,6 +21,26 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/TrainingPage.vue'),
       },
       {
+        name: 'Exercises',
+        path: 'exercises',
+        component: () => import('pages/ExercisesPage.vue'),
+      },
+      {
+        name: 'Exercise',
+        path: 'exercises/:id',
+        component: () => import('pages/ExercisePage.vue'),
+      },
+      {
+        name: 'Muscles',
+        path: 'muscles',
+        component: () => import('pages/MusclesPage.vue'),
+      },
+      {
+        name: 'Muscle',
+        path: 'muscles/:id',
+        component: () => import('pages/MusclePage.vue'),
+      },
+      {
         name: 'Statistics',
         path: 'statistics',
         component: () => import('pages/StatisticsPage.vue'),

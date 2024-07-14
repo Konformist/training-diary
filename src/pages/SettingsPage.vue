@@ -31,11 +31,10 @@
 
 <script setup lang="ts">
 import { Dark, Notify, Platform } from 'quasar';
+import { ref } from 'vue';
 import { StoreNames } from 'src/core/dictionaries/storeNames';
-import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { fileToJson } from 'src/core/utils/files';
 import { IStorageTraining, useMainStore } from 'stores/main-store';
-import { ref } from 'vue';
 // eslint-disable-next-line import/no-relative-packages
 import { Directory, Filesystem, Encoding } from '../../src-capacitor/node_modules/@capacitor/filesystem';
 
@@ -52,8 +51,8 @@ const readFile = async () => {
 
   const result = await fileToJson<IStorageTraining>(fileDB.value);
 
-  mainStore.trainings = result.trainings.map((e) => new TrainingModel(e));
-  mainStore.saveTrainings();
+  mainStore.setSavedData(result);
+  await mainStore.migrationDB();
 };
 
 const backupWeb = () => {

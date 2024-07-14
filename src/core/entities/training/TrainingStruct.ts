@@ -1,10 +1,18 @@
 /** Упражнение */
-export interface IExerciseStruct {
+export interface ITrainingExerciseStruct {
   /** ID упражнения */
   id: number
-  /** Название упражнения */
+  /**
+   * Название упражнения
+   * @deprecated
+   */
   name: string
-  /** Мышечная группа */
+  /** ID упражнения из списка */
+  exercise_id: number
+  /**
+   * Мышечная группа
+   * @deprecated
+   */
   muscle_group: string
   /** Количество подходов */
   approaches: number
@@ -25,5 +33,5 @@ export interface ITrainingStruct {
   /** Дата тренировки Timestamp */
   date: number
   /** Упражнения */
-  exercises: IExerciseStruct[]
+  exercises: ITrainingExerciseStruct[]
 }

@@ -48,6 +48,22 @@
             Все тренировки
           </q-item-section>
         </q-item>
+        <q-item :to="{ name: 'Exercises' }">
+          <q-item-section avatar>
+            <q-icon name="format_list_bulleted" />
+          </q-item-section>
+          <q-item-section avatar>
+            Все упражнения
+          </q-item-section>
+        </q-item>
+        <q-item :to="{ name: 'Muscles' }">
+          <q-item-section avatar>
+            <q-icon name="format_list_bulleted" />
+          </q-item-section>
+          <q-item-section avatar>
+            Все мышцы
+          </q-item-section>
+        </q-item>
         <q-item :to="{ name: 'Statistics' }">
           <q-item-section avatar>
             <q-icon name="show_chart" />

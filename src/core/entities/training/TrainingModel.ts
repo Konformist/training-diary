@@ -1,4 +1,4 @@
-import ExerciseModel from 'src/core/entities/training/ExerciseModel';
+import TrainingExerciseModel from 'src/core/entities/training/TrainingExerciseModel';
 import { ITrainingStruct } from 'src/core/entities/training/TrainingStruct';
 
 export default class TrainingModel implements ITrainingStruct {
@@ -10,14 +10,14 @@ export default class TrainingModel implements ITrainingStruct {
 
   date: number;
 
-  exercises: ExerciseModel[];
+  exercises: TrainingExerciseModel[];
 
   constructor(struct?: ITrainingStruct) {
     this.id = struct?.id ?? 1;
     this.name = struct?.name ?? '';
     this.comment = struct?.comment ?? '';
     this.date = struct?.date ?? (new Date()).getTime();
-    this.exercises = (struct?.exercises ?? []).map((e) => new ExerciseModel(e));
+    this.exercises = (struct?.exercises ?? []).map((e) => new TrainingExerciseModel(e));
   }
 
   getStruct(): ITrainingStruct {

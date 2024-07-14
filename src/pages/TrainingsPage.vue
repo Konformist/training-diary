@@ -60,9 +60,12 @@ const listTrainings = computed(() => {
     .reverse()
     .reduce((acc, cur) => {
       const curDate = date.formatDate(cur.date, DATE_MASK);
+
       if (curDate !== dateSave) {
+        dateSave = curDate;
         acc.push(curDate);
       }
+
       acc.push(cur);
 
       return acc;
@@ -78,7 +81,7 @@ const addTraining = () => {
   const lastTraining = mainStore.trainings[mainStore.trainings.length - 1];
 
   newTraining.id = lastTraining ? lastTraining.id + 1 : 1;
-  newTraining.date = date.extractDate(mainStore.selectDate, DATE_MASK).getTime();
+  newTraining.date = (new Date()).getTime();
   mainStore.trainings.push(newTraining);
   mainStore.saveTrainings();
   moveTraining(newTraining.id);

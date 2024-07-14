@@ -3,7 +3,9 @@
     <q-select
       class="q-mb-sm"
       label="Упражнение"
-      :options="mainStore.combos.exercises"
+      :options="mainStore.exercises"
+      option-value="id"
+      option-label="name"
       standout
       emit-value
       map-options
@@ -46,7 +48,6 @@ import {
 } from 'chart.js';
 import { DefaultDataPoint } from 'chart.js/dist/types';
 import { date } from 'quasar';
-import { DATE_MASK } from 'src/core/dictionaries/dates';
 import { computed, onMounted, ref } from 'vue';
 import { useMainStore } from 'stores/main-store';
 
@@ -55,7 +56,10 @@ Chart.registry.addControllers(LineController);
 Chart.registry.addScales(LinearScale, CategoryScale);
 Chart.registry.addElements(LineElement, PointElement);
 Chart.defaults.color = '#fff';
+Chart.defaults.locale = 'ru-RU';
+Chart.defaults.datasets.line.backgroundColor = '#ff6a6a';
 Chart.defaults.datasets.line.borderColor = '#ff6a6a';
+Chart.defaults.scale.min = 0;
 Chart.defaults.scale.grid.color = '#666';
 
 const mainStore = useMainStore();
@@ -64,7 +68,7 @@ defineOptions({
   name: 'StatisticsPage',
 });
 
-const exercise = ref(mainStore.combos.exercises[0]?.value || '');
+const exercise = ref(mainStore.exercises[0]?.id || 0);
 
 interface IChartData {
   /** Дата Timestamp */
@@ -79,7 +83,7 @@ interface IChartData {
 
 const chartData = computed(() => mainStore.trainings.reduce((acc, training) => {
   training.exercises.forEach((item) => {
-    if (item.name === exercise.value) {
+    if (item.exercise_id === exercise.value) {
       acc.push({
         date: training.date,
         approaches: item.approaches,
@@ -92,7 +96,9 @@ const chartData = computed(() => mainStore.trainings.reduce((acc, training) => {
   return acc;
 }, [] as IChartData[]));
 
-const trainingDates = computed(() => mainStore.trainingDates.map((e) => date.formatDate(e, DATE_MASK)));
+const trainingDates = computed(() => (
+  [...new Set(chartData.value.map((e) => date.formatDate(e.date, 'DD.MM.YYYY')))]
+));
 
 let chartWeight: Chart<'line', DefaultDataPoint<'line'>, string>;
 let chartRepetitions: Chart<'line', DefaultDataPoint<'line'>, string>;
@@ -133,6 +139,17 @@ onMounted(() => {
           data: chartData.value.map((e) => ({ x: e.date, y: e.weight })),
         }],
       },
+      options: {
+        locale: 'ru-RU',
+        scales: {
+          x: {
+            ticks: { align: 'inner' },
+          },
+          y: {
+            ticks: { align: 'inner', stepSize: 10 },
+          },
+        },
+      },
     });
   }
 
@@ -146,6 +163,16 @@ onMounted(() => {
           data: chartData.value.map((e) => ({ x: e.date, y: e.repetitions })),
         }],
       },
+      options: {
+        scales: {
+          x: {
+            ticks: { align: 'inner' },
+          },
+          y: {
+            ticks: { align: 'inner', stepSize: 1 },
+          },
+        },
+      },
     });
   }
 
@@ -158,6 +185,16 @@ onMounted(() => {
           label: 'Подходы',
           data: chartData.value.map((e) => ({ x: e.date, y: e.approaches })),
         }],
+      },
+      options: {
+        scales: {
+          x: {
+            ticks: { align: 'inner' },
+          },
+          y: {
+            ticks: { align: 'inner', stepSize: 1 },
+          },
+        },
       },
     });
   }

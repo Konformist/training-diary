@@ -4,6 +4,10 @@ import {
 } from 'quasar';
 import { DATE_MASK } from 'src/core/dictionaries/dates';
 import { StoreNames, VERSION_DB } from 'src/core/dictionaries/storeNames';
+import ExerciseModel from 'src/core/entities/exercise/ExerciseModel';
+import { IExerciseStruct } from 'src/core/entities/exercise/ExerciseStruct';
+import MuscleModel from 'src/core/entities/muscle/MuscleModel';
+import { IMuscleStruct } from 'src/core/entities/muscle/MuscleStruct';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { ITrainingStruct } from 'src/core/entities/training/TrainingStruct';
 // eslint-disable-next-line import/no-relative-packages
@@ -11,6 +15,8 @@ import { Directory, Filesystem, Encoding } from '../../src-capacitor/node_module
 
 export interface IStorageTraining {
   version: number
+  muscles: IMuscleStruct[]
+  exercises: IExerciseStruct[]
   trainings: ITrainingStruct[]
 }
 
@@ -33,6 +39,16 @@ export const useMainStore = defineStore('main', {
     return {
       version: VERSION_DB,
       darkMode: 'auto' as boolean|'auto',
+
+      muscles: [
+        new MuscleModel({ id: 1, name: 'Грудь' }),
+        new MuscleModel({ id: 2, name: 'Спина' }),
+        new MuscleModel({ id: 3, name: 'Бицепс' }),
+        new MuscleModel({ id: 4, name: 'Трицепс' }),
+        new MuscleModel({ id: 5, name: 'Пресс' }),
+        new MuscleModel({ id: 6, name: 'Ноги' }),
+      ] as MuscleModel[],
+      exercises: [] as ExerciseModel[],
       trainings: [] as TrainingModel[],
 
       selectDate: date.formatDate(new Date(), DATE_MASK),
@@ -53,6 +69,8 @@ export const useMainStore = defineStore('main', {
     savedData(): IStorageTraining {
       return {
         version: this.version,
+        muscles: this.muscles.map((e) => e.getStruct()),
+        exercises: this.exercises.map((e) => e.getStruct()),
         trainings: this.trainings.map((e) => e.getStruct()),
       };
     },
@@ -88,8 +106,58 @@ export const useMainStore = defineStore('main', {
     },
   },
   actions: {
+    setSavedData(value: IStorageTraining) {
+      this.version = value.version;
+      this.muscles = (value.muscles || []).map((e) => new MuscleModel(e));
+      this.exercises = (value.exercises || []).map((e) => new ExerciseModel(e));
+      this.trainings = (value.trainings || []).map((e) => new TrainingModel(e));
+    },
+
     async migrationDB() {
       // empty
+      if (VERSION_DB > this.version) {
+        this.muscles = [
+          new MuscleModel({ id: 1, name: 'Грудь' }),
+          new MuscleModel({ id: 2, name: 'Спина' }),
+          new MuscleModel({ id: 3, name: 'Бицепс' }),
+          new MuscleModel({ id: 4, name: 'Трицепс' }),
+          new MuscleModel({ id: 5, name: 'Пресс' }),
+          new MuscleModel({ id: 6, name: 'Ноги' }),
+        ];
+
+        let index = 1;
+
+        this.exercises = [...this.trainings
+          .reduce((acc, training) => {
+            training.exercises.forEach((item) => {
+              if (acc.has(item.name)) {
+                return;
+              }
+
+              const exercise = new ExerciseModel();
+
+              exercise.id = index++;
+              exercise.name = item.name;
+              exercise.muscle_group_id = this.muscles.find((e) => e.name === item.muscle_group)?.id || 0;
+
+              acc.set(exercise.name, exercise);
+            });
+
+            return acc;
+          }, new Map<string, ExerciseModel>())
+          .values()];
+
+        this.trainings.forEach((training) => {
+          training.exercises.forEach((item) => {
+            item.exercise_id = this.exercises.find((e) => e.name === item.name)?.id || 0;
+            item.name = '';
+            item.muscle_group = '';
+          });
+        });
+
+        this.version = VERSION_DB;
+        await this.saveTrainings();
+      }
     },
 
     saveSettings() {
@@ -133,8 +201,7 @@ export const useMainStore = defineStore('main', {
         });
         const parsed = (JSON.parse(result.data as string) as IStorageTraining);
 
-        this.version = parsed.version;
-        this.trainings = parsed.trainings.map((e) => new TrainingModel(e));
+        this.setSavedData(parsed);
       } catch (e) {
         this.saveTrainings();
       }
