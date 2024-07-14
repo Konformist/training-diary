@@ -34,7 +34,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'Exercises',
         path: 'exercises',
-        component: () => ExercisesPage,
+        component: ExercisesPage,
       },
       {
         name: 'Exercise',
@@ -44,7 +44,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'Muscles',
         path: 'muscles',
-        component: () => MusclesPage,
+        component: MusclesPage,
       },
       {
         name: 'Muscle',
