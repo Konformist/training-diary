@@ -15,7 +15,6 @@
         map-options
         new-value-mode="add-unique"
         v-model="insertItem.name"
-        @update:model-value="mainStore.saveTrainings()"
         @filter="comboExercisesFilter"
       />
       <q-select
@@ -28,7 +27,6 @@
         emit-value
         map-options
         v-model="insertItem.muscle_group"
-        @update:model-value="mainStore.saveTrainings()"
       />
       <q-input
         class="item-card--size q-mr-sm"
@@ -36,7 +34,6 @@
         type="number"
         dense
         v-model.number="insertItem.approaches"
-        @change="mainStore.saveTrainings()"
       />
       <q-input
         class="item-card--size q-mr-sm"
@@ -44,7 +41,6 @@
         type="number"
         dense
         v-model.number="insertItem.repetitions"
-        @change="mainStore.saveTrainings()"
       />
       <q-input
         class="item-card--size q-mr-sm"
@@ -52,7 +48,6 @@
         type="number"
         dense
         v-model.number="insertItem.weight"
-        @change="mainStore.saveTrainings()"
       />
       <q-btn
         class="self-center"

@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
-    "gen:icon": "icongenie generate -i ./logo.png --theme-color 5C0000",
+    "gen:icon": "icongenie generate -i ./logo.png --theme-color A30000",
     "dev": "quasar dev",
     "dev:capacitor": "quasar dev -m capacitor -T android --ide",
     "build": "quasar build",
