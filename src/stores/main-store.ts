@@ -25,15 +25,6 @@ export interface IStorageSettings {
   darkMode: boolean|'auto'
 }
 
-export interface ICombo {
-  label: string
-  value: string
-}
-
-export interface IComboExercise extends ICombo {
-  muscle_group: string
-}
-
 export const useMainStore = defineStore('main', {
   state() {
     return {
@@ -47,6 +38,7 @@ export const useMainStore = defineStore('main', {
         new MuscleModel({ id: 4, name: 'Трицепс' }),
         new MuscleModel({ id: 5, name: 'Пресс' }),
         new MuscleModel({ id: 6, name: 'Ноги' }),
+        new MuscleModel({ id: 7, name: 'Плечи' }),
       ] as MuscleModel[],
       exercises: [] as ExerciseModel[],
       trainings: [] as TrainingModel[],
@@ -74,36 +66,6 @@ export const useMainStore = defineStore('main', {
         trainings: this.trainings.map((e) => e.getStruct()),
       };
     },
-
-    combos(): { muscle_group: ICombo[], exercises: IComboExercise[] } {
-      const muscleGroup = [
-        { label: 'Грудь', value: 'Грудь' },
-        { label: 'Спина', value: 'Спина' },
-        { label: 'Бицепс', value: 'Бицепс' },
-        { label: 'Трицепс', value: 'Трицепс' },
-        { label: 'Пресс', value: 'Пресс' },
-        { label: 'Ноги', value: 'Ноги' },
-      ];
-
-      const exercises = [...this.trainings
-        .reduce((acc, training) => {
-          training.exercises.forEach((exercise) => {
-            acc.set(exercise.name, {
-              label: exercise.name,
-              value: exercise.name,
-              muscle_group: exercise.muscle_group,
-            });
-          });
-
-          return acc;
-        }, new Map<string, IComboExercise>())
-        .values()];
-
-      return {
-        muscle_group: muscleGroup,
-        exercises,
-      };
-    },
   },
   actions: {
     setSavedData(value: IStorageTraining) {
@@ -115,49 +77,6 @@ export const useMainStore = defineStore('main', {
 
     async migrationDB() {
       // empty
-      if (VERSION_DB > this.version) {
-        this.muscles = [
-          new MuscleModel({ id: 1, name: 'Грудь' }),
-          new MuscleModel({ id: 2, name: 'Спина' }),
-          new MuscleModel({ id: 3, name: 'Бицепс' }),
-          new MuscleModel({ id: 4, name: 'Трицепс' }),
-          new MuscleModel({ id: 5, name: 'Пресс' }),
-          new MuscleModel({ id: 6, name: 'Ноги' }),
-        ];
-
-        let index = 1;
-
-        this.exercises = [...this.trainings
-          .reduce((acc, training) => {
-            training.exercises.forEach((item) => {
-              if (acc.has(item.name)) {
-                return;
-              }
-
-              const exercise = new ExerciseModel();
-
-              exercise.id = index++;
-              exercise.name = item.name;
-              exercise.muscle_group_id = this.muscles.find((e) => e.name === item.muscle_group)?.id || 0;
-
-              acc.set(exercise.name, exercise);
-            });
-
-            return acc;
-          }, new Map<string, ExerciseModel>())
-          .values()];
-
-        this.trainings.forEach((training) => {
-          training.exercises.forEach((item) => {
-            item.exercise_id = this.exercises.find((e) => e.name === item.name)?.id || 0;
-            item.name = '';
-            item.muscle_group = '';
-          });
-        });
-
-        this.version = VERSION_DB;
-        await this.saveTrainings();
-      }
     },
 
     saveSettings() {
