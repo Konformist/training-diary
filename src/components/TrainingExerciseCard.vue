@@ -8,7 +8,7 @@
         <q-icon
           v-if="insertItem.bind_prev || insertItem.bind_next"
           class="q-mr-sm self-center"
-          name="sym_r_link"
+          name="link"
           size="24px"
         />
         <q-btn-dropdown
@@ -16,7 +16,7 @@
           dense
           flat
           size="small"
-          dropdown-icon="sym_r_more_vert"
+          dropdown-icon="more_vert"
           no-icon-animation
         >
           <q-list>

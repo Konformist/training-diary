@@ -44,7 +44,7 @@
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
         fab
-        icon="sym_r_add"
+        icon="add"
         color="primary"
         @click="dialogExercise = true"
       />
