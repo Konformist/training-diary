@@ -7,7 +7,7 @@
           flat
           dense
           round
-          icon="arrow_back"
+          icon="sym_r_arrow_back"
           aria-label="Settings"
           @click="$router.back()"
         />
@@ -18,7 +18,7 @@
           flat
           dense
           round
-          icon="menu"
+          icon="sym_r_menu"
           aria-label="Menu"
           @click="drawerRight = !drawerRight"
         />
@@ -42,7 +42,7 @@
       <q-list>
         <q-item :to="{ name: 'Trainings' }">
           <q-item-section avatar>
-            <q-icon name="format_list_bulleted" />
+            <q-icon name="sym_r_format_list_bulleted" />
           </q-item-section>
           <q-item-section avatar>
             Все тренировки
@@ -50,7 +50,7 @@
         </q-item>
         <q-item :to="{ name: 'Exercises' }">
           <q-item-section avatar>
-            <q-icon name="format_list_bulleted" />
+            <q-icon name="sym_r_exercise" />
           </q-item-section>
           <q-item-section avatar>
             Все упражнения
@@ -58,15 +58,15 @@
         </q-item>
         <q-item :to="{ name: 'Muscles' }">
           <q-item-section avatar>
-            <q-icon name="format_list_bulleted" />
+            <q-icon name="sym_r_attribution" />
           </q-item-section>
           <q-item-section avatar>
-            Все мышцы
+            Все группы мышц
           </q-item-section>
         </q-item>
         <q-item :to="{ name: 'Statistics' }">
           <q-item-section avatar>
-            <q-icon name="show_chart" />
+            <q-icon name="sym_r_show_chart" />
           </q-item-section>
           <q-item-section avatar>
             Статистика
@@ -75,7 +75,7 @@
         <q-separator />
         <q-item :to="{ name: 'Settings' }">
           <q-item-section avatar>
-            <q-icon name="settings" />
+            <q-icon name="sym_r_settings" />
           </q-item-section>
           <q-item-section avatar>
             Настройки

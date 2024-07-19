@@ -21,7 +21,7 @@
         @click="moveTraining(item.id)"
       >
         <template #left>
-          <q-icon name="delete" />
+          <q-icon name="sym_r_delete" />
         </template>
         <TrainingCard :item="item" />
       </q-slide-item>
@@ -29,7 +29,7 @@
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
         fab
-        icon="add"
+        icon="sym_r_add"
         color="primary"
         @click="addTraining()"
       />

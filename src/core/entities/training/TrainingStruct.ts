@@ -2,24 +2,18 @@
 export interface ITrainingExerciseStruct {
   /** ID упражнения */
   id: number
-  /**
-   * Название упражнения
-   * @deprecated
-   */
-  name: string
   /** ID упражнения из списка */
   exercise_id: number
-  /**
-   * Мышечная группа
-   * @deprecated
-   */
-  muscle_group: string
   /** Количество подходов */
   approaches: number
   /** Количество повторений */
   repetitions: number
   /** Вес в подходе */
   weight: number
+  /** Связывание в суперсет со следующим */
+  bind_next: number
+  /** Связывание в суперсет со предыдущим */
+  bind_prev: number
 }
 
 /** Тренировка */

@@ -9,10 +9,10 @@
         class="q-my-none flex no-wrap"
         caption
       >
-        <div class="item-list--caption text-bold ellipsis">Упражнение</div>
-        <div class="item-list--size text-right text-bold">Подходы</div>
-        <div class="item-list--size text-right text-bold">Повторы</div>
-        <div class="item-list--size text-right text-bold">Вес, кг</div>
+        <div class="q-space text-bold ellipsis">Упражнение</div>
+        <div class="item-list--size text-right text-bold">Подх.</div>
+        <div class="item-list--size text-right text-bold">Повт.</div>
+        <div class="item-list--weight text-right text-bold">Вес, кг</div>
       </q-item-label>
       <q-item-label
         v-for="(subitem, subindex) in item.exercises"
@@ -20,19 +20,17 @@
         class="q-my-none flex no-wrap"
         caption
       >
-        <div class="item-list--caption ellipsis">{{ getExercise(subitem.exercise_id) || '-' }}</div>
+        <div class="q-space ellipsis">{{ getExercise(subitem.exercise_id) || '-' }}</div>
         <div class="item-list--size text-right">{{ subitem.approaches || '-' }}</div>
         <div class="item-list--size text-right">{{ subitem.repetitions || '-' }}</div>
-        <div class="item-list--size text-right">{{ subitem.weight || '-' }}</div>
+        <div class="item-list--weight text-right">{{ subitem.weight || '-' }}</div>
       </q-item-label>
       <q-item-label
         class="q-my-none flex no-wrap"
         caption
       >
-        <div class="item-list--caption text-bold ellipsis">Тоннаж</div>
-        <div class="item-list--size text-right text-bold"></div>
-        <div class="item-list--size text-right text-bold"></div>
-        <div class="item-list--size text-right text-bold">{{ totalWeight }}</div>
+        <div class="q-space text-bold ellipsis">Тоннаж</div>
+        <div class="item-list--weight text-right text-bold">{{ totalWeight }}</div>
       </q-item-label>
     </q-item-section>
   </q-item>
@@ -68,13 +66,13 @@ const totalWeight = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-.item-list--caption {
-  min-width: 0;
-  flex-grow: 1;
+.item-list--size {
+  width: 52px;
+  flex-shrink: 0;
 }
 
-.item-list--size {
-  width: 64px;
+.item-list--weight {
+  width: 68px;
   flex-shrink: 0;
 }
 </style>

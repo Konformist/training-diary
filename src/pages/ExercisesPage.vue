@@ -19,7 +19,7 @@
           @click="moveExercise(item.id)"
         >
           <template #left>
-            <q-icon name="delete" />
+            <q-icon name="sym_r_delete" />
           </template>
           <q-item>
             <q-item-section>
@@ -32,7 +32,7 @@
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
         fab
-        icon="add"
+        icon="sym_r_add"
         color="primary"
         @click="addExercise()"
       />
@@ -58,11 +58,8 @@ const mainStore = useMainStore();
 const getMuscleName = (value: number) => (mainStore.muscles.find((e) => e.id === value)?.name || '');
 
 const listExercises = computed(() => {
-  const list = [...mainStore.exercises]
-    .map((e) => ({
-      ...e,
-      muscle_group: getMuscleName(e.muscle_group_id),
-    }))
+  const list = mainStore.exercises
+    .map((e) => ({ ...e, muscle_group: getMuscleName(e.muscle_group_id) }))
     .sort((a, b) => {
       if (a.muscle_group > b.muscle_group) return 1;
       if (a.muscle_group < b.muscle_group) return -1;

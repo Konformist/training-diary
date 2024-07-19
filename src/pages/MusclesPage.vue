@@ -10,7 +10,7 @@
         @click="moveMuscle(item.id)"
       >
         <template #left>
-          <q-icon name="delete" />
+          <q-icon name="sym_r_delete" />
         </template>
         <q-item>
           <q-item-section>
@@ -22,7 +22,7 @@
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
         fab
-        icon="add"
+        icon="sym_r_add"
         color="primary"
         @click="addMuscle()"
       />

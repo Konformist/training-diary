@@ -1,31 +1,46 @@
 <template>
-  <q-page padding>
-    <q-btn-toggle
-      class="full-width q-mb-sm"
-      :options="[
-        { value: 'auto', label: 'Системная' },
-        { value: false, label: 'Светлая' },
-        { value: true, label: 'Темная' },
-      ]"
-      toggle-color="secondary"
-      spread
-      :model-value="mainStore.darkMode"
-      @update:model-value="setDarkMode($event)"
-    />
-    <q-file
-      class="q-mb-sm"
-      label="Загрузить данные"
-      type="file"
-      standout
-      v-model="fileDB"
-      @update:model-value="readFile()"
-    />
-    <q-btn
-      class="full-width"
-      label="Выгрузить данные"
-      color="secondary"
-      @click="backup()"
-    />
+  <q-page>
+    <q-list>
+      <q-item-label header>
+        Тема приложения
+      </q-item-label>
+      <q-item>
+        <q-btn-toggle
+          class="full-width"
+          :options="[
+            { value: 'auto', label: 'Системная' },
+            { value: false, label: 'Светлая' },
+            { value: true, label: 'Темная' },
+          ]"
+          toggle-color="secondary"
+          spread
+          :model-value="mainStore.darkMode"
+          @update:model-value="setDarkMode($event)"
+        />
+      </q-item>
+      <q-separator spaced />
+      <q-item-label header>
+        Экспорт и импорт данных
+      </q-item-label>
+      <q-item>
+        <q-file
+          class="q-space"
+          label="Импорт данных из файла"
+          type="file"
+          standout
+          v-model="fileDB"
+          @update:model-value="readFile()"
+        />
+      </q-item>
+      <q-item>
+        <q-btn
+          class="q-space"
+          label="Экспорт данных в файл"
+          color="secondary"
+          @click="backup()"
+        />
+      </q-item>
+    </q-list>
   </q-page>
 </template>
 
