@@ -38,12 +38,11 @@
 </template>
 
 <script setup lang="ts">
-import TrainingCard from 'components/TrainingCard.vue';
-import { DATE_MASK } from 'src/core/dictionaries/dates';
-import TrainingModel from 'src/core/entities/training/TrainingModel';
+import { date, Notify, useQuasar } from 'quasar';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { date, useQuasar } from 'quasar';
+import { DATE_MASK } from 'src/core/dictionaries/dates';
+import TrainingCard from 'components/TrainingCard.vue';
 import { useMainStore } from 'stores/main-store';
 
 defineOptions({
@@ -57,31 +56,30 @@ const mainStore = useMainStore();
 const trainingDates = computed(() => mainStore.trainingDates.map((e) => date.formatDate(e, 'YYYY/MM/DD')));
 
 const listTrainings = computed(() => (
-  mainStore.trainings.filter((e) => (date.formatDate(e.date, DATE_MASK) === mainStore.selectDate))
+  mainStore.trainings
+    .filter((e) => (date.formatDate(e.date, DATE_MASK) === mainStore.selectDate))
+    .sort((a, b) => b.date - a.date)
 ));
 
 const moveTraining = (id: number) => {
   router.push({ name: 'Training', params: { id } });
 };
 
-const addTraining = () => {
-  const newTraining = new TrainingModel();
-  const lastTraining = mainStore.trainings[mainStore.trainings.length - 1];
-
-  newTraining.id = lastTraining ? lastTraining.id + 1 : 1;
-  newTraining.date = date.extractDate(mainStore.selectDate, DATE_MASK).getTime();
-  mainStore.trainings.push(newTraining);
-  mainStore.saveTrainings();
-  moveTraining(newTraining.id);
+const addTraining = async () => {
+  const id = mainStore.addTraining(date.extractDate(mainStore.selectDate, DATE_MASK));
+  await mainStore.saveTrainings();
+  moveTraining(id);
+  Notify.create('Успешно добавлено');
 };
 
 const delTraining = (event: { reset: () => void }, id: number) => {
   $q.dialog({
     message: 'Вы действительно хотите удалить тренировку?',
     cancel: true,
-  }).onOk(() => {
-    mainStore.trainings = mainStore.trainings.filter((e) => e.id !== id);
-    mainStore.saveTrainings();
+  }).onOk(async () => {
+    mainStore.delTraining(id);
+    await mainStore.saveTrainings();
+    Notify.create('Успешно удалено');
   }).onDismiss(() => {
     event.reset();
   });

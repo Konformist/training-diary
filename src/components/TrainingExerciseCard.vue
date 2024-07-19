@@ -56,8 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { QSelect } from 'quasar';
-import ExerciseModel from 'src/core/entities/exercise/ExerciseModel';
+import { Notify, QSelect } from 'quasar';
 import { computed, ref } from 'vue';
 import { useMainStore } from 'stores/main-store';
 import type TrainingExerciseModel from 'src/core/entities/training/TrainingExerciseModel';
@@ -95,15 +94,9 @@ const newExerciseValue = (value: string) => {
     return;
   }
 
-  const exercise = new ExerciseModel({
-    id: (mainStore.exercises[mainStore.exercises.length - 1]?.id || 0) + 1,
-    name: value,
-    muscle_group_id: 0,
-  });
-
-  mainStore.exercises.push(exercise);
-  insertItem.value.exercise_id = exercise.id;
+  insertItem.value.exercise_id = mainStore.addExercise(value);
   exerciseRef.value?.hidePopup();
+  Notify.create('Добавлено новое упражнение');
 };
 
 const comboExercisesFilter = (value: string, update: (fn: () => void) => void) => {

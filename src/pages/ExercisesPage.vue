@@ -3,13 +3,13 @@
     <q-list>
       <template
         v-for="item in listExercises"
-        :key="typeof item === 'number' ? item : item.id"
+        :key="typeof item === 'string' ? item : item.id"
       >
         <q-item-label
-          v-if="typeof item === 'number'"
+          v-if="typeof item === 'string'"
           header
         >
-          {{ getMuscleName(item) }}
+          {{ item }}
         </q-item-label>
         <q-slide-item
           v-else
@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { useQuasar } from 'quasar';
+import { Notify, useQuasar } from 'quasar';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMainStore } from 'stores/main-store';
@@ -55,46 +55,55 @@ const $q = useQuasar();
 const router = useRouter();
 const mainStore = useMainStore();
 
-const getMuscleName = (value: number) => (
-  mainStore.muscles.find((e) => e.id === value)?.name
-);
+const getMuscleName = (value: number) => (mainStore.muscles.find((e) => e.id === value)?.name || '');
 
 const listExercises = computed(() => {
+  const list = [...mainStore.exercises]
+    .map((e) => ({
+      ...e,
+      muscle_group: getMuscleName(e.muscle_group_id),
+    }))
+    .sort((a, b) => {
+      if (a.muscle_group > b.muscle_group) return 1;
+      if (a.muscle_group < b.muscle_group) return -1;
+      if (a.name > b.name) return 1;
+      if (a.name < b.name) return -1;
+      return 0;
+    });
+
   let muscleSave: number;
 
-  return mainStore.exercises.reduce((acc, cur) => {
+  return list.reduce((acc, cur) => {
     if (cur.muscle_group_id !== muscleSave) {
       muscleSave = cur.muscle_group_id;
-      acc.push(cur.muscle_group_id);
+      acc.push(cur.muscle_group);
     }
 
     acc.push(cur);
 
     return acc;
-  }, [] as Array<ExerciseModel|number>);
+  }, [] as Array<ExerciseModel|string>);
 });
 
 const moveExercise = (id: number) => {
   router.push({ name: 'Exercise', params: { id } });
 };
 
-const addExercise = () => {
-  const newItem = new ExerciseModel();
-  const lastItem = mainStore.exercises[mainStore.exercises.length - 1];
-
-  newItem.id = lastItem ? lastItem.id + 1 : 1;
-  mainStore.exercises.push(newItem);
-  mainStore.saveTrainings();
-  moveExercise(newItem.id);
+const addExercise = async () => {
+  const id = mainStore.addExercise();
+  await mainStore.saveTrainings();
+  moveExercise(id);
+  Notify.create('Успешно добавлено');
 };
 
 const delExercise = (event: { reset: () => void }, id: number) => {
   $q.dialog({
     message: 'Вы действительно хотите удалить упражнение?',
     cancel: true,
-  }).onOk(() => {
-    mainStore.exercises = mainStore.exercises.filter((e) => e.id !== id);
-    mainStore.saveTrainings();
+  }).onOk(async () => {
+    mainStore.delExercise(id);
+    await mainStore.saveTrainings();
+    Notify.create('Успешно удалено');
   }).onDismiss(() => {
     event.reset();
   });

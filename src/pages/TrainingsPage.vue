@@ -38,11 +38,11 @@
 
 <script setup lang="ts">
 import TrainingCard from 'components/TrainingCard.vue';
-import { DATE_MASK } from 'src/core/dictionaries/dates';
+import { DATE_MASK_LOCAL } from 'src/core/dictionaries/dates';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { date, useQuasar } from 'quasar';
+import { date, Notify, useQuasar } from 'quasar';
 import { useMainStore } from 'stores/main-store';
 
 defineOptions({
@@ -54,46 +54,43 @@ const router = useRouter();
 const mainStore = useMainStore();
 
 const listTrainings = computed(() => {
+  const list = [...mainStore.trainings].sort((a, b) => b.date - a.date);
+
   let dateSave: string;
 
-  return [...mainStore.trainings]
-    .reverse()
-    .reduce((acc, cur) => {
-      const curDate = date.formatDate(cur.date, DATE_MASK);
+  return list.reduce((acc, cur) => {
+    const curDate = date.formatDate(cur.date, DATE_MASK_LOCAL);
 
-      if (curDate !== dateSave) {
-        dateSave = curDate;
-        acc.push(curDate);
-      }
+    if (curDate !== dateSave) {
+      dateSave = curDate;
+      acc.push(curDate);
+    }
 
-      acc.push(cur);
+    acc.push(cur);
 
-      return acc;
-    }, [] as Array<TrainingModel|string>);
+    return acc;
+  }, [] as Array<TrainingModel|string>);
 });
 
 const moveTraining = (id: number) => {
   router.push({ name: 'Training', params: { id } });
 };
 
-const addTraining = () => {
-  const newTraining = new TrainingModel();
-  const lastTraining = mainStore.trainings[mainStore.trainings.length - 1];
-
-  newTraining.id = lastTraining ? lastTraining.id + 1 : 1;
-  newTraining.date = (new Date()).getTime();
-  mainStore.trainings.push(newTraining);
-  mainStore.saveTrainings();
-  moveTraining(newTraining.id);
+const addTraining = async () => {
+  const id = mainStore.addTraining();
+  await mainStore.saveTrainings();
+  moveTraining(id);
+  Notify.create('Успешно добавлено');
 };
 
 const delTraining = (event: { reset: () => void }, id: number) => {
   $q.dialog({
     message: 'Вы действительно хотите удалить тренировку?',
     cancel: true,
-  }).onOk(() => {
-    mainStore.trainings = mainStore.trainings.filter((e) => e.id !== id);
-    mainStore.saveTrainings();
+  }).onOk(async () => {
+    mainStore.delTraining(id);
+    await mainStore.saveTrainings();
+    Notify.create('Успешно удалено');
   }).onDismiss(() => {
     event.reset();
   });

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import {
-  Dark, date, LocalStorage, Notify,
+  Dark, date as qDate, LocalStorage, Notify,
 } from 'quasar';
 import { DATE_MASK } from 'src/core/dictionaries/dates';
 import { StoreNames, VERSION_DB } from 'src/core/dictionaries/storeNames';
@@ -43,7 +43,7 @@ export const useMainStore = defineStore('main', {
       exercises: [] as ExerciseModel[],
       trainings: [] as TrainingModel[],
 
-      selectDate: date.formatDate(new Date(), DATE_MASK),
+      selectDate: qDate.formatDate(new Date(), DATE_MASK),
     };
   },
   getters: {
@@ -92,6 +92,47 @@ export const useMainStore = defineStore('main', {
       }
     },
 
+    addMuscle() {
+      const newItem = new MuscleModel();
+      const ids = this.muscles.map((e) => e.id);
+
+      newItem.id = Math.max(...ids, 0) + 1;
+      this.muscles.push(newItem);
+      return newItem.id;
+    },
+
+    delMuscle(id: number) {
+      this.muscles = this.muscles.filter((e) => e.id !== id);
+    },
+
+    addExercise(name?: string) {
+      const newItem = new ExerciseModel();
+      const ids = this.exercises.map((e) => e.id);
+
+      newItem.id = Math.max(...ids, 0) + 1;
+      newItem.name = name || '';
+      this.exercises.push(newItem);
+      return newItem.id;
+    },
+
+    delExercise(id: number) {
+      this.exercises = this.exercises.filter((e) => e.id !== id);
+    },
+
+    addTraining(date?: Date) {
+      const newItem = new TrainingModel();
+      const ids = this.trainings.map((e) => e.id);
+
+      newItem.id = Math.max(...ids, 0) + 1;
+      newItem.date = (date || new Date()).getTime();
+      this.trainings.push(newItem);
+      return newItem.id;
+    },
+
+    delTraining(id: number) {
+      this.trainings = this.trainings.filter((e) => e.id !== id);
+    },
+
     async saveTrainings() {
       try {
         await Filesystem.writeFile({
@@ -103,11 +144,7 @@ export const useMainStore = defineStore('main', {
         });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
-        Notify.create({
-          caption: 'Не удалось сохранить данные',
-          message: e,
-          type: 'negative',
-        });
+        Notify.create({ type: 'negative', caption: 'Не удалось сохранить данные' });
       }
     },
 

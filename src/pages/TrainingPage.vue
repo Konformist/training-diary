@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { onBeforeRouteLeave, useRoute } from 'vue-router';
-import { date, is, useQuasar } from 'quasar';
+import { date, is, Notify } from 'quasar';
 import { DATE_TIME_MASK } from 'src/core/dictionaries/dates';
 import TrainingExerciseModel from 'src/core/entities/training/TrainingExerciseModel';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
@@ -60,7 +60,6 @@ defineOptions({
   name: 'TrainingPage',
 });
 
-const $q = useQuasar();
 const route = useRoute();
 const mainStore = useMainStore();
 
@@ -86,34 +85,22 @@ const delExercise = (id: number) => {
   currentTraining.value.exercises = currentTraining.value.exercises.filter((e) => e.id !== id);
 };
 
-const saveTraining = () => {
+const saveTraining = async () => {
   const index = mainStore.trainings.findIndex((e) => e.id === currentTraining.value.id);
 
   if (index !== -1) {
     reserveTraining.value = new TrainingModel(currentTraining.value.getStruct());
     mainStore.trainings.splice(index, 1, new TrainingModel(currentTraining.value.getStruct()));
-    mainStore.saveTrainings();
-  }
-};
-
-onBeforeRouteLeave(async () => {
-  if (is.deepEqual(reserveTraining.value, currentTraining.value)) {
+    await mainStore.saveTrainings();
+    Notify.create('Успешно сохранено');
     return true;
   }
 
-  return new Promise((resolve) => {
-    $q.dialog({
-      message: 'Есть несохранённые данные',
-      persistent: true,
-      ok: 'Сохранить',
-      cancel: 'Не сохранять',
-      color: 'primary',
-    }).onOk(() => {
-      saveTraining();
-      resolve(true);
-    }).onCancel(() => {
-      resolve(true);
-    });
-  });
+  return false;
+};
+
+onBeforeRouteLeave(async () => {
+  if (is.deepEqual(reserveTraining.value, currentTraining.value)) return true;
+  return saveTraining();
 });
 </script>
