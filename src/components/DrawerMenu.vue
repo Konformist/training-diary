@@ -60,6 +60,7 @@ const menuItems: IMenuItem[] = [
   {
     text: 'Справочники', separator: true,
   },
+  { text: 'Справочник меток', icon: 'label', to: { name: 'Tags' } },
   { text: 'Справочник мышц', icon: 'attribution', to: { name: 'Muscles' } },
   { text: 'Справочник экипировки', icon: 'attribution', to: { name: 'Equipments' } },
   { text: 'Справочник упражнений', icon: 'fitness_center', to: { name: 'Exercises' } },

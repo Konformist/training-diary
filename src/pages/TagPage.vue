@@ -1,11 +1,24 @@
 <template>
   <q-page padding>
     <q-input
-      class="q-mb-sm"
+      class="q-mb-lg"
       standout
       v-model="current.name"
       @update:model-value="changed = true"
     />
+    <p class="q-mb-sm">
+      Цвет метки
+    </p>
+    <div class="q-mb-lg">
+      <q-radio
+        v-for="item in paletteItems"
+        :key="item.id"
+        :color="item.color"
+        :val="item.id"
+        keep-color
+        v-model="current.color"
+      />
+    </div>
     <q-btn
       class="full-width"
       label="Сохранить"
@@ -17,22 +30,29 @@
 
 <script setup lang="ts">
 import { Notify } from 'quasar';
+import { palette } from 'src/core/dictionaries/colors';
 import { computed, ref } from 'vue';
 import { onBeforeRouteLeave, useRoute } from 'vue-router';
-import MuscleModel from 'src/core/entities/muscle/MuscleModel';
+import TagModel from 'src/core/entities/tag/TagModel';
 import { useMainStore } from 'stores/main-store';
 
 defineOptions({
-  name: 'MusclePage',
+  name: 'TagPage',
 });
 
 const route = useRoute();
 const mainStore = useMainStore();
 
+const paletteItems = palette.map((e, i) => ({
+  id: i,
+  name: e,
+  color: e,
+}));
+
 const changed = ref(false);
 const current = computed(() => (
-  mainStore.muscles.find((e) => e.id.toString() === route.params?.id)
-  || new MuscleModel()
+  mainStore.tags.find((e) => e.id.toString() === route.params?.id)
+  || new TagModel()
 ));
 
 const save = async () => {

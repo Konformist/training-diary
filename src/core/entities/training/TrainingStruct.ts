@@ -20,10 +20,12 @@ export interface ITrainingExerciseStruct extends IEntityStruct {
 
 /** Тренировка */
 export interface ITrainingStruct extends IEntityStruct {
-  /** Комментарий к тренировке */
-  comment: string
+  /** Метка тренировки */
+  tag_id: number
   /** Дата тренировки Timestamp */
   date: number
+  /** Комментарий к тренировке */
+  comment: string
   /** Упражнения */
   exercises?: ITrainingExerciseStruct[]
 }

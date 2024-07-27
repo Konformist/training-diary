@@ -1,53 +1,53 @@
 <template>
   <q-page>
-    <q-list v-if="mainStore.exercises.length">
+    <EmptyPage v-if="isEmpty" />
+    <q-list v-else>
       <template
         v-for="item in list"
-        :key="typeof item === 'string' ? item : item.id"
+        :key="item[0]"
       >
         <q-item-label
-          v-if="typeof item === 'string'"
+          v-if="item[0]"
           header
         >
-          {{ item }}
+          {{ getMuscleName(item[0]) }}
         </q-item-label>
         <q-slide-item
-          v-else
+          v-for="subitem in item[1]"
+          :key="subitem.id"
           left-color="red"
-          right-color="green"
-          @left="delExercise($event, item.id)"
-          @click="moveExercise(item.id)"
+          @left="delItem($event, subitem.id)"
+          @click="moveItem(subitem.id)"
         >
           <template #left>
             <q-icon name="delete" />
           </template>
           <q-item>
             <q-item-section>
-              {{ item.name }}
+              {{ subitem.name }}
             </q-item-section>
           </q-item>
         </q-slide-item>
       </template>
     </q-list>
-    <EmptyPage v-else />
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
         fab
         icon="add"
         color="primary"
-        @click="addExercise()"
+        @click="addItem()"
       />
     </q-page-sticky>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import EmptyPage from 'components/EmptyPage.vue';
 import { Notify, useQuasar } from 'quasar';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { groupByField, sortByFields } from 'src/core/utils/arrays';
 import { useMainStore } from 'stores/main-store';
-import ExerciseModel from 'src/core/entities/exercise/ExerciseModel';
+import EmptyPage from 'components/EmptyPage.vue';
 
 defineOptions({
   name: 'ExercisesPage',
@@ -59,43 +59,25 @@ const mainStore = useMainStore();
 
 const getMuscleName = (value: number) => (mainStore.muscles.find((e) => e.id === value)?.name || '');
 
+const isEmpty = computed(() => !mainStore.exercises.length);
 const list = computed(() => {
-  const arr = mainStore.exercises
-    .map((e) => ({ ...e, muscle_group: getMuscleName(e.muscle_group_id) }))
-    .sort((a, b) => {
-      if (a.muscle_group > b.muscle_group) return 1;
-      if (a.muscle_group < b.muscle_group) return -1;
-      if (a.name > b.name) return 1;
-      if (a.name < b.name) return -1;
-      return 0;
-    });
+  const arr = sortByFields(mainStore.exercises, ['muscle_group_id', 'name']);
 
-  let muscleSave: number;
-
-  return arr.reduce((acc, cur) => {
-    if (cur.muscle_group_id !== muscleSave) {
-      muscleSave = cur.muscle_group_id;
-      acc.push(cur.muscle_group);
-    }
-
-    acc.push(cur);
-
-    return acc;
-  }, [] as Array<ExerciseModel|string>);
+  return groupByField(arr, 'muscle_group_id');
 });
 
-const moveExercise = (id: number) => {
+const moveItem = (id: number) => {
   router.push({ name: 'Exercise', params: { id } });
 };
 
-const addExercise = async () => {
+const addItem = async () => {
   const id = mainStore.addExercise();
   await mainStore.saveTrainings();
-  moveExercise(id);
+  moveItem(id);
   Notify.create('Успешно добавлено');
 };
 
-const delExercise = (event: { reset: () => void }, id: number) => {
+const delItem = (event: { reset: () => void }, id: number) => {
   $q.dialog({ message: 'Действительно удалить?', cancel: true })
     .onOk(async () => {
       mainStore.delExercise(id);

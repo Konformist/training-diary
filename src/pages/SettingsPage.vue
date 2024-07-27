@@ -45,7 +45,9 @@
 </template>
 
 <script setup lang="ts">
-import { Dark, Notify, Platform } from 'quasar';
+import {
+  Dark, date, Notify, Platform,
+} from 'quasar';
 import { ref } from 'vue';
 import { StoreNames } from 'src/core/dictionaries/storeNames';
 import { fileToJson } from 'src/core/utils/files';
@@ -75,12 +77,14 @@ const readFile = async () => {
   });
 };
 
+const fileName = `${StoreNames.TRAININGS}-${date.formatDate(new Date(), 'YYYY-MM-DD')}.json`;
+
 const backupWeb = () => {
   const encodedUri = encodeURIComponent(JSON.stringify(mainStore.savedData));
   const link = document.createElement('a');
 
   link.setAttribute('href', `data:text/json;charset=utf-8,${encodedUri}`);
-  link.setAttribute('download', 'trainings.json');
+  link.setAttribute('download', fileName);
   document.body.appendChild(link); // Required for FF
   link.click();
   document.body.removeChild(link); // Required for FF
@@ -95,7 +99,7 @@ const backupFile = async () => {
   try {
     await Filesystem.writeFile({
       directory: Directory.Documents,
-      path: `Training Diary/${StoreNames.TRAININGS}.json`,
+      path: `Training Diary/${fileName}`,
       recursive: true,
       encoding: Encoding.UTF8,
       data: JSON.stringify(mainStore.savedData),

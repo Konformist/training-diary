@@ -10,6 +10,8 @@ import ExerciseModel from 'src/core/entities/exercise/ExerciseModel';
 import { IExerciseStruct } from 'src/core/entities/exercise/ExerciseStruct';
 import MuscleModel from 'src/core/entities/muscle/MuscleModel';
 import { IMuscleStruct } from 'src/core/entities/muscle/MuscleStruct';
+import TagModel from 'src/core/entities/tag/TagModel';
+import { ITagStruct } from 'src/core/entities/tag/TagStruct';
 import TrainingExerciseModel from 'src/core/entities/training/TrainingExerciseModel';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { ITrainingExerciseStruct, ITrainingStruct } from 'src/core/entities/training/TrainingStruct';
@@ -21,6 +23,7 @@ export interface IStorageTraining {
   muscles: IMuscleStruct[]
   equipments: IEquipmentStruct[]
   exercises: IExerciseStruct[]
+  tags: ITagStruct[]
   trainings: ITrainingStruct[]
   trainingExercises: ITrainingExerciseStruct[]
 }
@@ -39,6 +42,7 @@ export const useMainStore = defineStore('main', {
       equipments: [] as EquipmentModel[],
       muscles: [] as MuscleModel[],
       exercises: [] as ExerciseModel[],
+      tags: [] as TagModel[],
       trainings: [] as TrainingModel[],
       trainingExercises: [] as TrainingExerciseModel[],
 
@@ -64,6 +68,7 @@ export const useMainStore = defineStore('main', {
         muscles: this.muscles.map((e) => e.getStruct()),
         equipments: this.equipments.map((e) => e.getStruct()),
         exercises: this.exercises.map((e) => e.getStruct()),
+        tags: this.tags.map((e) => e.getStruct()),
         trainings: this.trainings.map((e) => e.getStruct()),
         trainingExercises: this.trainingExercises.map((e) => e.getStruct()),
       };
@@ -71,11 +76,12 @@ export const useMainStore = defineStore('main', {
   },
 
   actions: {
-    setSavedData(value: IStorageTraining) {
-      this.version = value.version;
+    setSavedData(value: Partial<IStorageTraining>) {
+      this.version = value.version || VERSION_DB;
       this.muscles = (value.muscles || []).map((e) => new MuscleModel(e));
       this.equipments = (value.equipments || []).map((e) => new EquipmentModel(e));
       this.exercises = (value.exercises || []).map((e) => new ExerciseModel(e));
+      this.tags = (value.tags || []).map((e) => new TagModel(e));
       this.trainings = (value.trainings || []).map((e) => new TrainingModel(e));
       this.trainingExercises = (value.trainingExercises || []).map((e) => new TrainingExerciseModel(e));
     },
@@ -162,6 +168,19 @@ export const useMainStore = defineStore('main', {
       this.exercises = this.exercises.filter((e) => e.id !== id);
     },
 
+    addTag() {
+      const newItem = new TagModel();
+      const ids = this.tags.map((e) => e.id);
+
+      newItem.id = Math.max(...ids, 0) + 1;
+      this.tags.push(newItem);
+      return newItem.id;
+    },
+
+    delTag(id: number) {
+      this.tags = this.tags.filter((e) => e.id !== id);
+    },
+
     addTraining(date?: Date) {
       const newItem = new TrainingModel();
       const ids = this.trainings.map((e) => e.id);
@@ -174,6 +193,24 @@ export const useMainStore = defineStore('main', {
 
     delTraining(id: number) {
       this.trainings = this.trainings.filter((e) => e.id !== id);
+      this.trainingExercises = this.trainingExercises.filter((e) => e.training_id !== id);
+    },
+
+    copyTraining(id: number) {
+      const newItem = new TrainingModel(this.trainings.find((e) => e.id === id)?.getStruct());
+      const ids = this.trainings.map((e) => e.id);
+
+      newItem.id = Math.max(...ids, 0) + 1;
+      newItem.date = (new Date()).getTime();
+      this.trainings.push(newItem);
+
+      this.trainingExercises
+        .filter((e) => e.training_id === id)
+        .forEach((e) => {
+          this.addTrainingExercise(newItem.id, e.exercise_id);
+        });
+
+      return newItem.id;
     },
 
     addTrainingExercise(trainingId: number, exerciseId: number) {

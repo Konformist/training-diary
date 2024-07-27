@@ -14,6 +14,15 @@
         <q-toolbar-title>
           {{ productName }}
         </q-toolbar-title>
+        <q-btn
+          class="q-ml-auto"
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+          @click="drawerRight = !drawerRight"
+        />
       </q-toolbar>
     </q-header>
     <q-page-container>
@@ -26,19 +35,6 @@
         </transition>
       </router-view>
     </q-page-container>
-    <q-footer>
-      <q-toolbar>
-        <q-btn
-          class="q-ml-auto"
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="drawerRight = !drawerRight"
-        />
-      </q-toolbar>
-    </q-footer>
     <DrawerMenu
       v-model="drawerRight"
     />

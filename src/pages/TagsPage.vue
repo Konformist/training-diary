@@ -13,6 +13,13 @@
           <q-icon name="delete" />
         </template>
         <q-item>
+          <q-item-section thumbnail>
+            <q-avatar
+              class="q-ml-md"
+              :color="palette[item.color]"
+              size="xs"
+            />
+          </q-item-section>
           <q-item-section>
             {{ item.name }}
           </q-item-section>
@@ -32,6 +39,7 @@
 
 <script setup lang="ts">
 import { Notify, useQuasar } from 'quasar';
+import { palette } from 'src/core/dictionaries/colors';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { sortByFields } from 'src/core/utils/arrays';
@@ -39,22 +47,22 @@ import { useMainStore } from 'stores/main-store';
 import EmptyPage from 'components/EmptyPage.vue';
 
 defineOptions({
-  name: 'EquipmentsPage',
+  name: 'TagsPage',
 });
 
 const $q = useQuasar();
 const router = useRouter();
 const mainStore = useMainStore();
 
-const isEmpty = computed(() => !mainStore.equipments.length);
-const list = computed(() => (sortByFields(mainStore.equipments, ['name'])));
+const isEmpty = computed(() => !mainStore.tags.length);
+const list = computed(() => (sortByFields(mainStore.tags, ['name'])));
 
 const moveItem = (id: number) => {
-  router.push({ name: 'Equipment', params: { id } });
+  router.push({ name: 'Tag', params: { id } });
 };
 
 const addItem = async () => {
-  const id = mainStore.addEquipment();
+  const id = mainStore.addTag();
   await mainStore.saveTrainings();
   moveItem(id);
   Notify.create('Успешно добавлено');
@@ -63,7 +71,7 @@ const addItem = async () => {
 const delItem = (event: { reset: () => void }, id: number) => {
   $q.dialog({ message: 'Действительно удалить?', cancel: true })
     .onOk(async () => {
-      mainStore.delEquipment(id);
+      mainStore.delTag(id);
       await mainStore.saveTrainings();
       Notify.create('Успешно удалено');
     })

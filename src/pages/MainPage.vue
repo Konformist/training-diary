@@ -7,18 +7,17 @@
         minimal
         :mask="DATE_MASK"
         :events="trainingDates"
-        event-color="red"
+        :event-color="eventColor"
         v-model="selectDate"
       />
     </div>
     <q-list separator>
       <q-slide-item
-        v-for="item in listTrainings"
+        v-for="item in list"
         :key="item.id"
         left-color="red"
-        right-color="green"
-        @left="delTraining($event, item.id)"
-        @click="moveTraining(item.id)"
+        @left="delItem($event, item.id)"
+        @click="moveItem(item.id)"
       >
         <template #left>
           <q-icon name="delete" />
@@ -31,7 +30,7 @@
         fab
         icon="add"
         color="primary"
-        @click="addTraining()"
+        @click="addItem()"
       />
     </q-page-sticky>
   </q-page>
@@ -39,6 +38,8 @@
 
 <script setup lang="ts">
 import { date, Notify, useQuasar } from 'quasar';
+import { palette } from 'src/core/dictionaries/colors';
+import { sortByFields } from 'src/core/utils/arrays';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { DATE_MASK } from 'src/core/dictionaries/dates';
@@ -54,25 +55,35 @@ const router = useRouter();
 const mainStore = useMainStore();
 
 const trainingDates = computed(() => mainStore.trainingDates.map((e) => date.formatDate(e, 'YYYY/MM/DD')));
+const datesColors = computed(() => mainStore.trainings.reduce((acc, cur) => {
+  const curDate = date.formatDate(cur.date, 'YYYY/MM/DD');
+  const curTag = mainStore.tags.find((e) => e.id === cur.tag_id)?.color || 0;
 
-const listTrainings = computed(() => (
-  mainStore.trainings
-    .filter((e) => (date.formatDate(e.date, DATE_MASK) === mainStore.selectDate))
-    .sort((a, b) => b.date - a.date)
-));
+  acc[curDate] = palette[curTag];
 
-const moveTraining = (id: number) => {
+  return acc;
+}, {} as { [key: string]: string }));
+
+const eventColor = (event: string) => (datesColors.value[event] || 'primary');
+
+const list = computed(() => {
+  const arr = mainStore.trainings.filter((e) => (date.formatDate(e.date, DATE_MASK) === mainStore.selectDate));
+
+  return sortByFields(arr, ['date'], true);
+});
+
+const moveItem = (id: number) => {
   router.push({ name: 'Training', params: { id } });
 };
 
-const addTraining = async () => {
+const addItem = async () => {
   const id = mainStore.addTraining(date.extractDate(mainStore.selectDate, DATE_MASK));
   await mainStore.saveTrainings();
-  moveTraining(id);
+  moveItem(id);
   Notify.create('Успешно добавлено');
 };
 
-const delTraining = (event: { reset: () => void }, id: number) => {
+const delItem = (event: { reset: () => void }, id: number) => {
   $q.dialog({ message: 'Действительно удалить?', cancel: true })
     .onOk(async () => {
       mainStore.delTraining(id);
