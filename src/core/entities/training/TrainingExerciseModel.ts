@@ -1,7 +1,9 @@
+import EntityModel from 'src/core/entities/EntityModel';
+import { TEntityModel } from 'src/core/entities/EntityStruct';
 import { ITrainingExerciseStruct } from 'src/core/entities/training/TrainingStruct';
 
-export default class TrainingExerciseModel implements ITrainingExerciseStruct {
-  id: number;
+export default class TrainingExerciseModel extends EntityModel implements TEntityModel<ITrainingExerciseStruct> {
+  training_id: number;
 
   exercise_id: number;
 
@@ -16,7 +18,8 @@ export default class TrainingExerciseModel implements ITrainingExerciseStruct {
   bind_prev: number;
 
   constructor(struct?: ITrainingExerciseStruct) {
-    this.id = struct?.id ?? 1;
+    super(struct);
+    this.training_id = struct?.training_id ?? 0;
     this.exercise_id = struct?.exercise_id ?? 0;
     this.approaches = struct?.approaches ?? 0;
     this.repetitions = struct?.repetitions ?? 0;
@@ -25,9 +28,10 @@ export default class TrainingExerciseModel implements ITrainingExerciseStruct {
     this.bind_prev = struct?.bind_prev ?? 0;
   }
 
-  getStruct(): ITrainingExerciseStruct {
+  getStruct() {
     return {
-      id: this.id,
+      ...super.getStruct(),
+      training_id: this.training_id,
       exercise_id: this.exercise_id,
       approaches: this.approaches,
       repetitions: this.repetitions,

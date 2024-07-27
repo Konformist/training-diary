@@ -1,8 +1,10 @@
+import { IEntityStruct } from 'src/core/entities/EntityStruct';
+
 /** Упражнение */
-export interface ITrainingExerciseStruct {
+export interface ITrainingExerciseStruct extends IEntityStruct {
+  /** ID тренировки */
+  training_id: number
   /** ID упражнения */
-  id: number
-  /** ID упражнения из списка */
   exercise_id: number
   /** Количество подходов */
   approaches: number
@@ -17,15 +19,11 @@ export interface ITrainingExerciseStruct {
 }
 
 /** Тренировка */
-export interface ITrainingStruct {
-  /** ID тренировки */
-  id: number
-  /** Название тренировки */
-  name: string
+export interface ITrainingStruct extends IEntityStruct {
   /** Комментарий к тренировке */
   comment: string
   /** Дата тренировки Timestamp */
   date: number
   /** Упражнения */
-  exercises: ITrainingExerciseStruct[]
+  exercises?: ITrainingExerciseStruct[]
 }

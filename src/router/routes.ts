@@ -1,3 +1,6 @@
+import AboutPage from 'pages/AboutPage.vue';
+import EquipmentPage from 'pages/EquipmentPage.vue';
+import EquipmentsPage from 'pages/EquipmentsPage.vue';
 import { RouteRecordRaw } from 'vue-router';
 import ErrorNotFound from 'pages/ErrorNotFound.vue';
 import ExercisePage from 'pages/ExercisePage.vue';
@@ -32,16 +35,6 @@ const routes: RouteRecordRaw[] = [
         component: TrainingPage,
       },
       {
-        name: 'Exercises',
-        path: 'exercises',
-        component: ExercisesPage,
-      },
-      {
-        name: 'Exercise',
-        path: 'exercises/:id',
-        component: ExercisePage,
-      },
-      {
         name: 'Muscles',
         path: 'muscles',
         component: MusclesPage,
@@ -52,6 +45,26 @@ const routes: RouteRecordRaw[] = [
         component: MusclePage,
       },
       {
+        name: 'Equipments',
+        path: 'equipments',
+        component: EquipmentsPage,
+      },
+      {
+        name: 'Equipment',
+        path: 'equipments/:id',
+        component: EquipmentPage,
+      },
+      {
+        name: 'Exercises',
+        path: 'exercises',
+        component: ExercisesPage,
+      },
+      {
+        name: 'Exercise',
+        path: 'exercises/:id',
+        component: ExercisePage,
+      },
+      {
         name: 'Statistics',
         path: 'statistics',
         component: StatisticsPage,
@@ -60,6 +73,11 @@ const routes: RouteRecordRaw[] = [
         name: 'Settings',
         path: 'settings',
         component: SettingsPage,
+      },
+      {
+        name: 'About',
+        path: 'about',
+        component: AboutPage,
       },
     ],
   },

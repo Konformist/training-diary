@@ -4,20 +4,25 @@ import {
 } from 'quasar';
 import { DATE_MASK } from 'src/core/dictionaries/dates';
 import { StoreNames, VERSION_DB } from 'src/core/dictionaries/storeNames';
+import EquipmentModel from 'src/core/entities/equipment/EquipmentModel';
+import { IEquipmentStruct } from 'src/core/entities/equipment/EquipmentStruct';
 import ExerciseModel from 'src/core/entities/exercise/ExerciseModel';
 import { IExerciseStruct } from 'src/core/entities/exercise/ExerciseStruct';
 import MuscleModel from 'src/core/entities/muscle/MuscleModel';
 import { IMuscleStruct } from 'src/core/entities/muscle/MuscleStruct';
+import TrainingExerciseModel from 'src/core/entities/training/TrainingExerciseModel';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
-import { ITrainingStruct } from 'src/core/entities/training/TrainingStruct';
+import { ITrainingExerciseStruct, ITrainingStruct } from 'src/core/entities/training/TrainingStruct';
 // eslint-disable-next-line import/no-relative-packages
 import { Directory, Filesystem, Encoding } from '../../src-capacitor/node_modules/@capacitor/filesystem';
 
 export interface IStorageTraining {
   version: number
   muscles: IMuscleStruct[]
+  equipments: IEquipmentStruct[]
   exercises: IExerciseStruct[]
   trainings: ITrainingStruct[]
+  trainingExercises: ITrainingExerciseStruct[]
 }
 
 export interface IStorageSettings {
@@ -31,21 +36,16 @@ export const useMainStore = defineStore('main', {
       version: VERSION_DB,
       darkMode: 'auto' as boolean|'auto',
 
-      muscles: [
-        new MuscleModel({ id: 1, name: 'Грудь' }),
-        new MuscleModel({ id: 2, name: 'Спина' }),
-        new MuscleModel({ id: 3, name: 'Бицепс' }),
-        new MuscleModel({ id: 4, name: 'Трицепс' }),
-        new MuscleModel({ id: 5, name: 'Пресс' }),
-        new MuscleModel({ id: 6, name: 'Ноги' }),
-        new MuscleModel({ id: 7, name: 'Плечи' }),
-      ] as MuscleModel[],
+      equipments: [] as EquipmentModel[],
+      muscles: [] as MuscleModel[],
       exercises: [] as ExerciseModel[],
       trainings: [] as TrainingModel[],
+      trainingExercises: [] as TrainingExerciseModel[],
 
       selectDate: qDate.formatDate(new Date(), DATE_MASK),
     };
   },
+
   getters: {
     trainingDates(): number[] {
       return [...new Set(this.trainings.map((e) => e.date))];
@@ -62,21 +62,51 @@ export const useMainStore = defineStore('main', {
       return {
         version: this.version,
         muscles: this.muscles.map((e) => e.getStruct()),
+        equipments: this.equipments.map((e) => e.getStruct()),
         exercises: this.exercises.map((e) => e.getStruct()),
         trainings: this.trainings.map((e) => e.getStruct()),
+        trainingExercises: this.trainingExercises.map((e) => e.getStruct()),
       };
     },
   },
+
   actions: {
     setSavedData(value: IStorageTraining) {
       this.version = value.version;
       this.muscles = (value.muscles || []).map((e) => new MuscleModel(e));
+      this.equipments = (value.equipments || []).map((e) => new EquipmentModel(e));
       this.exercises = (value.exercises || []).map((e) => new ExerciseModel(e));
       this.trainings = (value.trainings || []).map((e) => new TrainingModel(e));
+      this.trainingExercises = (value.trainingExercises || []).map((e) => new TrainingExerciseModel(e));
     },
 
     async migrationDB() {
       // empty
+      if (!this.trainingExercises.length) {
+        let index = 1;
+
+        this.trainings.forEach((training) => {
+          if (!training.exercises) return;
+
+          training.exercises
+            .map((e) => new TrainingExerciseModel(e.getStruct()))
+            .forEach((exercise, _, array) => {
+              const curId = exercise.id;
+
+              exercise.id = index++;
+              exercise.training_id = training.id;
+
+              array.forEach((e) => {
+                if (e.bind_prev === curId) e.bind_prev = exercise.id;
+                if (e.bind_next === curId) e.bind_next = exercise.id;
+              });
+
+              this.trainingExercises.push(exercise);
+            });
+
+          delete training.exercises;
+        });
+      }
     },
 
     saveSettings() {
@@ -105,6 +135,19 @@ export const useMainStore = defineStore('main', {
       this.muscles = this.muscles.filter((e) => e.id !== id);
     },
 
+    addEquipment() {
+      const newItem = new EquipmentModel();
+      const ids = this.equipments.map((e) => e.id);
+
+      newItem.id = Math.max(...ids, 0) + 1;
+      this.equipments.push(newItem);
+      return newItem.id;
+    },
+
+    delEquipment(id: number) {
+      this.equipments = this.equipments.filter((e) => e.id !== id);
+    },
+
     addExercise(name?: string) {
       const newItem = new ExerciseModel();
       const ids = this.exercises.map((e) => e.id);
@@ -131,6 +174,21 @@ export const useMainStore = defineStore('main', {
 
     delTraining(id: number) {
       this.trainings = this.trainings.filter((e) => e.id !== id);
+    },
+
+    addTrainingExercise(trainingId: number, exerciseId: number) {
+      const newItem = new TrainingExerciseModel();
+      const ids = this.trainingExercises.map((e) => e.id);
+
+      newItem.id = Math.max(...ids, 0) + 1;
+      newItem.training_id = trainingId;
+      newItem.exercise_id = exerciseId;
+      this.trainingExercises.push(newItem);
+      return newItem.id;
+    },
+
+    delTrainingExercise(id: number) {
+      this.trainingExercises = this.trainingExercises.filter((e) => e.id !== id);
     },
 
     async saveTrainings() {

@@ -19,24 +19,24 @@
 import { Notify } from 'quasar';
 import { ref } from 'vue';
 import { onBeforeRouteLeave, useRoute } from 'vue-router';
-import MuscleModel from 'src/core/entities/muscle/MuscleModel';
 import { useMainStore } from 'stores/main-store';
+import EquipmentModel from 'src/core/entities/equipment/EquipmentModel';
 
 defineOptions({
-  name: 'MusclePage',
+  name: 'EquipmentPage',
 });
 
 const route = useRoute();
 const mainStore = useMainStore();
 
 const changed = ref(false);
-const current = ref(new MuscleModel(mainStore.muscles.find((e) => e.id.toString() === route.params?.id)?.getStruct()));
+const current = ref(new EquipmentModel(mainStore.equipments.find((e) => e.id.toString() === route.params?.id)?.getStruct()));
 
 const save = async () => {
-  const index = mainStore.muscles.findIndex((e) => e.id === current.value.id);
+  const index = mainStore.equipments.findIndex((e) => e.id === current.value.id);
 
   if (index !== -1) {
-    mainStore.muscles.splice(index, 1, new MuscleModel(current.value.getStruct()));
+    mainStore.equipments.splice(index, 1, new EquipmentModel(current.value.getStruct()));
     await mainStore.saveTrainings();
     changed.value = false;
     Notify.create('Успешно сохранено');

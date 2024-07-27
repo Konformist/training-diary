@@ -1,7 +1,4 @@
+import { IEntityStruct } from 'src/core/entities/EntityStruct';
+
 /** Мышца */
-export interface IMuscleStruct {
-  /** ID мышцы */
-  id: number
-  /** Имя мышцы */
-  name: string
-}
+export interface IMuscleStruct extends IEntityStruct {}

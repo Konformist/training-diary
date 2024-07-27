@@ -82,20 +82,16 @@ interface IChartData {
   weight: number
 }
 
-const chartData = computed(() => mainStore.trainings.reduce((acc, training) => {
-  training.exercises.forEach((item) => {
-    if (item.exercise_id === exercise.value) {
-      acc.push({
-        date: training.date,
-        approaches: item.approaches,
-        repetitions: item.repetitions,
-        weight: item.weight,
-      });
-    }
-  });
-
-  return acc;
-}, [] as IChartData[]));
+const chartData = computed<IChartData[]>(() => (
+  mainStore.trainingExercises
+    .filter((e) => e.exercise_id === exercise.value)
+    .map((item) => ({
+      date: mainStore.trainings.find((e) => item.training_id === e.id)?.date || 0,
+      approaches: item.approaches,
+      repetitions: item.repetitions,
+      weight: item.weight,
+    }))
+));
 
 const trainingDates = computed(() => (
   [...new Set(chartData.value.map((e) => date.formatDate(e.date, DATE_MASK_LOCAL)))]

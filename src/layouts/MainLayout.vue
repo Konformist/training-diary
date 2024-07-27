@@ -14,14 +14,6 @@
         <q-toolbar-title>
           {{ productName }}
         </q-toolbar-title>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="drawerRight = !drawerRight"
-        />
       </q-toolbar>
     </q-header>
     <q-page-container>
@@ -34,60 +26,28 @@
         </transition>
       </router-view>
     </q-page-container>
-    <q-drawer
-      elevated
-      side="right"
+    <q-footer>
+      <q-toolbar>
+        <q-btn
+          class="q-ml-auto"
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+          @click="drawerRight = !drawerRight"
+        />
+      </q-toolbar>
+    </q-footer>
+    <DrawerMenu
       v-model="drawerRight"
-    >
-      <q-list>
-        <q-item :to="{ name: 'Trainings' }">
-          <q-item-section avatar>
-            <q-icon name="format_list_bulleted" />
-          </q-item-section>
-          <q-item-section avatar>
-            Все тренировки
-          </q-item-section>
-        </q-item>
-        <q-item :to="{ name: 'Exercises' }">
-          <q-item-section avatar>
-            <q-icon name="fitness_center" />
-          </q-item-section>
-          <q-item-section avatar>
-            Все упражнения
-          </q-item-section>
-        </q-item>
-        <q-item :to="{ name: 'Muscles' }">
-          <q-item-section avatar>
-            <q-icon name="attribution" />
-          </q-item-section>
-          <q-item-section avatar>
-            Все группы мышц
-          </q-item-section>
-        </q-item>
-        <q-item :to="{ name: 'Statistics' }">
-          <q-item-section avatar>
-            <q-icon name="show_chart" />
-          </q-item-section>
-          <q-item-section avatar>
-            Статистика
-          </q-item-section>
-        </q-item>
-        <q-separator />
-        <q-item :to="{ name: 'Settings' }">
-          <q-item-section avatar>
-            <q-icon name="settings" />
-          </q-item-section>
-          <q-item-section avatar>
-            Настройки
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </q-drawer>
+    />
   </q-layout>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import DrawerMenu from 'components/DrawerMenu.vue';
 import { productName } from '../../package.json';
 
 defineOptions({

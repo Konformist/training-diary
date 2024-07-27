@@ -15,7 +15,7 @@
         <div class="item-list--weight text-right text-bold">Вес, кг</div>
       </q-item-label>
       <q-item-label
-        v-for="(subitem, subindex) in item.exercises"
+        v-for="(subitem, subindex) in trainingExercises"
         :key="subindex"
         class="q-my-none flex no-wrap"
         caption
@@ -54,8 +54,12 @@ const props = defineProps<{
 
 const getExercise = (value: number) => (mainStore.exercises.find((e) => e.id === value)?.name);
 
+const trainingExercises = computed(() => (
+  mainStore.trainingExercises.filter((e) => e.training_id === props.item.id)
+));
+
 const totalWeight = computed(() => {
-  const ret = props.item.exercises.reduce((acc, cur) => (
+  const ret = trainingExercises.value.reduce((acc, cur) => (
     acc + (cur.weight * cur.repetitions * cur.approaches)
   ), 0);
 

@@ -2,7 +2,7 @@
   <q-page>
     <q-list separator>
       <template
-        v-for="item in listTrainings"
+        v-for="item in list"
         :key="typeof item === 'string' ? item : item.id"
       >
         <q-item-label
@@ -16,7 +16,7 @@
           left-color="red"
           right-color="green"
           @left="delTraining($event, item.id)"
-          @click="moveTraining(item.id)"
+          @click="move(item.id)"
         >
           <template #left>
             <q-icon name="delete" />
@@ -53,12 +53,12 @@ const $q = useQuasar();
 const router = useRouter();
 const mainStore = useMainStore();
 
-const listTrainings = computed(() => {
-  const list = [...mainStore.trainings].sort((a, b) => b.date - a.date);
+const list = computed(() => {
+  const arr = [...mainStore.trainings].sort((a, b) => b.date - a.date);
 
   let dateSave: string;
 
-  return list.reduce((acc, cur) => {
+  return arr.reduce((acc, cur) => {
     const curDate = date.formatDate(cur.date, DATE_MASK_LOCAL);
 
     if (curDate !== dateSave) {
@@ -72,27 +72,24 @@ const listTrainings = computed(() => {
   }, [] as Array<TrainingModel|string>);
 });
 
-const moveTraining = (id: number) => {
+const move = (id: number) => {
   router.push({ name: 'Training', params: { id } });
 };
 
 const addTraining = async () => {
   const id = mainStore.addTraining();
   await mainStore.saveTrainings();
-  moveTraining(id);
+  move(id);
   Notify.create('Успешно добавлено');
 };
 
 const delTraining = (event: { reset: () => void }, id: number) => {
-  $q.dialog({
-    message: 'Вы действительно хотите удалить тренировку?',
-    cancel: true,
-  }).onOk(async () => {
-    mainStore.delTraining(id);
-    await mainStore.saveTrainings();
-    Notify.create('Успешно удалено');
-  }).onDismiss(() => {
-    event.reset();
-  });
+  $q.dialog({ message: 'Действительно удалить?', cancel: true })
+    .onOk(async () => {
+      mainStore.delTraining(id);
+      await mainStore.saveTrainings();
+      Notify.create('Успешно удалено');
+    })
+    .onDismiss(() => { event.reset(); });
 };
 </script>

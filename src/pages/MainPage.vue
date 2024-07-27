@@ -73,16 +73,13 @@ const addTraining = async () => {
 };
 
 const delTraining = (event: { reset: () => void }, id: number) => {
-  $q.dialog({
-    message: 'Вы действительно хотите удалить тренировку?',
-    cancel: true,
-  }).onOk(async () => {
-    mainStore.delTraining(id);
-    await mainStore.saveTrainings();
-    Notify.create('Успешно удалено');
-  }).onDismiss(() => {
-    event.reset();
-  });
+  $q.dialog({ message: 'Действительно удалить?', cancel: true })
+    .onOk(async () => {
+      mainStore.delTraining(id);
+      await mainStore.saveTrainings();
+      Notify.create('Успешно удалено');
+    })
+    .onDismiss(() => { event.reset(); });
 };
 
 const selectDate = computed({

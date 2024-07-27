@@ -1,8 +1,8 @@
 <template>
   <q-page>
-    <q-list>
+    <q-list v-if="mainStore.exercises.length">
       <template
-        v-for="item in listExercises"
+        v-for="item in list"
         :key="typeof item === 'string' ? item : item.id"
       >
         <q-item-label
@@ -29,6 +29,7 @@
         </q-slide-item>
       </template>
     </q-list>
+    <EmptyPage v-else />
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
         fab
@@ -41,6 +42,7 @@
 </template>
 
 <script setup lang="ts">
+import EmptyPage from 'components/EmptyPage.vue';
 import { Notify, useQuasar } from 'quasar';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
@@ -57,8 +59,8 @@ const mainStore = useMainStore();
 
 const getMuscleName = (value: number) => (mainStore.muscles.find((e) => e.id === value)?.name || '');
 
-const listExercises = computed(() => {
-  const list = mainStore.exercises
+const list = computed(() => {
+  const arr = mainStore.exercises
     .map((e) => ({ ...e, muscle_group: getMuscleName(e.muscle_group_id) }))
     .sort((a, b) => {
       if (a.muscle_group > b.muscle_group) return 1;
@@ -70,7 +72,7 @@ const listExercises = computed(() => {
 
   let muscleSave: number;
 
-  return list.reduce((acc, cur) => {
+  return arr.reduce((acc, cur) => {
     if (cur.muscle_group_id !== muscleSave) {
       muscleSave = cur.muscle_group_id;
       acc.push(cur.muscle_group);
@@ -94,15 +96,12 @@ const addExercise = async () => {
 };
 
 const delExercise = (event: { reset: () => void }, id: number) => {
-  $q.dialog({
-    message: 'Вы действительно хотите удалить упражнение?',
-    cancel: true,
-  }).onOk(async () => {
-    mainStore.delExercise(id);
-    await mainStore.saveTrainings();
-    Notify.create('Успешно удалено');
-  }).onDismiss(() => {
-    event.reset();
-  });
+  $q.dialog({ message: 'Действительно удалить?', cancel: true })
+    .onOk(async () => {
+      mainStore.delExercise(id);
+      await mainStore.saveTrainings();
+      Notify.create('Успешно удалено');
+    })
+    .onDismiss(() => { event.reset(); });
 };
 </script>

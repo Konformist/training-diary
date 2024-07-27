@@ -1,13 +1,13 @@
 <template>
   <q-page>
-    <q-list>
+    <q-list v-if="mainStore.equipments.length">
       <q-slide-item
-        v-for="item in listMuscles"
+        v-for="item in list"
         :key="item.id"
         left-color="red"
         right-color="green"
-        @left="delMuscle($event, item.id)"
-        @click="moveMuscle(item.id)"
+        @left="delItem($event, item.id)"
+        @click="moveItem(item.id)"
       >
         <template #left>
           <q-icon name="delete" />
@@ -19,12 +19,13 @@
         </q-item>
       </q-slide-item>
     </q-list>
+    <EmptyPage v-else />
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
         fab
         icon="add"
         color="primary"
-        @click="addMuscle()"
+        @click="addEquipment()"
       />
     </q-page-sticky>
   </q-page>
@@ -35,38 +36,39 @@ import { Notify, useQuasar } from 'quasar';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMainStore } from 'stores/main-store';
+import EmptyPage from 'components/EmptyPage.vue';
 
 defineOptions({
-  name: 'MusclesPage',
+  name: 'EquipmentsPage',
 });
 
 const $q = useQuasar();
 const router = useRouter();
 const mainStore = useMainStore();
 
-const listMuscles = computed(() => (
-  [...mainStore.muscles].sort((a, b) => {
+const list = computed(() => (
+  [...mainStore.equipments].sort((a, b) => {
     if (a.name > b.name) return 1;
     if (a.name < b.name) return -1;
     return 0;
   })
 ));
 
-const moveMuscle = (id: number) => {
-  router.push({ name: 'Muscle', params: { id } });
+const moveItem = (id: number) => {
+  router.push({ name: 'Equipment', params: { id } });
 };
 
-const addMuscle = async () => {
-  const id = mainStore.addMuscle();
+const addEquipment = async () => {
+  const id = mainStore.addEquipment();
   await mainStore.saveTrainings();
-  moveMuscle(id);
+  moveItem(id);
   Notify.create('Успешно добавлено');
 };
 
-const delMuscle = (event: { reset: () => void }, id: number) => {
+const delItem = (event: { reset: () => void }, id: number) => {
   $q.dialog({ message: 'Действительно удалить?', cancel: true })
     .onOk(async () => {
-      mainStore.delMuscle(id);
+      mainStore.delEquipment(id);
       await mainStore.saveTrainings();
       Notify.create('Успешно удалено');
     })

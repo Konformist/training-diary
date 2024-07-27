@@ -4,7 +4,8 @@
       class="q-mb-sm"
       label="Название тренировки"
       standout
-      v-model.lazy.trim="currentTraining.name"
+      v-model.lazy.trim="current.name"
+      @update:model-value="changed = true"
     />
     <q-input
       class="q-mb-sm"
@@ -13,6 +14,7 @@
       standout
       v-model="dateTime"
       @change="dateTimeInput()"
+      @update:model-value="changed = true"
     />
     <q-input
       class="q-mb-sm"
@@ -20,14 +22,15 @@
       type="textarea"
       autogrow
       standout
-      v-model.lazy.trim="currentTraining.comment"
+      v-model.lazy.trim="current.comment"
+      @update:model-value="changed = true"
     />
     <TrainingExerciseCard
-      v-for="(item, index) in currentTraining.exercises"
+      v-for="(item, index) in trainingExercises"
       :key="item.id"
-      :class="!item.bind_prev ? 'q-mt-sm' : ''"
+      :class="!item.bind_next ? 'q-mb-sm' : ''"
       :has-prev="index !== 0"
-      :has-next="index !== currentTraining.exercises.length - 1"
+      :has-next="index !== trainingExercises.length - 1"
       :item="item"
       @bind-next="bindExerciseNext(item.id)"
       @unbind-next="unbindExerciseNext(item.id)"
@@ -57,11 +60,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { onBeforeRouteLeave, useRoute } from 'vue-router';
-import { date, is, Notify } from 'quasar';
+import { date, Notify } from 'quasar';
 import { DATE_TIME_MASK } from 'src/core/dictionaries/dates';
-import TrainingExerciseModel from 'src/core/entities/training/TrainingExerciseModel';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { useMainStore } from 'stores/main-store';
 import TrainingExerciseDialog from 'components/TrainingExerciseDialog.vue';
@@ -76,80 +78,86 @@ const mainStore = useMainStore();
 
 const dialogExercise = ref(false);
 
-const reserveTraining = ref<TrainingModel>(new TrainingModel(mainStore.trainings.find((e) => e.id === +route.params.id)?.getStruct()));
-const currentTraining = ref<TrainingModel>(new TrainingModel(mainStore.trainings.find((e) => e.id === +route.params.id)?.getStruct()));
+/** Что-то было изменено */
+const changed = ref(false);
+const current = ref<TrainingModel>(new TrainingModel(mainStore.trainings.find((e) => e.id === +route.params.id)?.getStruct()));
 
-const dateTime = ref(date.formatDate(currentTraining.value.date, DATE_TIME_MASK));
+const dateTime = ref(date.formatDate(current.value.date, DATE_TIME_MASK));
 const dateTimeInput = () => {
   if (dateTime.value) {
-    currentTraining.value.date = date.extractDate(dateTime.value, DATE_TIME_MASK).getTime();
+    current.value.date = date.extractDate(dateTime.value, DATE_TIME_MASK).getTime();
   }
 };
 
-const addExercise = (id: number) => {
-  const newExercise = new TrainingExerciseModel();
-  const ids = currentTraining.value.exercises.map((e) => e.id);
+const trainingExercises = computed(() => (
+  mainStore.trainingExercises.filter((e) => e.training_id === current.value.id)
+));
 
-  newExercise.id = Math.max(...ids, 0) + 1;
-  newExercise.exercise_id = id;
-  currentTraining.value.exercises.push(newExercise);
+const addExercise = (value: number) => {
+  mainStore.addTrainingExercise(current.value.id, value);
+  changed.value = true;
 };
 
-const delExercise = (id: number) => {
-  currentTraining.value.exercises = currentTraining.value.exercises.filter((e) => e.id !== id);
+const delExercise = (value: number) => {
+  mainStore.delTrainingExercise(value);
+  changed.value = true;
 };
 
 const bindExerciseNext = (id: number) => {
-  const curIndex = currentTraining.value.exercises.findIndex((e) => e.id === id);
-  const curExercise = currentTraining.value.exercises[curIndex];
-  const nextExercise = currentTraining.value.exercises[curIndex + 1];
+  const curIndex = trainingExercises.value.findIndex((e) => e.id === id);
+  const curExercise = trainingExercises.value[curIndex];
+  const nextExercise = trainingExercises.value[curIndex + 1];
 
   if (!nextExercise || !curExercise) return;
 
   curExercise.bind_next = nextExercise.id;
   nextExercise.bind_prev = id;
+  changed.value = true;
 };
 
 const unbindExerciseNext = (id: number) => {
-  const curIndex = currentTraining.value.exercises.findIndex((e) => e.id === id);
-  const curExercise = currentTraining.value.exercises[curIndex];
-  const nextExercise = currentTraining.value.exercises[curIndex + 1];
+  const curIndex = trainingExercises.value.findIndex((e) => e.id === id);
+  const curExercise = trainingExercises.value[curIndex];
+  const nextExercise = trainingExercises.value[curIndex + 1];
 
   if (!nextExercise || !curExercise) return;
 
   curExercise.bind_next = 0;
   nextExercise.bind_prev = 0;
+  changed.value = true;
 };
 
 const bindExercisePrev = (id: number) => {
-  const curIndex = currentTraining.value.exercises.findIndex((e) => e.id === id);
-  const curExercise = currentTraining.value.exercises[curIndex];
-  const prevExercise = currentTraining.value.exercises[curIndex - 1];
+  const curIndex = trainingExercises.value.findIndex((e) => e.id === id);
+  const curExercise = trainingExercises.value[curIndex];
+  const prevExercise = trainingExercises.value[curIndex - 1];
 
   if (!prevExercise || !curExercise) return;
 
   curExercise.bind_prev = prevExercise.id;
   prevExercise.bind_next = id;
+  changed.value = true;
 };
 
 const unbindExercisePrev = (id: number) => {
-  const curIndex = currentTraining.value.exercises.findIndex((e) => e.id === id);
-  const curExercise = currentTraining.value.exercises[curIndex];
-  const prevExercise = currentTraining.value.exercises[curIndex - 1];
+  const curIndex = trainingExercises.value.findIndex((e) => e.id === id);
+  const curExercise = trainingExercises.value[curIndex];
+  const prevExercise = trainingExercises.value[curIndex - 1];
 
   if (!prevExercise || !curExercise) return;
 
   curExercise.bind_prev = 0;
   prevExercise.bind_next = 0;
+  changed.value = true;
 };
 
 const saveTraining = async () => {
-  const index = mainStore.trainings.findIndex((e) => e.id === currentTraining.value.id);
+  const index = mainStore.trainings.findIndex((e) => e.id === current.value.id);
 
   if (index !== -1) {
-    reserveTraining.value = new TrainingModel(currentTraining.value.getStruct());
-    mainStore.trainings.splice(index, 1, new TrainingModel(currentTraining.value.getStruct()));
+    mainStore.trainings.splice(index, 1, new TrainingModel(current.value.getStruct()));
     await mainStore.saveTrainings();
+    changed.value = false;
     Notify.create('Успешно сохранено');
     return true;
   }
@@ -157,8 +165,5 @@ const saveTraining = async () => {
   return false;
 };
 
-onBeforeRouteLeave(async () => {
-  if (is.deepEqual(reserveTraining.value, currentTraining.value)) return true;
-  return saveTraining();
-});
+onBeforeRouteLeave(async () => !changed.value || saveTraining());
 </script>

@@ -60,6 +60,7 @@
           type="number"
           dense
           v-model.number="insertItem.approaches"
+          @update:model-value="$emit('changed')"
         />
         <q-input
           class="q-space q-mr-sm"
@@ -67,6 +68,7 @@
           type="number"
           dense
           v-model.number="insertItem.repetitions"
+          @update:model-value="$emit('changed')"
         />
         <q-input
           class="q-space"
@@ -74,6 +76,7 @@
           type="number"
           dense
           v-model.number="insertItem.weight"
+          @update:model-value="$emit('changed')"
         />
       </q-card-section>
     </q-card-section>
@@ -100,6 +103,7 @@ const emit = defineEmits<{
   'bind-prev': [void]
   'unbind-prev': [void]
   delete: [void]
+  changed: [void]
 }>();
 
 const props = defineProps<{
@@ -119,6 +123,7 @@ const exerciseName = computed(() => (
 
 const setExercise = (id: number) => {
   insertItem.value.exercise_id = id;
+  emit('changed');
 };
 
 const setBindPrev = () => {

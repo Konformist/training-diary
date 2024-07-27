@@ -68,6 +68,11 @@ const readFile = async () => {
 
   mainStore.setSavedData(result);
   await mainStore.migrationDB();
+  await mainStore.saveTrainings();
+  Notify.create({
+    type: 'positive',
+    message: 'Данные успешно импортированы',
+  });
 };
 
 const backupWeb = () => {
