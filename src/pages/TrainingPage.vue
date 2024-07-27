@@ -48,7 +48,6 @@
       class="full-width q-mb-sm"
       label="Копировать"
       color="secondary"
-      :disable="changed"
       @click="copy()"
     />
     <q-btn
