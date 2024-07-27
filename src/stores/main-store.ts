@@ -88,31 +88,6 @@ export const useMainStore = defineStore('main', {
 
     async migrationDB() {
       // empty
-      if (!this.trainingExercises.length) {
-        let index = 1;
-
-        this.trainings.forEach((training) => {
-          if (!training.exercises) return;
-
-          training.exercises
-            .map((e) => new TrainingExerciseModel(e.getStruct()))
-            .forEach((exercise, _, array) => {
-              const curId = exercise.id;
-
-              exercise.id = index++;
-              exercise.training_id = training.id;
-
-              array.forEach((e) => {
-                if (e.bind_prev === curId) e.bind_prev = exercise.id;
-                if (e.bind_next === curId) e.bind_next = exercise.id;
-              });
-
-              this.trainingExercises.push(exercise);
-            });
-
-          delete training.exercises;
-        });
-      }
     },
 
     saveSettings() {

@@ -26,6 +26,4 @@ export interface ITrainingStruct extends IEntityStruct {
   date: number
   /** Комментарий к тренировке */
   comment: string
-  /** Упражнения */
-  exercises?: ITrainingExerciseStruct[]
 }

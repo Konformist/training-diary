@@ -11,8 +11,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineModel } from 'vue';
-
 defineOptions({
   name: 'TdSelect',
 });
