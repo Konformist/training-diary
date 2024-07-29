@@ -202,6 +202,10 @@ export const useMainStore = defineStore('main', {
 
     delTrainingExercise(id: number) {
       this.trainingExercises = this.trainingExercises.filter((e) => e.id !== id);
+      this.trainingExercises.forEach((e) => {
+        if (e.bind_prev === id) e.bind_prev = 0;
+        if (e.bind_next === id) e.bind_next = 0;
+      });
     },
 
     async saveTrainings() {
@@ -215,7 +219,7 @@ export const useMainStore = defineStore('main', {
         });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
-        Notify.create({ type: 'negative', caption: 'Не удалось сохранить данные' });
+        Notify.create({ color: 'negative', caption: 'Не удалось сохранить данные', timeout: 1000 });
       }
     },
 

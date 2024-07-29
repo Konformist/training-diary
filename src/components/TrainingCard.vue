@@ -1,47 +1,29 @@
 <template>
   <q-item>
+    <q-item-section
+      v-if="trainingTag?.color"
+      thumbnail
+    >
+      <div
+        class="full-height"
+        :class="`bg-${palette[trainingTag?.color]}`"
+        style="width: 8px;"
+      />
+    </q-item-section>
     <q-item-section>
-      <q-item-label class="flex">
-        <div style="flex-grow: 1;">{{ item.name }}</div>
-        <div>{{ date.formatDate(item.date, 'HH:mm') }}</div>
-      </q-item-label>
-      <q-item-label
-        class="q-my-none flex no-wrap"
-        caption
-      >
-        <div class="q-space text-bold ellipsis">Упражнение</div>
-        <div class="item-list--size text-right text-bold">Отдых</div>
-        <div class="item-list--size text-right text-bold">Подх.</div>
-        <div class="item-list--size text-right text-bold">Повт.</div>
-        <div class="item-list--weight text-right text-bold">Вес, кг</div>
-      </q-item-label>
-      <q-item-label
-        v-for="(subitem, subindex) in trainingExercises"
-        :key="subindex"
-        class="q-my-none flex no-wrap"
-        caption
-      >
-        <div class="q-space ellipsis">{{ getExercise(subitem.exercise_id) || '-' }}</div>
-        <div class="item-list--size text-right">{{ subitem.rest_time || '-' }}</div>
-        <div class="item-list--size text-right">{{ subitem.approaches || '-' }}</div>
-        <div class="item-list--size text-right">{{ subitem.repetitions || '-' }}</div>
-        <div class="item-list--weight text-right">{{ subitem.weight || '-' }}</div>
-      </q-item-label>
-      <q-item-label
-        class="q-my-none flex no-wrap"
-        caption
-      >
-        <div class="q-space text-bold ellipsis">Тоннаж</div>
-        <div class="item-list--weight text-right text-bold">{{ totalWeight }}</div>
-      </q-item-label>
+      {{ trainingTag ? trainingTag.name : current.name }}
+    </q-item-section>
+    <q-item-section side>
+      {{ date.formatDate(current.date, 'HH:mm') }}
     </q-item-section>
   </q-item>
 </template>
 
 <script setup lang="ts">
 import { date } from 'quasar';
-import { useMainStore } from 'stores/main-store';
 import { computed } from 'vue';
+import { useMainStore } from 'stores/main-store';
+import { palette } from 'src/core/dictionaries/colors';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 
 const mainStore = useMainStore();
@@ -51,34 +33,15 @@ defineOptions({
 });
 
 const props = defineProps<{
-  item: TrainingModel
+  trainingId: number
 }>();
 
-const getExercise = (value: number) => (mainStore.exercises.find((e) => e.id === value)?.name);
-
-const trainingExercises = computed(() => (
-  mainStore.trainingExercises.filter((e) => e.training_id === props.item.id)
+const current = computed(() => (
+  mainStore.trainings.find((e) => e.id === props.trainingId)
+  || new TrainingModel()
 ));
 
-const totalWeight = computed(() => {
-  const ret = trainingExercises.value.reduce((acc, cur) => (
-    acc + (cur.weight * cur.repetitions * cur.approaches)
-  ), 0);
-
-  return ret
-    .toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
-    .replace(',', '.');
-});
+const trainingTag = computed(() => (
+  mainStore.tags.find((e) => e.id === current.value.tag_id)
+));
 </script>
-
-<style lang="scss" scoped>
-.item-list--size {
-  width: 52px;
-  flex-shrink: 0;
-}
-
-.item-list--weight {
-  width: 68px;
-  flex-shrink: 0;
-}
-</style>

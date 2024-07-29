@@ -22,7 +22,7 @@
         <template #left>
           <q-icon name="delete" />
         </template>
-        <TrainingCard :item="item" />
+        <TrainingCard :training-id="item.id" />
       </q-slide-item>
     </q-list>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">

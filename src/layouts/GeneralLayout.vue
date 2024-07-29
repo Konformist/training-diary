@@ -22,6 +22,6 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: 'EditLayout',
+  name: 'GeneralLayout',
 });
 </script>

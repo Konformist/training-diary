@@ -71,10 +71,7 @@ const readFile = async () => {
   mainStore.setSavedData(result);
   await mainStore.migrationDB();
   await mainStore.saveTrainings();
-  Notify.create({
-    type: 'positive',
-    message: 'Данные успешно импортированы',
-  });
+  Notify.create('Данные успешно импортированы');
 };
 
 const fileName = `${StoreNames.TRAININGS}-${date.formatDate(new Date(), 'YYYY-MM-DD')}.json`;
@@ -88,11 +85,7 @@ const backupWeb = () => {
   document.body.appendChild(link); // Required for FF
   link.click();
   document.body.removeChild(link); // Required for FF
-  Notify.create({
-    caption: 'Данные успешно выгружены',
-    type: 'positive',
-    timeout: 1000,
-  });
+  Notify.create('Данные успешно выгружены');
 };
 
 const backupFile = async () => {
@@ -104,18 +97,10 @@ const backupFile = async () => {
       encoding: Encoding.UTF8,
       data: JSON.stringify(mainStore.savedData),
     });
-    Notify.create({
-      caption: 'Данные успешно выгружены',
-      type: 'positive',
-      timeout: 1000,
-    });
+    Notify.create('Данные успешно выгружены');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    Notify.create({
-      caption: 'Не удалось выгрузить данные',
-      message: e,
-      type: 'negative',
-    });
+    Notify.create({ color: 'negative', caption: 'Не удалось выгрузить данные', timeout: 1000 });
   }
 };
 

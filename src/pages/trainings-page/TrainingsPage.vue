@@ -23,7 +23,7 @@
             <template #left>
               <q-icon name="delete" />
             </template>
-            <TrainingCard :item="subItem" />
+            <TrainingCard :training-id="subItem.id" />
           </q-slide-item>
         </template>
       </q-list>

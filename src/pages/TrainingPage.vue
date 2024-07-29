@@ -1,50 +1,68 @@
 <template>
-  <q-page padding>
-    <q-input
-      class="q-mb-sm"
-      label="Название тренировки"
-      standout
-      v-model.lazy.trim="current.name"
-      @update:model-value="changed = true"
-    />
-    <TdSelect
-      class="q-mb-sm"
-      label="Метка"
-      :options="tagsItems"
-      v-model="current.tag_id"
-      @update:model-value="changed = true"
-    />
-    <q-input
-      class="q-mb-sm"
-      label="Дата и время тренировки"
-      type="datetime-local"
-      standout
-      v-model="dateTime"
-      @change="dateTimeInput()"
-      @update:model-value="changed = true"
-    />
-    <q-input
-      class="q-mb-sm"
-      label="Комментарий к тренировке"
-      type="textarea"
-      autogrow
-      standout
-      v-model.lazy.trim="current.comment"
-      @update:model-value="changed = true"
-    />
-    <TrainingExerciseCard
-      v-for="(item, index) in trainingExercises"
-      :key="item.id"
-      :class="!item.bind_next ? 'q-mb-sm' : ''"
-      :has-prev="index !== 0"
-      :has-next="index !== trainingExercises.length - 1"
-      :item="item"
-      @bind-next="bindExerciseNext(item.id)"
-      @unbind-next="unbindExerciseNext(item.id)"
-      @bind-prev="bindExercisePrev(item.id)"
-      @unbind-prev="unbindExercisePrev(item.id)"
-      @delete="delExercise(item.id)"
-    />
+  <q-page>
+    <div class="q-pa-sm">
+      <q-input
+        class="q-mb-sm"
+        label="Название тренировки"
+        standout
+        v-model.lazy.trim="current.name"
+        @update:model-value="changed = true"
+      />
+      <TdSelect
+        class="q-mb-sm"
+        label="Метка"
+        :options="tagsItems"
+        v-model="current.tag_id"
+        @update:model-value="changed = true"
+      />
+      <q-input
+        class="q-mb-sm"
+        label="Дата и время тренировки"
+        type="datetime-local"
+        standout
+        v-model="dateTime"
+        @change="dateTimeInput()"
+        @update:model-value="changed = true"
+      />
+      <q-input
+        label="Комментарий к тренировке"
+        type="textarea"
+        autogrow
+        standout
+        v-model.lazy.trim="current.comment"
+        @update:model-value="changed = true"
+      />
+    </div>
+    <q-separator />
+    <q-list>
+      <q-item-label header>
+        Упражнения
+      </q-item-label>
+      <template
+        v-for="(item, index) in trainingExercises"
+        :key="item.id"
+      >
+        <q-separator v-if="!item.bind_prev" />
+        <q-slide-item
+          left-color="red"
+          @left="delExercise($event, item.id)"
+        >
+          <template #left>
+            <q-icon name="delete" />
+          </template>
+          <TrainingExerciseCard
+            :has-prev="index !== 0"
+            :has-next="index !== trainingExercises.length - 1"
+            :item="item"
+            :exercise-id="item.id"
+            @bind-next="bindExerciseNext(item.id)"
+            @unbind-next="unbindExerciseNext(item.id)"
+            @bind-prev="bindExercisePrev(item.id)"
+            @unbind-prev="unbindExercisePrev(item.id)"
+          />
+        </q-slide-item>
+      </template>
+    </q-list>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
         fab
@@ -67,7 +85,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
-import { date, Notify } from 'quasar';
+import { date, Notify, useQuasar } from 'quasar';
 import { DATE_TIME_MASK } from 'src/core/dictionaries/dates';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { useMainStore } from 'stores/main-store';
@@ -79,6 +97,7 @@ defineOptions({
   name: 'TrainingPage',
 });
 
+const $q = useQuasar();
 const route = useRoute();
 const router = useRouter();
 const mainStore = useMainStore();
@@ -108,11 +127,6 @@ const trainingExercises = computed(() => (
 
 const addExercise = () => {
   mainStore.addTrainingExercise(current.value.id);
-  changed.value = true;
-};
-
-const delExercise = (value: number) => {
-  mainStore.delTrainingExercise(value);
   changed.value = true;
 };
 
@@ -162,6 +176,17 @@ const unbindExercisePrev = (id: number) => {
   curExercise.bind_prev = 0;
   prevExercise.bind_next = 0;
   changed.value = true;
+};
+
+const delExercise = (event: { reset: () => void }, id: number) => {
+  $q.dialog({ message: 'Действительно удалить?', cancel: true })
+    .onOk(async () => {
+      mainStore.delTrainingExercise(id);
+      await mainStore.saveTrainings();
+      changed.value = false;
+      Notify.create('Успешно удалено');
+    })
+    .onDismiss(() => { event.reset(); });
 };
 
 const save = async () => {

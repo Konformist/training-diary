@@ -1,3 +1,4 @@
+import TrainingExercisePage from 'pages/TrainingExercisePage.vue';
 import { RouteRecordRaw } from 'vue-router';
 import MainLayout from 'layouts/MainLayout.vue';
 import GeneralLayout from 'layouts/GeneralLayout.vue';
@@ -47,6 +48,14 @@ const routes: RouteRecordRaw[] = [
         component: TrainingPage,
         meta: {
           page: 'Тренировка',
+        },
+      },
+      {
+        name: 'TrainingExercise',
+        path: 'training-exercises/:id',
+        component: TrainingExercisePage,
+        meta: {
+          page: 'Упражнение тренировки',
         },
       },
       {
