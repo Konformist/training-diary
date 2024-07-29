@@ -53,7 +53,6 @@
           <TrainingExerciseCard
             :has-prev="index !== 0"
             :has-next="index !== trainingExercises.length - 1"
-            :item="item"
             :exercise-id="item.id"
             @bind-next="bindExerciseNext(item.id)"
             @unbind-next="unbindExerciseNext(item.id)"
