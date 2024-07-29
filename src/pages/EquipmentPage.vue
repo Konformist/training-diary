@@ -2,15 +2,14 @@
   <q-page padding>
     <q-input
       class="q-mb-sm"
+      label="Имя"
       standout
       v-model="current.name"
       @update:model-value="changed = true"
     />
-    <q-btn
-      class="full-width"
-      label="Сохранить"
-      color="secondary"
-      @click="save()"
+    <TdFooter
+      :buttons="[{ icon: 'save', text: 'Сохранить', emit: 'save' }]"
+      @save="save()"
     />
   </q-page>
 </template>
@@ -21,6 +20,7 @@ import { computed, ref } from 'vue';
 import { onBeforeRouteLeave, useRoute } from 'vue-router';
 import { useMainStore } from 'stores/main-store';
 import EquipmentModel from 'src/core/entities/equipment/EquipmentModel';
+import TdFooter from 'components/UI/TdFooter.vue';
 
 defineOptions({
   name: 'EquipmentPage',

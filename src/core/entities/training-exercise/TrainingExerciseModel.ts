@@ -1,8 +1,8 @@
 import EntityModel from 'src/core/entities/EntityModel';
 import { TEntityModel } from 'src/core/entities/EntityStruct';
-import { ITrainingExerciseStruct } from 'src/core/entities/training/TrainingStruct';
+import { TrainingExerciseStruct } from 'src/core/entities/training-exercise/TrainingExerciseStruct';
 
-export default class TrainingExerciseModel extends EntityModel implements TEntityModel<ITrainingExerciseStruct> {
+export default class TrainingExerciseModel extends EntityModel implements TEntityModel<TrainingExerciseStruct> {
   training_id: number;
 
   exercise_id: number;
@@ -13,11 +13,13 @@ export default class TrainingExerciseModel extends EntityModel implements TEntit
 
   weight: number;
 
+  rest_time: string;
+
   bind_next: number;
 
   bind_prev: number;
 
-  constructor(struct?: ITrainingExerciseStruct) {
+  constructor(struct?: TrainingExerciseStruct) {
     super(struct);
     this.training_id = struct?.training_id ?? 0;
     this.exercise_id = struct?.exercise_id ?? 0;
@@ -26,6 +28,7 @@ export default class TrainingExerciseModel extends EntityModel implements TEntit
     this.weight = struct?.weight ?? 0;
     this.bind_next = struct?.bind_next ?? 0;
     this.bind_prev = struct?.bind_prev ?? 0;
+    this.rest_time = struct?.rest_time ?? '';
   }
 
   getStruct() {
@@ -36,6 +39,7 @@ export default class TrainingExerciseModel extends EntityModel implements TEntit
       approaches: this.approaches,
       repetitions: this.repetitions,
       weight: this.weight,
+      rest_time: this.rest_time,
       bind_next: this.bind_next,
       bind_prev: this.bind_prev,
     };

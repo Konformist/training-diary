@@ -1,5 +1,6 @@
 <template>
   <q-select
+    :label="label"
     :options="options"
     option-value="id"
     option-label="name"
@@ -18,6 +19,7 @@ defineOptions({
 const modelValue = defineModel({ default: 0 });
 
 defineProps<{
+  label?: string
   options: unknown[]
 }>();
 </script>

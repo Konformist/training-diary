@@ -1,17 +1,5 @@
 <template>
   <q-page padding>
-    <q-select
-      class="q-mb-sm"
-      label="Упражнение"
-      :options="mainStore.exercises"
-      option-value="id"
-      option-label="name"
-      standout
-      emit-value
-      map-options
-      v-model="exercise"
-      @update:model-value="updateCharts()"
-    />
     <q-card class="q-mb-sm">
       <q-card-section>
         <div class="q-mb-sm">Вес, кг</div>
@@ -39,6 +27,25 @@
         />
       </q-card-section>
     </q-card>
+    <TdFooter
+      :buttons="[{ icon: 'filter_list', text: 'Фильтры', emit: 'filter' }]"
+      @filter="dialogFilter = true"
+    />
+    <q-dialog
+      position="bottom"
+      v-model="dialogFilter"
+    >
+      <q-card>
+        <q-card-section>
+          <TdSelect
+            label="Упражнение"
+            :options="mainStore.exercises"
+            v-model="exercise"
+            @update:model-value="updateCharts()"
+          />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -47,6 +54,8 @@ import {
   Chart, LinearScale, CategoryScale, LineController, LineElement, PointElement, Tooltip,
 } from 'chart.js';
 import { DefaultDataPoint } from 'chart.js/dist/types';
+import TdFooter from 'components/UI/TdFooter.vue';
+import TdSelect from 'components/UI/TdSelect.vue';
 import { date } from 'quasar';
 import { DATE_MASK_LOCAL } from 'src/core/dictionaries/dates';
 import { computed, onMounted, ref } from 'vue';
@@ -63,11 +72,13 @@ Chart.defaults.datasets.line.borderColor = '#ff6a6a';
 Chart.defaults.scale.min = 0;
 Chart.defaults.scale.grid.color = '#666';
 
-const mainStore = useMainStore();
-
 defineOptions({
   name: 'StatisticsPage',
 });
+
+const mainStore = useMainStore();
+
+const dialogFilter = ref(false);
 
 const exercise = ref(mainStore.exercises[0]?.id || 0);
 

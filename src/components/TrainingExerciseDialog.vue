@@ -7,7 +7,6 @@
       <q-input
         label="Поиск"
         autofocus
-        dense
         filled
         v-model="search"
       />

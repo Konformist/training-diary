@@ -10,6 +10,7 @@
         caption
       >
         <div class="q-space text-bold ellipsis">Упражнение</div>
+        <div class="item-list--size text-right text-bold">Отдых</div>
         <div class="item-list--size text-right text-bold">Подх.</div>
         <div class="item-list--size text-right text-bold">Повт.</div>
         <div class="item-list--weight text-right text-bold">Вес, кг</div>
@@ -21,6 +22,7 @@
         caption
       >
         <div class="q-space ellipsis">{{ getExercise(subitem.exercise_id) || '-' }}</div>
+        <div class="item-list--size text-right">{{ subitem.rest_time || '-' }}</div>
         <div class="item-list--size text-right">{{ subitem.approaches || '-' }}</div>
         <div class="item-list--size text-right">{{ subitem.repetitions || '-' }}</div>
         <div class="item-list--weight text-right">{{ subitem.weight || '-' }}</div>

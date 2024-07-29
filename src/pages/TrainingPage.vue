@@ -9,6 +9,7 @@
     />
     <TdSelect
       class="q-mb-sm"
+      label="Метка"
       :options="tagsItems"
       v-model="current.tag_id"
       @update:model-value="changed = true"
@@ -44,42 +45,34 @@
       @unbind-prev="unbindExercisePrev(item.id)"
       @delete="delExercise(item.id)"
     />
-    <q-btn
-      class="full-width q-mb-sm"
-      label="Копировать"
-      color="secondary"
-      @click="copy()"
-    />
-    <q-btn
-      class="full-width"
-      label="Сохранить"
-      color="secondary"
-      @click="save()"
-    />
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
         fab
         icon="add"
         color="primary"
-        @click="dialogExercise = true"
+        @click="addExercise()"
       />
     </q-page-sticky>
-    <TrainingExerciseDialog
-      v-model="dialogExercise"
-      @send="addExercise($event)"
+    <TdFooter
+      :buttons="[
+        { icon: 'save', text: 'Сохранить', emit: 'save' },
+        { icon: 'content_copy', text: 'Копировать', emit: 'copy' },
+      ]"
+      @save="save()"
+      @copy="copy()"
     />
   </q-page>
 </template>
 
 <script setup lang="ts">
-import TdSelect from 'components/UI/TdSelect.vue';
 import { computed, ref } from 'vue';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
 import { date, Notify } from 'quasar';
 import { DATE_TIME_MASK } from 'src/core/dictionaries/dates';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { useMainStore } from 'stores/main-store';
-import TrainingExerciseDialog from 'components/TrainingExerciseDialog.vue';
+import TdFooter from 'components/UI/TdFooter.vue';
+import TdSelect from 'components/UI/TdSelect.vue';
 import TrainingExerciseCard from 'components/TrainingExerciseCard.vue';
 
 defineOptions({
@@ -94,8 +87,6 @@ const tagsItems = computed(() => [
   { id: 0, name: 'Не выбрано' },
   ...mainStore.tags,
 ]);
-
-const dialogExercise = ref(false);
 
 /** Что-то было изменено */
 const changed = ref(false);
@@ -115,8 +106,8 @@ const trainingExercises = computed(() => (
   mainStore.trainingExercises.filter((e) => e.training_id === current.value.id)
 ));
 
-const addExercise = (value: number) => {
-  mainStore.addTrainingExercise(current.value.id, value);
+const addExercise = () => {
+  mainStore.addTrainingExercise(current.value.id);
   changed.value = true;
 };
 

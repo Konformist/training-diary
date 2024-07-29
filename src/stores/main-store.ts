@@ -12,9 +12,10 @@ import MuscleModel from 'src/core/entities/muscle/MuscleModel';
 import { IMuscleStruct } from 'src/core/entities/muscle/MuscleStruct';
 import TagModel from 'src/core/entities/tag/TagModel';
 import { ITagStruct } from 'src/core/entities/tag/TagStruct';
-import TrainingExerciseModel from 'src/core/entities/training/TrainingExerciseModel';
+import { TrainingExerciseStruct } from 'src/core/entities/training-exercise/TrainingExerciseStruct';
+import TrainingExerciseModel from 'src/core/entities/training-exercise/TrainingExerciseModel';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
-import { ITrainingExerciseStruct, ITrainingStruct } from 'src/core/entities/training/TrainingStruct';
+import { ITrainingStruct } from 'src/core/entities/training/TrainingStruct';
 // eslint-disable-next-line import/no-relative-packages
 import { Directory, Filesystem, Encoding } from '../../src-capacitor/node_modules/@capacitor/filesystem';
 
@@ -25,7 +26,7 @@ export interface IStorageTraining {
   exercises: IExerciseStruct[]
   tags: ITagStruct[]
   trainings: ITrainingStruct[]
-  trainingExercises: ITrainingExerciseStruct[]
+  trainingExercises: TrainingExerciseStruct[]
 }
 
 export interface IStorageSettings {
@@ -188,7 +189,7 @@ export const useMainStore = defineStore('main', {
       return newItem.id;
     },
 
-    addTrainingExercise(trainingId: number, exerciseId: number) {
+    addTrainingExercise(trainingId: number, exerciseId: number = 0) {
       const newItem = new TrainingExerciseModel();
       const ids = this.trainingExercises.map((e) => e.id);
 

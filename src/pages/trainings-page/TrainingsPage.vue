@@ -2,12 +2,6 @@
   <q-page>
     <EmptyPage v-if="isEmpty" />
     <template v-else>
-      <TdSelect
-        class="q-ma-sm"
-        :options="tagsItems"
-        v-model="options.tag_id"
-      />
-      <q-separator />
       <q-list>
         <template
           v-for="item in list"
@@ -42,10 +36,28 @@
         @click="addItem()"
       />
     </q-page-sticky>
+    <TdFooter
+      :buttons="[{ icon: 'filter_list', text: 'Фильтры', emit: 'filter' }]"
+      @filter="dialogFilter = true"
+    />
+    <q-dialog
+      position="bottom"
+      v-model="dialogFilter"
+    >
+      <q-card>
+        <q-card-section>
+          <TdSelect
+            :options="tagsItems"
+            v-model="trainingsPageStore.options.tagId"
+          />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script setup lang="ts">
+import TdFooter from 'components/UI/TdFooter.vue';
 import { date, Notify, useQuasar } from 'quasar';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -55,6 +67,7 @@ import { useMainStore } from 'stores/main-store';
 import TdSelect from 'components/UI/TdSelect.vue';
 import EmptyPage from 'components/EmptyPage.vue';
 import TrainingCard from 'components/TrainingCard.vue';
+import useTrainingsPageStore from 'pages/trainings-page/useTrainingsPageStore';
 
 defineOptions({
   name: 'TrainingsPage',
@@ -63,19 +76,20 @@ defineOptions({
 const $q = useQuasar();
 const router = useRouter();
 const mainStore = useMainStore();
+const trainingsPageStore = useTrainingsPageStore();
+
+const dialogFilter = ref(false);
 
 const tagsItems = computed(() => [
   { id: 0, name: 'Все' },
   ...mainStore.tags,
 ]);
 
-const options = ref({
-  tag_id: 0,
-});
-
 const isEmpty = computed(() => !mainStore.trainings.length);
 const list = computed(() => {
-  let arr = mainStore.trainings.filter((e) => !options.value.tag_id || e.tag_id === options.value.tag_id);
+  let arr = mainStore.trainings.filter((e) => (
+    !trainingsPageStore.options.tagId || e.tag_id === trainingsPageStore.options.tagId
+  ));
   arr = sortByFields(arr, ['date'], true);
   return groupByField(arr, 'date');
 });
