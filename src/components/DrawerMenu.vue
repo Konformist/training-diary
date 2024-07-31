@@ -56,7 +56,6 @@ interface IMenuItem {
 
 const menuItems: IMenuItem[] = [
   { text: 'Список тренировок', icon: 'format_list_bulleted', to: { name: 'Trainings' } },
-  { text: 'Статистика', icon: 'show_chart', to: { name: 'Statistics' } },
   {
     text: 'Справочники', separator: true,
   },

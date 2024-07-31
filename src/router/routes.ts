@@ -13,7 +13,6 @@ import MainPage from 'pages/MainPage.vue';
 import MusclePage from 'pages/MusclePage.vue';
 import MusclesPage from 'pages/MusclesPage.vue';
 import SettingsPage from 'pages/SettingsPage.vue';
-import StatisticsPage from 'pages/StatisticsPage.vue';
 import TrainingPage from 'pages/TrainingPage.vue';
 import TrainingsPage from 'pages/trainings-page/TrainingsPage.vue';
 
@@ -113,14 +112,6 @@ const routes: RouteRecordRaw[] = [
         component: ExercisePage,
         meta: {
           page: 'Упражнение',
-        },
-      },
-      {
-        name: 'Statistics',
-        path: 'statistics',
-        component: StatisticsPage,
-        meta: {
-          page: 'Статистика',
         },
       },
       {
