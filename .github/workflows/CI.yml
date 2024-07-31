@@ -27,7 +27,7 @@ jobs:
         npx cap sync android
 
     - name: move android dir
-      run: cd ./android
+      run: cd ./src-capacitor/android
 
     - name: set up JDK 11
       uses: actions/setup-java@v4
