@@ -2,7 +2,7 @@
   <q-item :to="{ name: 'TrainingExercise', params: { id: current.id } }">
     <q-item-section>
       <div class="full-width ellipsis">
-        {{ exerciseName }}
+        {{ exerciseName || 'Не выбрано' }}
       </div>
       <div v-if="exerciseStat">
         {{ current.rest_time ? current.rest_time + ' ' : '' }}{{ exerciseStat }}
@@ -89,15 +89,11 @@ const exerciseName = computed(() => (
   mainStore.exercises.find((e) => e.id === current.value.exercise_id)?.name || ''
 ));
 
-const exerciseStat = computed(() => {
-  const arr: string[] = [];
-
-  if (current.value.approaches) arr.push(`${current.value.approaches}`);
-  if (current.value.repetitions) arr.push(`${current.value.repetitions}`);
-  if (current.value.weight) arr.push(`${current.value.weight}`);
-
-  return arr.join('x');
-});
+const exerciseStat = computed(() => ([
+  current.value.approaches,
+  current.value.repetitions,
+  current.value.weight,
+].join('x')));
 
 const setBindPrev = () => {
   if (current.value.bind_prev) {

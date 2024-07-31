@@ -2,17 +2,25 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-toolbar-title>
-          {{ productName }}
-        </q-toolbar-title>
         <q-btn
-          class="q-ml-auto"
+          v-if="$route.name === 'Main'"
           flat
           dense
           round
           icon="menu"
           @click="drawerRight = !drawerRight"
         />
+        <q-btn
+          v-else
+          flat
+          dense
+          round
+          icon="arrow_back"
+          @click="$router.back()"
+        />
+        <q-toolbar-title>
+          {{ $route.meta.page || productName }}
+        </q-toolbar-title>
       </q-toolbar>
     </q-header>
     <q-page-container>

@@ -30,14 +30,10 @@
         </q-slide-item>
       </template>
     </q-list>
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn
-        fab
-        icon="add"
-        color="primary"
-        @click="addItem()"
-      />
-    </q-page-sticky>
+    <TdFooter
+      :buttons="[{ icon: 'add', text: 'Добавить', emit: 'add' }]"
+      @add="addItem()"
+    />
   </q-page>
 </template>
 
@@ -47,6 +43,7 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { groupByField, sortByFields } from 'src/core/utils/arrays';
 import { useMainStore } from 'stores/main-store';
+import TdFooter from 'components/UI/TdFooter.vue';
 import EmptyPage from 'components/EmptyPage.vue';
 
 defineOptions({

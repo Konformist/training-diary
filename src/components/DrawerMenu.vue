@@ -1,7 +1,7 @@
 <template>
   <q-drawer
     elevated
-    side="right"
+    side="left"
     show-if-above
     v-model="modelValue"
   >

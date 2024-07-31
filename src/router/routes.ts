@@ -1,7 +1,6 @@
-import TrainingExercisePage from 'pages/TrainingExercisePage.vue';
 import { RouteRecordRaw } from 'vue-router';
+import TrainingExercisePage from 'pages/TrainingExercisePage.vue';
 import MainLayout from 'layouts/MainLayout.vue';
-import GeneralLayout from 'layouts/GeneralLayout.vue';
 import AboutPage from 'pages/AboutPage.vue';
 import EquipmentPage from 'pages/EquipmentPage.vue';
 import EquipmentsPage from 'pages/EquipmentsPage.vue';
@@ -28,12 +27,6 @@ const routes: RouteRecordRaw[] = [
         path: '',
         component: MainPage,
       },
-    ],
-  },
-  {
-    path: '/',
-    component: GeneralLayout,
-    children: [
       {
         name: 'Trainings',
         path: 'trainings',

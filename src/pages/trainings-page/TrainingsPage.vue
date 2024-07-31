@@ -28,17 +28,13 @@
         </template>
       </q-list>
     </template>
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn
-        fab
-        icon="add"
-        color="primary"
-        @click="addItem()"
-      />
-    </q-page-sticky>
     <TdFooter
-      :buttons="[{ icon: 'filter_list', text: 'Фильтры', emit: 'filter' }]"
+      :buttons="[
+        { icon: 'filter_list', text: 'Фильтры', emit: 'filter' },
+        { icon: 'add', text: 'Добавить', emit: 'add' },
+      ]"
       @filter="dialogFilter = true"
+      @add="addItem()"
     />
     <q-dialog
       position="bottom"

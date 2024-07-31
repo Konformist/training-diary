@@ -26,24 +26,21 @@
         </q-item>
       </q-slide-item>
     </q-list>
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn
-        fab
-        icon="add"
-        color="primary"
-        @click="addItem()"
-      />
-    </q-page-sticky>
+    <TdFooter
+      :buttons="[{ icon: 'add', text: 'Добавить', emit: 'add' }]"
+      @add="addItem()"
+    />
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { Notify, useQuasar } from 'quasar';
-import { palette } from 'src/core/dictionaries/colors';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { palette } from 'src/core/dictionaries/colors';
 import { sortByFields } from 'src/core/utils/arrays';
 import { useMainStore } from 'stores/main-store';
+import TdFooter from 'components/UI/TdFooter.vue';
 import EmptyPage from 'components/EmptyPage.vue';
 
 defineOptions({

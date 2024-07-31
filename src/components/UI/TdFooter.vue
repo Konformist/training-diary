@@ -4,6 +4,8 @@
       <q-btn
         v-for="(button, iButton) in buttons"
         :key="iButton"
+        class="q-pa-sm"
+        :class="button.class"
         flat
         stack
         :icon="button.icon"
@@ -22,6 +24,7 @@ defineOptions({
 
 defineProps<{
   buttons: Array<{
+    class?: string
     text: string
     icon: string
     emit: string

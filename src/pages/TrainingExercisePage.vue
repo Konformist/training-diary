@@ -68,6 +68,7 @@
             v-for="item in history"
             :key="item.id"
             class="text-right"
+            :class="item.id === current.id ? 'bg-primary' : ''"
           >
             <q-item-section>{{ item.bind_next || item.bind_prev ? 'Да' : 'Нет' }}</q-item-section>
             <q-item-section>{{ item.rest_time || '-' }}</q-item-section>
@@ -112,9 +113,16 @@ const current = computed(() => (
   || new TrainingExerciseModel()
 ));
 
+const training = computed(() => mainStore.trainings.find((e) => e.id === current.value.training_id));
+
 const history = computed(() => (
   mainStore.trainingExercises
-    .filter((e) => (e.id !== current.value.id && e.exercise_id === current.value.exercise_id))
+    .filter((item) => {
+      if (item.exercise_id !== current.value.exercise_id) return false;
+
+      const tr = mainStore.trainings.find((e) => e.id === item.training_id);
+      return tr?.tag_id === training.value?.tag_id;
+    })
     .reverse()
 ));
 

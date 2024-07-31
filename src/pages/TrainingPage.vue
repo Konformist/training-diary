@@ -62,21 +62,15 @@
         </q-slide-item>
       </template>
     </q-list>
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn
-        fab
-        icon="add"
-        color="primary"
-        @click="addExercise()"
-      />
-    </q-page-sticky>
     <TdFooter
       :buttons="[
         { icon: 'save', text: 'Сохранить', emit: 'save' },
         { icon: 'content_copy', text: 'Копировать', emit: 'copy' },
+        { icon: 'add', text: 'Добавить', emit: 'add' },
       ]"
       @save="save()"
       @copy="copy()"
+      @add="addExercise()"
     />
   </q-page>
 </template>
@@ -125,8 +119,9 @@ const trainingExercises = computed(() => (
 ));
 
 const addExercise = () => {
-  mainStore.addTrainingExercise(current.value.id);
+  const id = mainStore.addTrainingExercise(current.value.id);
   changed.value = true;
+  router.push({ name: 'TrainingExercise', params: { id } });
 };
 
 const bindExerciseNext = (id: number) => {

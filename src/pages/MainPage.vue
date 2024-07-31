@@ -25,26 +25,23 @@
         <TrainingCard :training-id="item.id" />
       </q-slide-item>
     </q-list>
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn
-        fab
-        icon="add"
-        color="primary"
-        @click="addItem()"
-      />
-    </q-page-sticky>
+    <TdFooter
+      :buttons="[{ icon: 'add', text: 'Добавить', emit: 'add' }]"
+      @add="addItem()"
+    />
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { date, Notify, useQuasar } from 'quasar';
-import { palette } from 'src/core/dictionaries/colors';
-import { sortByFields } from 'src/core/utils/arrays';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { palette } from 'src/core/dictionaries/colors';
+import { sortByFields } from 'src/core/utils/arrays';
 import { DATE_MASK } from 'src/core/dictionaries/dates';
-import TrainingCard from 'components/TrainingCard.vue';
 import { useMainStore } from 'stores/main-store';
+import TdFooter from 'components/UI/TdFooter.vue';
+import TrainingCard from 'components/TrainingCard.vue';
 
 defineOptions({
   name: 'MainPage',
