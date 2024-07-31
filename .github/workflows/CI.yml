@@ -16,24 +16,22 @@ jobs:
       with:
         node-version: 20.x
 
-    - name: build and sync web code
+    - name: Build and sync web code
       run: |
         npm install
         npm run build:android
         cd ./src-capacitor
         npx cap sync android
 
-    - name: set up JDK 11
+    - name: Set up JDK 11
       uses: actions/setup-java@v4
       with:
         java-version: '11'
         distribution: 'temurin'
         cache: gradle
 
-    #- name: Grant execute permission for gradlew
-    #  run: chmod +x gradlew
-    #- name: Build with Gradle
-    #  run: ./gradlew build
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradle
 
     - name: Build release APK
       run: |
