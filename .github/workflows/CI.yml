@@ -18,5 +18,5 @@ jobs:
 
     - name: Build
       run: |
-        npm i
-        npx run build:capacitor
+        npm install
+        npm run build:android
