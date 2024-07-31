@@ -19,7 +19,7 @@
           @click="$router.back()"
         />
         <q-toolbar-title>
-          {{ $route.meta.page || productName }}
+          {{ $route.meta.page || mainStore.appInfo.name }}
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -34,12 +34,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useMainStore } from 'stores/main-store';
 import DrawerMenu from 'components/DrawerMenu.vue';
-import { productName } from '../../package.json';
 
 defineOptions({
   name: 'MainLayout',
 });
+
+const mainStore = useMainStore();
 
 const drawerRight = ref(false);
 </script>

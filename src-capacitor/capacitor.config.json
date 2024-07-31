@@ -1,5 +1,10 @@
 {
   "appId": "com.konstantin.trainingdiary",
   "appName": "Training Diary",
-  "webDir": "www"
+  "webDir": "www",
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
 }

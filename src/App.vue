@@ -18,9 +18,11 @@ Notify.setDefaults({
 const mainStore = useMainStore();
 
 const init = async () => {
+  await mainStore.getPlatformInfo();
   mainStore.loadSettings();
   await mainStore.loadTrainings();
   await mainStore.migrationDB();
+  mainStore.checkVersion();
 };
 
 init();

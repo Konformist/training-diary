@@ -19,33 +19,25 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { Platform } from 'quasar';
-// eslint-disable-next-line import/no-relative-packages
-import { App, AppInfo } from '../../src-capacitor/node_modules/@capacitor/app';
-import { version } from '../../package.json';
+import { computed } from 'vue';
+import { useMainStore } from 'stores/main-store';
 
 defineOptions({
   name: 'AboutPage',
 });
 
-const capAppInfo = ref<AppInfo>();
-
-const init = async () => {
-  if (Platform.is.capacitor) {
-    capAppInfo.value = await App.getInfo();
-  }
-};
-
-init();
+const mainStore = useMainStore();
 
 const items = computed(() => {
   const arr = [
-    { key: 'Версия Web', value: version },
+    { key: 'Версия Web', value: mainStore.appInfo.frontVersion },
   ];
 
-  if (capAppInfo.value) {
-    arr.push({ key: 'Версия Android', value: capAppInfo.value.version });
+  if (mainStore.appInfo.platform) {
+    arr.push({
+      key: 'Версия приложения',
+      value: mainStore.appInfo.platformAppVersion,
+    });
   }
 
   return arr;

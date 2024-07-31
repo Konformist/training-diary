@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import {
-  Dark, date as qDate, LocalStorage, Notify,
+  Dark, date as qDate, Dialog, LocalStorage, Notify, openURL, Platform,
 } from 'quasar';
 import { DATE_MASK } from 'src/core/dictionaries/dates';
 import { StoreNames, VERSION_DB } from 'src/core/dictionaries/storeNames';
@@ -16,6 +16,11 @@ import { TrainingExerciseStruct } from 'src/core/entities/training-exercise/Trai
 import TrainingExerciseModel from 'src/core/entities/training-exercise/TrainingExerciseModel';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { ITrainingStruct } from 'src/core/entities/training/TrainingStruct';
+import { version, productName } from '../../package.json';
+// eslint-disable-next-line import/no-relative-packages
+import { App } from '../../src-capacitor/node_modules/@capacitor/app';
+// eslint-disable-next-line import/no-relative-packages
+import { CapacitorHttp, Capacitor } from '../../src-capacitor/node_modules/@capacitor/core';
 // eslint-disable-next-line import/no-relative-packages
 import { Directory, Filesystem, Encoding } from '../../src-capacitor/node_modules/@capacitor/filesystem';
 
@@ -37,6 +42,13 @@ export interface IStorageSettings {
 export const useMainStore = defineStore('main', {
   state() {
     return {
+      appInfo: {
+        name: productName,
+        frontVersion: version,
+        platform: '',
+        platformAppVersion: '',
+      },
+
       version: VERSION_DB,
       darkMode: 'auto' as boolean|'auto',
 
@@ -77,6 +89,28 @@ export const useMainStore = defineStore('main', {
   },
 
   actions: {
+    async getPlatformInfo() {
+      if (Platform.is.capacitor) {
+        const info = await App.getInfo();
+        this.appInfo.platformAppVersion = info.version;
+        this.appInfo.platform = Capacitor.getPlatform();
+      }
+    },
+
+    async checkVersion() {
+      const result = await CapacitorHttp.get({
+        url: 'https://api.github.com/repos/Konformist/training-diary/releases/latest',
+      });
+
+      if (result.data.tag_name === `v${this.appInfo.frontVersion}`) return;
+
+      Dialog.create({
+        message: 'Доступна новая версия, скачать?',
+        cancel: true,
+      })
+        .onOk(() => openURL(result.data.assets[0].browser_download_url));
+    },
+
     setSavedData(value: Partial<IStorageTraining>) {
       this.version = value.version || VERSION_DB;
       this.muscles = (value.muscles || []).map((e) => new MuscleModel(e));
