@@ -20,3 +20,34 @@ jobs:
       run: |
         npm install
         npm run build:android
+
+    - name: sync web code
+      run: |
+        cd ./src-capacitor
+        npx cap sync android
+
+  Build-Android:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: move android dir
+      run: cd ./android
+    - name: set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+
+    #- name: Grant execute permission for gradlew
+    #  run: chmod +x gradlew
+    #- name: Build with Gradle
+    #  run: ./gradlew build
+
+    - name: Build release APK and AAB after test
+      run: ./gradlew assembleRelease
+    - name: Upload APK
+      uses: actions/upload-artifact@v2
+      with:
+        name: app-release.apk
+        path: app/build/outputs/apk/release/app-release-unsigned.apk
