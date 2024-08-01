@@ -1,33 +1,7 @@
 # Training Diary (training-diary)
 
-Diary
+Training Dairy - это самый простой дневник тренировок, в котором можно посмотреть все тренировки и выполненные упражнения.
 
-## Install the dependencies
-```bash
-yarn
-# or
-npm install
-```
+Новый функционал в приложении будет добавляться по мере необходимости.
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
-```bash
-quasar dev
-```
-
-
-### Lint the files
-```bash
-yarn lint
-# or
-npm run lint
-```
-
-
-
-### Build the app for production
-```bash
-quasar build
-```
-
-### Customize the configuration
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
+Если есть идеи для новых фичей, добавляйте их в issues.
