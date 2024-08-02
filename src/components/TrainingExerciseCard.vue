@@ -5,18 +5,8 @@
         {{ exerciseName || 'Не выбрано' }}
       </div>
       <div v-if="exerciseStat">
-        {{ current.rest_time ? current.rest_time + ' ' : '' }}{{ exerciseStat }}
+        {{ exerciseInfo }}
       </div>
-    </q-item-section>
-    <q-item-section
-      v-if="current.bind_prev || current.bind_next"
-      side
-    >
-      <q-icon
-        class="q-ml-md self-center"
-        name="link"
-        size="24px"
-      />
     </q-item-section>
     <q-item-section side>
       <q-btn-dropdown
@@ -94,6 +84,14 @@ const exerciseStat = computed(() => ([
   current.value.repetitions,
   current.value.weight,
 ].join('x')));
+
+const exerciseInfo = computed(() => {
+  const ret = [];
+  if (current.value.bind_prev || current.value.bind_next) ret.push('Суперсет');
+  if (current.value.rest_time) ret.push(current.value.rest_time);
+  ret.push(exerciseStat.value);
+  return ret.join(' ');
+});
 
 const setBindPrev = () => {
   if (current.value.bind_prev) {

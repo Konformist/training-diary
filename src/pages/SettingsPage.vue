@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import {
-  Dark, date, Notify, Platform,
+  Dark, date, exportFile, Notify, Platform,
 } from 'quasar';
 import { ref } from 'vue';
 import { StoreNames } from 'src/core/dictionaries/storeNames';
@@ -77,36 +77,28 @@ const readFile = async () => {
 const fileName = `${StoreNames.TRAININGS}-${date.formatDate(new Date(), 'YYYY-MM-DD')}.json`;
 
 const backupWeb = () => {
-  const encodedUri = encodeURIComponent(JSON.stringify(mainStore.savedData));
-  const link = document.createElement('a');
-
-  link.setAttribute('href', `data:text/json;charset=utf-8,${encodedUri}`);
-  link.setAttribute('download', fileName);
-  document.body.appendChild(link); // Required for FF
-  link.click();
-  document.body.removeChild(link); // Required for FF
-  Notify.create('Данные успешно выгружены');
+  exportFile(fileName, JSON.stringify(mainStore.savedData));
 };
 
-const backupFile = async () => {
+const backupFile = () => (
+  Filesystem.writeFile({
+    directory: Directory.Documents,
+    path: `Training Diary/${fileName}`,
+    recursive: true,
+    encoding: Encoding.UTF8,
+    data: JSON.stringify(mainStore.savedData),
+  })
+);
+
+const backup = async () => {
   try {
-    await Filesystem.writeFile({
-      directory: Directory.Documents,
-      path: `Training Diary/${fileName}`,
-      recursive: true,
-      encoding: Encoding.UTF8,
-      data: JSON.stringify(mainStore.savedData),
-    });
+    if (Platform.is.capacitor) await backupFile();
+    else backupWeb();
     Notify.create('Данные успешно выгружены');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     Notify.create({ color: 'negative', caption: 'Не удалось выгрузить данные', timeout: 1000 });
   }
-};
-
-const backup = () => {
-  if (Platform.is.capacitor) backupFile();
-  else backupWeb();
 };
 
 const setDarkMode = (value: boolean|'auto') => {

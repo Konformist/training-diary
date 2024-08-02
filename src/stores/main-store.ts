@@ -12,17 +12,17 @@ import MuscleModel from 'src/core/entities/muscle/MuscleModel';
 import { IMuscleStruct } from 'src/core/entities/muscle/MuscleStruct';
 import TagModel from 'src/core/entities/tag/TagModel';
 import { ITagStruct } from 'src/core/entities/tag/TagStruct';
-import { TrainingExerciseStruct } from 'src/core/entities/training-exercise/TrainingExerciseStruct';
 import TrainingExerciseModel from 'src/core/entities/training-exercise/TrainingExerciseModel';
+import { TrainingExerciseStruct } from 'src/core/entities/training-exercise/TrainingExerciseStruct';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 import { ITrainingStruct } from 'src/core/entities/training/TrainingStruct';
-import { version, productName } from '../../package.json';
+import { productName, version } from '../../package.json';
 // eslint-disable-next-line import/no-relative-packages
 import { App } from '../../src-capacitor/node_modules/@capacitor/app';
 // eslint-disable-next-line import/no-relative-packages
-import { CapacitorHttp, Capacitor } from '../../src-capacitor/node_modules/@capacitor/core';
+import { Capacitor, CapacitorHttp } from '../../src-capacitor/node_modules/@capacitor/core';
 // eslint-disable-next-line import/no-relative-packages
-import { Directory, Filesystem, Encoding } from '../../src-capacitor/node_modules/@capacitor/filesystem';
+import { Directory, Encoding, Filesystem } from '../../src-capacitor/node_modules/@capacitor/filesystem';
 
 export interface IStorageTraining {
   version: number
@@ -117,8 +117,8 @@ export const useMainStore = defineStore('main', {
       this.equipments = (value.equipments || []).map((e) => new EquipmentModel(e));
       this.exercises = (value.exercises || []).map((e) => new ExerciseModel(e));
       this.tags = (value.tags || []).map((e) => new TagModel(e));
-      this.trainings = (value.trainings || []).map((e) => new TrainingModel(e));
       this.trainingExercises = (value.trainingExercises || []).map((e) => new TrainingExerciseModel(e));
+      this.trainings = (value.trainings || []).map((e) => new TrainingModel(e));
     },
 
     async migrationDB() {

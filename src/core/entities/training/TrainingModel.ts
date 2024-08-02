@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import EntityModel from 'src/core/entities/EntityModel';
 import { TEntityModel } from 'src/core/entities/EntityStruct';
 import { ITrainingStruct } from 'src/core/entities/training/TrainingStruct';

@@ -71,10 +71,10 @@
             :class="item.id === current.id ? 'bg-primary' : ''"
           >
             <q-item-section>{{ item.bind_next || item.bind_prev ? 'Да' : 'Нет' }}</q-item-section>
-            <q-item-section>{{ item.rest_time || '-' }}</q-item-section>
-            <q-item-section>{{ item.approaches || '-' }}</q-item-section>
-            <q-item-section>{{ item.repetitions || '-' }}</q-item-section>
-            <q-item-section>{{ item.weight || '-' }}</q-item-section>
+            <q-item-section>{{ item.rest_time || '—' }}</q-item-section>
+            <q-item-section>{{ item.approaches || '—' }}</q-item-section>
+            <q-item-section>{{ item.repetitions || '—' }}</q-item-section>
+            <q-item-section>{{ item.weight || '—' }}</q-item-section>
           </q-item>
         </q-list>
       </q-card-section>
@@ -114,15 +114,24 @@ const current = computed(() => (
 ));
 
 const training = computed(() => mainStore.trainings.find((e) => e.id === current.value.training_id));
+const trainingsIds = computed(() => (
+  mainStore.trainings
+    .filter((e) => e.tag_id === training.value?.tag_id)
+    .sort((a, b) => a.date - b.date)
+    .map((e) => e.id)
+));
 
 const history = computed(() => (
-  mainStore.trainingExercises
-    .filter((item) => {
-      if (item.exercise_id !== current.value.exercise_id) return false;
+  trainingsIds.value
+    .reduce((acc, cur) => {
+      mainStore.trainingExercises.forEach((e) => {
+        if (e.training_id === cur && e.exercise_id === current.value.exercise_id) {
+          acc.push(e);
+        }
+      });
 
-      const tr = mainStore.trainings.find((e) => e.id === item.training_id);
-      return tr?.tag_id === training.value?.tag_id;
-    })
+      return acc;
+    }, [] as TrainingExerciseModel[])
     .reverse()
 ));
 

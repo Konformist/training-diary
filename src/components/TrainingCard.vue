@@ -6,12 +6,17 @@
     >
       <div
         class="full-height"
-        :class="`bg-${palette[trainingTag?.color]}`"
+        :class="`bg-${palette[trainingTag.color]}`"
         style="width: 8px;"
       />
     </q-item-section>
     <q-item-section>
-      {{ trainingTag ? trainingTag.name : current.name }}
+      <div>
+        {{ trainingTag?.name || current.name || '—' }}
+      </div>
+      <div>
+        Тоннаж {{ totalWeight }} кг
+      </div>
     </q-item-section>
     <q-item-section side>
       {{ date.formatDate(current.date, 'HH:mm') }}
@@ -43,5 +48,12 @@ const current = computed(() => (
 
 const trainingTag = computed(() => (
   mainStore.tags.find((e) => e.id === current.value.tag_id)
+));
+
+const totalWeight = computed(() => (
+  mainStore.trainingExercises
+    .filter((e) => e.training_id === current.value.id)
+    .reduce((acc, cur) => (acc + (cur.approaches * cur.repetitions * cur.weight)), 0)
+    .toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
 ));
 </script>

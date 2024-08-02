@@ -4,7 +4,7 @@
       class="q-mb-sm"
       label="Имя"
       standout
-      v-model="current.name"
+      v-model.lazy.trim="current.name"
       @update:model-value="changed = true"
     />
     <TdFooter
