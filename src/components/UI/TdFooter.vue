@@ -1,10 +1,9 @@
 <template>
-  <q-footer>
-    <q-toolbar class="justify-center q-py-xs">
+  <q-footer elevated>
+    <q-toolbar class="justify-center">
       <q-btn
         v-for="(button, iButton) in buttons"
         :key="iButton"
-        class="q-px-sm"
         :class="button.class"
         flat
         stack

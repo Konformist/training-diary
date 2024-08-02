@@ -1,34 +1,42 @@
 <template>
-  <q-item>
-    <q-item-section
-      v-if="trainingTag?.color"
-      thumbnail
+  <q-card>
+    <q-card-section
+      class="flex items-baseline"
+      :class="trainingTag ? `bg-${palette[trainingTag.color]}-9 text-${paletteText[trainingTag.color]}` : ''"
     >
-      <div
-        class="full-height"
-        :class="`bg-${palette[trainingTag.color]}`"
-        style="width: 8px;"
-      />
-    </q-item-section>
-    <q-item-section>
-      <div>
+      <div class="text-subtitle1 q-pr-md q-space ellipsis">
         {{ trainingTag?.name || current.name || '—' }}
       </div>
-      <div>
-        Тоннаж {{ totalWeight }} кг
+      <div class="text-no-wrap">
+        {{ date.formatDate(current.date, 'DD.MM.YYYY, HH:mm') }}
       </div>
-    </q-item-section>
-    <q-item-section side>
-      {{ date.formatDate(current.date, 'HH:mm') }}
-    </q-item-section>
-  </q-item>
+    </q-card-section>
+    <q-card-section>
+      Тоннаж {{ totalWeight }} кг
+    </q-card-section>
+    <q-card-actions>
+      <q-btn
+        label="Удалить"
+        color="red"
+        flat
+        @click="$emit('delete', current.id)"
+      />
+      <q-space />
+      <q-btn
+        label="Изменить"
+        color="secondary"
+        flat
+        @click="$emit('change', current.id)"
+      />
+    </q-card-actions>
+  </q-card>
 </template>
 
 <script setup lang="ts">
 import { date } from 'quasar';
 import { computed } from 'vue';
 import { useMainStore } from 'stores/main-store';
-import { palette } from 'src/core/dictionaries/colors';
+import { palette, paletteText } from 'src/core/dictionaries/colors';
 import TrainingModel from 'src/core/entities/training/TrainingModel';
 
 const mainStore = useMainStore();
@@ -37,14 +45,15 @@ defineOptions({
   name: 'TrainingCard',
 });
 
+defineEmits<{
+  delete: [number]
+  change: [number]
+}>();
 const props = defineProps<{
-  trainingId: number
+  training: TrainingModel
 }>();
 
-const current = computed(() => (
-  mainStore.trainings.find((e) => e.id === props.trainingId)
-  || new TrainingModel()
-));
+const current = computed(() => (props.training));
 
 const trainingTag = computed(() => (
   mainStore.tags.find((e) => e.id === current.value.tag_id)

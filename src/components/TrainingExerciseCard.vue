@@ -15,7 +15,7 @@
         dense
         flat
         size="small"
-        dropdown-icon="more_vert"
+        dropdown-icon="sym_r_more_vert"
         no-icon-animation
         @click.prevent
       >

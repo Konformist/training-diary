@@ -1,14 +1,13 @@
 <template>
-  <q-page padding>
+  <q-page class="q-pa-md">
     <q-input
-      class="q-mb-sm"
       label="Имя"
       standout
       v-model.lazy.trim="current.name"
       @update:model-value="changed = true"
     />
     <TdFooter
-      :buttons="[{ icon: 'save', text: 'Сохранить', emit: 'save' }]"
+      :buttons="[{ icon: 'sym_r_save', text: 'Сохранить', emit: 'save' }]"
       @save="save()"
     />
   </q-page>

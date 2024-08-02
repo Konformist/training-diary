@@ -1,32 +1,26 @@
 <template>
-  <q-page>
-    <div class="q-pa-sm">
-      <q-date
-        class="full-width"
-        style="height: 400px;"
-        minimal
-        :mask="DATE_MASK"
-        :events="trainingDates"
-        :event-color="eventColor"
-        v-model="selectDate"
-      />
-    </div>
-    <q-list separator>
-      <q-slide-item
+  <q-page class="q-pa-md">
+    <q-date
+      class="full-width"
+      style="height: 400px;"
+      minimal
+      :mask="DATE_MASK"
+      :events="trainingDates"
+      :event-color="eventColor"
+      v-model="selectDate"
+    />
+    <transition-group enter-active-class="animated slideInLeft">
+      <TrainingCard
         v-for="item in list"
         :key="item.id"
-        left-color="red"
-        @left="delItem($event, item.id)"
-        @click="moveItem(item.id)"
-      >
-        <template #left>
-          <q-icon name="delete" />
-        </template>
-        <TrainingCard :training-id="item.id" />
-      </q-slide-item>
-    </q-list>
+        class="q-mt-md"
+        :training="item"
+        @delete="delItem($event)"
+        @change="moveItem($event)"
+      />
+    </transition-group>
     <TdFooter
-      :buttons="[{ icon: 'add', text: 'Добавить', emit: 'add' }]"
+      :buttons="[{ icon: 'sym_r_add', text: 'Добавить', emit: 'add' }]"
       @add="addItem()"
     />
   </q-page>
@@ -80,14 +74,13 @@ const addItem = async () => {
   Notify.create('Успешно добавлено');
 };
 
-const delItem = (event: { reset: () => void }, id: number) => {
+const delItem = (id: number) => {
   $q.dialog({ message: 'Действительно удалить?', cancel: true })
     .onOk(async () => {
       mainStore.delTraining(id);
       await mainStore.saveTrainings();
       Notify.create('Успешно удалено');
-    })
-    .onDismiss(() => { event.reset(); });
+    });
 };
 
 const selectDate = computed({

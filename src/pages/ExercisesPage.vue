@@ -20,7 +20,7 @@
           @click="moveItem(subitem.id)"
         >
           <template #left>
-            <q-icon name="delete" />
+            <q-icon name="sym_r_delete" />
           </template>
           <q-item>
             <q-item-section>
@@ -31,7 +31,7 @@
       </template>
     </q-list>
     <TdFooter
-      :buttons="[{ icon: 'add', text: 'Добавить', emit: 'add' }]"
+      :buttons="[{ icon: 'sym_r_add', text: 'Добавить', emit: 'add' }]"
       @add="addItem()"
     />
   </q-page>

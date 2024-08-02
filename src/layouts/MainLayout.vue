@@ -7,7 +7,7 @@
           flat
           dense
           round
-          icon="menu"
+          icon="sym_r_menu"
           @click="drawerRight = !drawerRight"
         />
         <q-btn
@@ -15,7 +15,7 @@
           flat
           dense
           round
-          icon="arrow_back"
+          icon="sym_r_arrow_back"
           @click="$router.back()"
         />
         <q-toolbar-title>

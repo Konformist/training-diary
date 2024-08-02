@@ -23,10 +23,7 @@
           v-ripple
           :to="item.to"
         >
-          <q-item-section
-            v-if="item.icon"
-            avatar
-          >
+          <q-item-section v-if="item.icon" avatar>
             <q-icon :name="item.icon" />
           </q-item-section>
           <q-item-section avatar>
@@ -55,17 +52,17 @@ interface IMenuItem {
 }
 
 const menuItems: IMenuItem[] = [
-  { text: 'Список тренировок', icon: 'format_list_bulleted', to: { name: 'Trainings' } },
+  { text: 'Список тренировок', icon: 'sym_r_format_list_bulleted', to: { name: 'Trainings' } },
   {
     text: 'Справочники', separator: true,
   },
-  { text: 'Справочник меток', icon: 'label', to: { name: 'Tags' } },
-  { text: 'Справочник мышц', icon: 'attribution', to: { name: 'Muscles' } },
-  { text: 'Справочник экипировки', icon: 'attribution', to: { name: 'Equipments' } },
-  { text: 'Справочник упражнений', icon: 'fitness_center', to: { name: 'Exercises' } },
+  { text: 'Справочник меток', to: { name: 'Tags' } },
+  { text: 'Справочник мышц', to: { name: 'Muscles' } },
+  { text: 'Справочник экипировки', to: { name: 'Equipments' } },
+  { text: 'Справочник упражнений', to: { name: 'Exercises' } },
   {
-    text: 'Настройки', icon: 'settings', to: { name: 'Settings' }, separator: true,
+    text: 'Настройки', icon: 'sym_r_settings', to: { name: 'Settings' }, separator: true,
   },
-  { text: 'О приложении', icon: 'info', to: { name: 'About' } },
+  { text: 'О приложении', icon: 'sym_r_info', to: { name: 'About' } },
 ];
 </script>

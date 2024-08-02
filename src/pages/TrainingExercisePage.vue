@@ -1,7 +1,7 @@
 <template>
-  <q-page padding>
+  <q-page class="q-pa-md">
     <q-select
-      class="q-mb-sm"
+      class="q-mb-md"
       label="Упражнение"
       :options="exerciseItems"
       option-value="id"
@@ -17,7 +17,7 @@
       @new-value="addExercise"
     />
     <q-input
-      class="q-mb-sm"
+      class="q-mb-md"
       label="Отдых"
       mask="##:##"
       standout
@@ -25,7 +25,7 @@
       @update:model-value="changed = true"
     />
     <q-input
-      class="q-mb-sm"
+      class="q-mb-md"
       label="Подходы"
       type="number"
       standout
@@ -33,7 +33,7 @@
       @update:model-value="changed = true"
     />
     <q-input
-      class="q-mb-sm"
+      class="q-mb-md"
       label="Повторы"
       type="number"
       standout
@@ -41,46 +41,42 @@
       @update:model-value="changed = true"
     />
     <q-input
-      class="q-mb-sm"
+      class="q-mb-md"
       label="Вес, кг"
       type="number"
       standout
       v-model.number="current.weight"
       @update:model-value="changed = true"
     />
-    <q-card>
-      <q-card-section>
-        <div class="text-subtitle1">
-          История
-        </div>
-      </q-card-section>
-      <q-separator />
-      <q-card-section class="q-px-none">
-        <q-list dense>
-          <q-item class="text-right">
-            <q-item-section>Суперсет</q-item-section>
-            <q-item-section>Отдых</q-item-section>
-            <q-item-section>Подх.</q-item-section>
-            <q-item-section>Повт.</q-item-section>
-            <q-item-section>Вес, кг</q-item-section>
-          </q-item>
-          <q-item
-            v-for="item in history"
-            :key="item.id"
-            class="text-right"
-            :class="item.id === current.id ? 'bg-primary' : ''"
-          >
-            <q-item-section>{{ item.bind_next || item.bind_prev ? 'Да' : 'Нет' }}</q-item-section>
-            <q-item-section>{{ item.rest_time || '—' }}</q-item-section>
-            <q-item-section>{{ item.approaches || '—' }}</q-item-section>
-            <q-item-section>{{ item.repetitions || '—' }}</q-item-section>
-            <q-item-section>{{ item.weight || '—' }}</q-item-section>
-          </q-item>
-        </q-list>
-      </q-card-section>
-    </q-card>
+    <q-markup-table>
+      <caption class="q-py-sm">
+        История
+      </caption>
+      <thead>
+        <tr class="text-center">
+          <th>Суперсет</th>
+          <th>Отдых</th>
+          <th>Подх.</th>
+          <th>Повт.</th>
+          <th>Вес, кг</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="item in history"
+          :key="item.id"
+          :class="item.id === current.id ? 'bg-primary' : ''"
+        >
+          <td class="text-center">{{ item.bind_next || item.bind_prev ? 'Да' : 'Нет' }}</td>
+          <td class="text-center">{{ item.rest_time || '—' }}</td>
+          <td class="text-right">{{ item.approaches || '—' }}</td>
+          <td class="text-right">{{ item.repetitions || '—' }}</td>
+          <td class="text-right">{{ item.weight || '—' }}</td>
+        </tr>
+      </tbody>
+    </q-markup-table>
     <TdFooter
-      :buttons="[{ icon: 'save', text: 'Сохранить', emit: 'save' }]"
+      :buttons="[{ icon: 'sym_r_save', text: 'Сохранить', emit: 'save' }]"
       @save="save()"
     />
   </q-page>

@@ -12,7 +12,7 @@ defineOptions({
 
 Notify.setDefaults({
   color: 'green',
-  actions: [{ icon: 'close', color: 'white' }],
+  actions: [{ icon: 'sym_r_close', color: 'white' }],
 });
 
 const mainStore = useMainStore();

@@ -1,28 +1,27 @@
 <template>
-  <q-page padding>
+  <q-page class="q-pa-md">
     <q-input
-      class="q-mb-sm"
+      class="q-mb-md"
       label="Имя"
       standout
       v-model.lazy.trim="current.name"
       @update:model-value="changed = true"
     />
     <TdSelect
-      class="q-mb-sm"
+      class="q-mb-md"
       label="Мышца"
       :options="musclesItems"
       v-model="current.muscle_group_id"
       @update:model-value="changed = true"
     />
     <TdSelect
-      class="q-mb-sm"
       label="Инвентарь"
       :options="equipmentsItems"
       v-model="current.equipment_id"
       @update:model-value="changed = true"
     />
     <TdFooter
-      :buttons="[{ icon: 'save', text: 'Сохранить', emit: 'save' }]"
+      :buttons="[{ icon: 'sym_r_save', text: 'Сохранить', emit: 'save' }]"
       @save="save()"
     />
   </q-page>

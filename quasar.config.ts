@@ -35,7 +35,8 @@ export default configure((/* ctx */) => ({
     // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
     'roboto-font', // optional, you are not bound to it
-    'material-icons', // optional, you are not bound to it
+    // 'material-icons', // optional, you are not bound to it
+    'material-symbols-rounded',
   ],
 
   // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
@@ -84,24 +85,23 @@ export default configure((/* ctx */) => ({
 
   // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
   framework: {
-    lang: 'ru',
     config: {
       dark: 'auto',
       brand: {
         primary: '#a30000',
-        secondary: '#5200a3',
-        accent: '#0000a3',
-        dark: '#1d1d1d',
-        'dark-page': '#121212',
-        positive: '#21BA45',
-        negative: '#C10015',
-        info: '#31CCEC',
-        warning: '#F2C037',
+        secondary: '#1b5e20',
+        accent: '#283593',
+        dark: '#2d1d1d',
+        'dark-page': '#221212',
+        positive: '#558b2f',
+        negative: '#c62828',
+        info: '#1565c0',
+        warning: '#f9a825',
       },
     },
 
-    iconSet: 'material-icons', // Quasar icon set
-    // lang: 'en-US', // Quasar language pack
+    iconSet: 'material-symbols-rounded', // Quasar icon set
+    lang: 'ru', // Quasar language pack
 
     // For special cases outside of where the auto-import strategy can have an impact
     // (like functional components as one of the examples),
@@ -120,7 +120,7 @@ export default configure((/* ctx */) => ({
 
   // animations: 'all', // --- includes all animations
   // https://v2.quasar.dev/options/animations
-  animations: [],
+  animations: ['slideInLeft'],
 
   // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#sourcefiles
   // sourceFiles: {

@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page class="q-pa-md">
     <q-input
       class="q-mb-lg"
       label="Имя"
@@ -10,7 +10,7 @@
     <p class="q-mb-sm">
       Цвет метки
     </p>
-    <div class="q-mb-lg">
+    <div>
       <q-radio
         v-for="item in paletteItems"
         :key="item.id"
@@ -21,7 +21,7 @@
       />
     </div>
     <TdFooter
-      :buttons="[{ icon: 'save', text: 'Сохранить', emit: 'save' }]"
+      :buttons="[{ icon: 'sym_r_save', text: 'Сохранить', emit: 'save' }]"
       @save="save()"
     />
   </q-page>

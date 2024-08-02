@@ -1,22 +1,22 @@
 <template>
   <q-page>
-    <div class="q-pa-sm">
+    <div class="q-pa-md">
       <q-input
-        class="q-mb-sm"
+        class="q-mb-md"
         label="Название тренировки"
         standout
         v-model.lazy.trim="current.name"
         @update:model-value="changed = true"
       />
       <TdSelect
-        class="q-mb-sm"
+        class="q-mb-md"
         label="Метка"
         :options="tagsItems"
         v-model="current.tag_id"
         @update:model-value="changed = true"
       />
       <q-input
-        class="q-mb-sm"
+        class="q-mb-md"
         label="Дата и время тренировки"
         type="datetime-local"
         standout
@@ -48,7 +48,7 @@
           @left="delExercise($event, item.id)"
         >
           <template #left>
-            <q-icon name="delete" />
+            <q-icon name="sym_r_delete" />
           </template>
           <TrainingExerciseCard
             :has-prev="index !== 0"
@@ -64,9 +64,9 @@
     </q-list>
     <TdFooter
       :buttons="[
-        { icon: 'save', text: 'Сохранить', emit: 'save' },
-        { icon: 'content_copy', text: 'Копировать', emit: 'copy' },
-        { icon: 'add', text: 'Добавить', emit: 'add' },
+        { icon: 'sym_r_save', text: 'Сохранить', emit: 'save' },
+        { icon: 'sym_r_content_copy', text: 'Копировать', emit: 'copy' },
+        { icon: 'sym_r_add', text: 'Добавить', emit: 'add' },
       ]"
       @save="save()"
       @copy="copy()"
