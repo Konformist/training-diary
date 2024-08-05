@@ -1,4 +1,4 @@
-import { IEntityStruct } from 'src/core/entities/EntityStruct';
+import { IEntityStruct } from '@/core/entities/EntityStruct'
 
 /** Метка тренировки */
 export interface ITagStruct extends IEntityStruct {

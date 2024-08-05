@@ -1,37 +1,37 @@
-import EntityModel from 'src/core/entities/EntityModel';
-import { TEntityModel } from 'src/core/entities/EntityStruct';
-import { TrainingExerciseStruct } from 'src/core/entities/training-exercise/TrainingExerciseStruct';
+import EntityModel from '@/core/entities/EntityModel'
+import { TEntityModel } from '@/core/entities/EntityStruct'
+import { ITrainingExerciseStruct } from '@/core/entities/training-exercise/ITrainingExerciseStruct'
 
-export default class TrainingExerciseModel extends EntityModel implements TEntityModel<TrainingExerciseStruct> {
-  training_id: number;
+export default class TrainingExerciseModel extends EntityModel implements TEntityModel<ITrainingExerciseStruct> {
+  training_id: number
 
-  exercise_id: number;
+  exercise_id: number
 
-  approaches: number;
+  approaches: number
 
-  repetitions: number;
+  repetitions: number
 
-  weight: number;
+  weight: number
 
-  rest_time: string;
+  rest_time: string
 
-  bind_next: number;
+  bind_next: number
 
-  bind_prev: number;
+  bind_prev: number
 
-  constructor(struct?: TrainingExerciseStruct) {
-    super(struct);
-    this.training_id = struct?.training_id ?? 0;
-    this.exercise_id = struct?.exercise_id ?? 0;
-    this.approaches = struct?.approaches ?? 0;
-    this.repetitions = struct?.repetitions ?? 0;
-    this.weight = struct?.weight ?? 0;
-    this.bind_next = struct?.bind_next ?? 0;
-    this.bind_prev = struct?.bind_prev ?? 0;
-    this.rest_time = struct?.rest_time ?? '';
+  constructor (struct?: ITrainingExerciseStruct) {
+    super(struct)
+    this.training_id = struct?.training_id ?? 0
+    this.exercise_id = struct?.exercise_id ?? 0
+    this.approaches = struct?.approaches ?? 0
+    this.repetitions = struct?.repetitions ?? 0
+    this.weight = struct?.weight ?? 0
+    this.bind_next = struct?.bind_next ?? 0
+    this.bind_prev = struct?.bind_prev ?? 0
+    this.rest_time = struct?.rest_time ?? ''
   }
 
-  getStruct() {
+  getStruct () {
     return {
       ...super.getStruct(),
       training_id: this.training_id,
@@ -42,6 +42,6 @@ export default class TrainingExerciseModel extends EntityModel implements TEntit
       rest_time: this.rest_time,
       bind_next: this.bind_next,
       bind_prev: this.bind_prev,
-    };
+    }
   }
 }

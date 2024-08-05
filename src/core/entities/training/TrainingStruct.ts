@@ -1,4 +1,4 @@
-import { IEntityStruct } from 'src/core/entities/EntityStruct';
+import { IEntityStruct } from '@/core/entities/EntityStruct'
 
 /** Тренировка */
 export interface ITrainingStruct extends IEntityStruct {

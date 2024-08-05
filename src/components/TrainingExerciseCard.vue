@@ -1,111 +1,121 @@
 <template>
-  <q-item :to="{ name: 'TrainingExercise', params: { id: current.id } }">
-    <q-item-section>
-      <div class="full-width ellipsis">
-        {{ exerciseName || 'Не выбрано' }}
-      </div>
-      <div v-if="exerciseStat">
-        {{ exerciseInfo }}
-      </div>
-    </q-item-section>
-    <q-item-section side>
-      <q-btn-dropdown
-        class="q-ml-sm"
-        round
-        dense
-        flat
-        size="small"
-        dropdown-icon="sym_r_more_vert"
-        no-icon-animation
-        @click.prevent
-      >
-        <q-list v-close-popup>
-          <q-item
-            clickable
-            v-ripple
-            :disable="!hasPrev"
-            @click="setBindPrev()"
-          >
-            <q-item-section>
-              {{ current.bind_prev ? 'Отвязать от суперсета с предыдущим' : 'Связать в суперсет с предыдущим' }}
-            </q-item-section>
-          </q-item>
-          <q-item
-            clickable
-            v-ripple
-            :disable="!hasNext"
-            @click="setBindNext()"
-          >
-            <q-item-section>
-              {{ current.bind_next ? 'Отвязать от суперсета со следующим' : 'Связать в суперсет со следующим' }}
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-btn-dropdown>
-    </q-item-section>
-  </q-item>
+  <v-list-item @click.self="movePage()">
+    <v-list-item-title @click="movePage()">
+      {{ exerciseName || 'Не выбрано' }}
+    </v-list-item-title>
+    <v-list-item-subtitle @click="movePage()">
+      {{ exerciseInfo }}
+    </v-list-item-subtitle>
+    <template #append>
+      <v-list-item-action end>
+        <v-menu>
+          <template #activator="{ props: activatorProps }">
+            <v-btn color="white" icon="$dots-vertical" variant="text" v-bind="activatorProps" />
+          </template>
+          <v-list>
+            <v-list-item
+              :disabled="!hasPrev"
+              :title="current.bind_prev ? 'Отвязать от суперсета с предыдущим' : 'Связать в суперсет с предыдущим'"
+              @click="setBindPrev()"
+            />
+            <v-list-item
+              :disabled="!hasNext"
+              :title="current.bind_next ? 'Отвязать от суперсета со следующим' : 'Связать в суперсет со следующим'"
+              @click="setBindNext()"
+            />
+            <v-dialog max-width="500">
+              <template #activator="{ props: activatorProps }">
+                <v-list-item
+                  class="text-red"
+                  title="Удалить"
+                  v-bind="activatorProps"
+                />
+              </template>
+              <template #default="{ isActive }">
+                <v-card title="Внимание!">
+                  <v-card-text>
+                    Действительно удалить?
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn
+                      color="secondary"
+                      text="Нет"
+                      @click="isActive.value = false"
+                    />
+                    <v-btn
+                      text="Да"
+                      @click="$emit('delete', current.id)"
+                    />
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
+          </v-list>
+        </v-menu>
+      </v-list-item-action>
+    </template>
+  </v-list-item>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useMainStore } from 'stores/main-store';
-import TrainingExerciseModel from 'src/core/entities/training-exercise/TrainingExerciseModel';
+  import { computed } from 'vue'
+  import { useAppStore } from '@/stores/app'
+  import TrainingExerciseModel from '@/core/entities/training-exercise/TrainingExerciseModel'
 
-defineOptions({
-  name: 'TrainingExerciseCard',
-});
+  const emit = defineEmits<{
+    'bindNext': [number]
+    'unbindNext': [number]
+    'bindPrev': [number]
+    'unbindPrev': [number]
+    'delete': [number]
+  }>()
 
-const emit = defineEmits<{
-  'bind-next': [void]
-  'unbind-next': [void]
-  'bind-prev': [void]
-  'unbind-prev': [void]
-}>();
+  const props = defineProps<{
+    hasNext?: boolean
+    hasPrev?: boolean
+    exercise: TrainingExerciseModel
+  }>()
 
-const props = defineProps<{
-  hasNext?: boolean
-  hasPrev?: boolean
-  exerciseId: number
-}>();
+  const appStore = useAppStore()
+  const router = useRouter()
 
-const mainStore = useMainStore();
+  const current = computed(() => props.exercise)
 
-const current = computed(() => (
-  mainStore.trainingExercises.find((e) => e.id === props.exerciseId)
-  || new TrainingExerciseModel()
-));
-
-const exerciseName = computed(() => (
-  mainStore.exercises.find((e) => e.id === current.value.exercise_id)?.name || ''
-));
-
-const exerciseStat = computed(() => ([
-  current.value.approaches,
-  current.value.repetitions,
-  current.value.weight,
-].join('x')));
-
-const exerciseInfo = computed(() => {
-  const ret = [];
-  if (current.value.bind_prev || current.value.bind_next) ret.push('Суперсет');
-  if (current.value.rest_time) ret.push(current.value.rest_time);
-  ret.push(exerciseStat.value);
-  return ret.join(' ');
-});
-
-const setBindPrev = () => {
-  if (current.value.bind_prev) {
-    emit('unbind-prev');
-  } else {
-    emit('bind-prev');
+  const movePage = () => {
+    router.push({ name: '/training-exercises/[id]', params: { id: current.value.id } })
   }
-};
 
-const setBindNext = () => {
-  if (current.value.bind_next) {
-    emit('unbind-next');
-  } else {
-    emit('bind-next');
+  const exerciseName = computed(() => (
+    appStore.exercises.find(e => e.id === current.value.exercise_id)?.name || ''
+  ))
+
+  const exerciseStat = computed(() => ([
+    current.value.approaches,
+    current.value.repetitions,
+    current.value.weight,
+  ].join('x')))
+
+  const exerciseInfo = computed(() => {
+    const ret = []
+    if (current.value.bind_prev || current.value.bind_next) ret.push('Суперсет')
+    if (current.value.rest_time) ret.push(current.value.rest_time)
+    ret.push(exerciseStat.value)
+    return ret.join(' ')
+  })
+
+  const setBindPrev = () => {
+    if (current.value.bind_prev) {
+      emit('unbindPrev', current.value.id)
+    } else {
+      emit('bindPrev', current.value.id)
+    }
   }
-};
+
+  const setBindNext = () => {
+    if (current.value.bind_next) {
+      emit('unbindNext', current.value.id)
+    } else {
+      emit('bindNext', current.value.id)
+    }
+  }
 </script>

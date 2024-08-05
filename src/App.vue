@@ -1,29 +1,54 @@
 <template>
   <router-view />
+  <v-snackbar-queue
+    v-model="appStore.toasts"
+    close-on-content-click
+    color="success"
+    :timeout="2000"
+  >
+    <template #actions>
+      <v-icon class="mr-2" icon="$window-close" />
+    </template>
+  </v-snackbar-queue>
+  <v-dialog v-model="dialog">
+    <v-card>
+      <v-card-title />
+      <v-card-text>
+        Доступна новая версия, скачать?
+      </v-card-text>
+      <v-card-actions>
+        <v-btn
+          color="secondary"
+          text="Нет"
+          @click="dialog = false"
+        />
+        <v-btn
+          download
+          :href="fileVersionLink"
+          text="Да"
+          @click="dialog = false"
+        />
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
-<script setup lang="ts">
-import { Notify } from 'quasar';
-import { useMainStore } from 'stores/main-store';
+<script lang="ts" setup>
+  import { useAppStore } from '@/stores/app'
 
-defineOptions({
-  name: 'App',
-});
+  const appStore = useAppStore()
 
-Notify.setDefaults({
-  color: 'green',
-  actions: [{ icon: 'sym_r_close', color: 'white' }],
-});
+  const dialog = ref(false)
+  const fileVersionLink = ref('')
 
-const mainStore = useMainStore();
+  const init = async () => {
+    await appStore.getPlatformInfo()
+    appStore.loadSettings()
+    await appStore.loadTrainings()
+    await appStore.migrationDB()
+    fileVersionLink.value = await appStore.checkVersion()
+    dialog.value = !!fileVersionLink.value
+  }
 
-const init = async () => {
-  await mainStore.getPlatformInfo();
-  mainStore.loadSettings();
-  await mainStore.loadTrainings();
-  await mainStore.migrationDB();
-  mainStore.checkVersion();
-};
-
-init();
+  init()
 </script>

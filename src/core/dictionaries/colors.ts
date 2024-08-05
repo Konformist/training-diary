@@ -12,8 +12,9 @@ const arr = [
   ['green', 'white'],
   ['light-green', 'white'],
   ['lime', 'white'],
-  ['yellow', 'dark'],
+  ['yellow', 'black'],
   ['amber', 'white'],
-];
-export const paletteText = arr.map((e) => e[1]);
-export const palette = arr.map((e) => e[0]);
+]
+
+export const paletteText = arr.map(e => e[1])
+export const palette = arr.map(e => e[0])
