@@ -9,14 +9,14 @@
       />
       <v-select
         v-model="current.muscle_group_id"
+        :items="musclesItems"
         label="Мышца"
-        :options="musclesItems"
         @update:model-value="changed = true"
       />
       <v-select
         v-model="current.equipment_id"
+        :items="equipmentsItems"
         label="Инвентарь"
-        :options="equipmentsItems"
         @update:model-value="changed = true"
       />
     </v-container>

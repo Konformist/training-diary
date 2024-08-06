@@ -4,7 +4,6 @@
   "description": "Diary",
   "productName": "Training Diary",
   "author": "Konformist <konstantin.yakovlev.8888@gmail.com>",
-  "type": "module",
   "private": true,
   "scripts": {
     "dev": "vite --host",
