@@ -17,6 +17,7 @@ export default defineConfig({
   },
   plugins: [
     VueRouter({
+      importMode: 'sync',
       dts: 'src/typed-router.d.ts',
     }),
     AutoImport({
