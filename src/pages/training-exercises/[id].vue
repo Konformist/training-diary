@@ -1,5 +1,5 @@
 <template>
-  <TdLayout is-back title="Изменение упражнения">
+  <v-main>
     <v-container class="pa-0 pb-16">
       <div class="pa-4 pb-0">
         <v-autocomplete
@@ -40,7 +40,7 @@
           @update:model-value="changed = true"
         />
       </div>
-      <v-table>
+      <v-table class="mb-4">
         <caption class="py-3">
           История
         </caption>
@@ -68,18 +68,16 @@
         </tbody>
       </v-table>
     </v-container>
-    <template #footer>
-      <v-fab
-        app
-        appear
-        class="me-4"
-        icon="$content-save"
-        location="bottom end"
-        size="large"
-        @click="save()"
-      />
-    </template>
-  </TdLayout>
+    <v-fab
+      app
+      appear
+      class="me-4"
+      icon="$content-save"
+      location="bottom end"
+      size="large"
+      @click="save()"
+    />
+  </v-main>
 </template>
 
 <script setup lang="ts">
@@ -87,9 +85,12 @@
   import { useAppStore } from '@/stores/app'
   import { isIncludeString } from '@/core/utils/strings'
   import TrainingExerciseModel from '@/core/entities/training-exercise/TrainingExerciseModel'
-  import { computed, ref } from 'vue'
-  import { onBeforeRouteLeave, useRoute } from 'vue-router'
+  import { onBeforeRouteLeave } from 'vue-router'
   import { IMask } from 'vue-imask'
+
+  definePage({
+    meta: { title: 'Изменение упражнения', isBack: true },
+  })
 
   const route = useRoute()
   const appStore = useAppStore()

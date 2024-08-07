@@ -1,11 +1,11 @@
 <template>
-  <TdLayout is-back title="Изменение тренировки">
+  <v-main>
     <v-container class="pb-16">
       <div class="q-pa-md">
         <v-text-field
           v-model="current.name"
           label="Название тренировки"
-          @change="current.name = $event.trim()"
+          @change="current.name = current.name.trim()"
           @update:model-value="changed = true"
         />
         <v-select
@@ -24,11 +24,11 @@
           label="Комментарий к тренировке"
           max-rows="4"
           rows="1"
-          @change="current.comment = $event.trim()"
+          @change="current.comment = current.comment.trim()"
           @update:model-value="changed = true"
         />
       </div>
-      <v-card>
+      <v-card class="mb-4">
         <v-list>
           <v-list-subheader>
             Упражнения
@@ -52,37 +52,36 @@
         </v-list>
       </v-card>
     </v-container>
-    <template #footer>
-      <v-speed-dial
-        location="top end"
-        transition="fade-transition"
-      >
-        <template #activator="{ props: activatorProps, isActive }">
-          <v-fab
-            v-bind="activatorProps"
-            app
-            appear
-            :icon="isActive ? '$window-close' : '$plus'"
-            location="bottom end"
-            size="large"
-          />
-        </template>
-        <v-btn key="save" class="mr-2" icon="$content-save" @click="save()" />
-        <v-btn key="copy" class="mr-2" icon="$content-copy" @click="copy()" />
-        <v-btn key="add" class="mr-2" icon="$plus" @click="addExercise()" />
-      </v-speed-dial>
-    </template>
-  </TdLayout>
+    <v-speed-dial
+      location="top end"
+      transition="fade-transition"
+    >
+      <template #activator="{ props: activatorProps, isActive }">
+        <v-fab
+          v-bind="activatorProps"
+          app
+          appear
+          :icon="isActive ? '$window-close' : '$plus'"
+          location="bottom end"
+          size="large"
+        />
+      </template>
+      <v-btn key="save" class="mr-2" icon="$content-save" @click="save()" />
+      <v-btn key="copy" class="mr-2" icon="$content-copy" @click="copy()" />
+      <v-btn key="add" class="mr-2" icon="$plus" @click="addExercise()" />
+    </v-speed-dial>
+  </v-main>
 </template>
 
 <script setup lang="ts">
-  import TdDateInput from '@/components/UI/TdDateInput.vue'
   import { withZero } from '@/core/utils/items'
   import { useAppStore } from '@/stores/app'
   import TrainingModel from '@/core/entities/training/TrainingModel'
-  import TrainingExerciseCard from '@/components/TrainingExerciseCard.vue'
-  import { computed, ref } from 'vue'
-  import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
+  import { onBeforeRouteLeave } from 'vue-router'
+
+  definePage({
+    meta: { title: 'Изменение тренировки', isBack: true },
+  })
 
   const route = useRoute()
   const router = useRouter()

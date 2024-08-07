@@ -1,5 +1,5 @@
 <template>
-  <TdLayout title="Настройки">
+  <v-main>
     <v-container>
       <v-label class="mb-4" text="Тема приложения" />
       <v-btn-toggle
@@ -25,16 +25,19 @@
         @click="backup()"
       />
     </v-container>
-  </TdLayout>
+  </v-main>
 </template>
 
 <script setup lang="ts">
   import { StoreNames } from '@/core/dictionaries/storeNames'
   import { fileToJson } from '@/core/utils/files'
   import { IStorageTraining, useAppStore } from '@/stores/app'
-  import { ref } from 'vue'
   import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'
   import { useTheme } from 'vuetify'
+
+  definePage({
+    meta: { title: 'Настройки' },
+  })
 
   const theme = useTheme()
   const appStore = useAppStore()

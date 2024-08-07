@@ -1,5 +1,5 @@
 <template>
-  <TdLayout :title="appStore.appInfo.name">
+  <v-main>
     <v-container class="pb-16">
       <TdDatePicker
         v-model="appStore.selectDate"
@@ -17,23 +17,19 @@
         />
       </v-slide-x-transition>
     </v-container>
-    <template #footer>
-      <v-fab
-        app
-        appear
-        class="me-4"
-        icon="$plus"
-        location="bottom end"
-        size="large"
-        @click="addItem()"
-      />
-    </template>
-  </TdLayout>
+    <v-fab
+      app
+      appear
+      class="me-4"
+      icon="$plus"
+      location="bottom end"
+      size="large"
+      @click="addItem()"
+    />
+  </v-main>
 </template>
 
 <script lang="ts" setup>
-  import TrainingCard from '@/components/TrainingCard.vue'
-  import TdDatePicker from '@/components/UI/TdDatePicker.vue'
   import { palette } from '@/core/dictionaries/colors'
   import { sortByFields } from '@/core/utils/arrays'
   import { useAppStore } from '@/stores/app'

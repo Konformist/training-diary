@@ -1,14 +1,14 @@
 <template>
-  <TdLayout is-back title="Изменение метки">
+  <v-main>
     <v-container class="pb-16">
       <v-text-field
         v-model="current.name"
         label="Имя"
-        @change="current.name = $event.trim()"
+        @change="current.name = current.name.trim()"
         @update:model-value="changed = true"
       />
       <v-label class="mb-1" text="Цвет метки" />
-      <v-chip-group v-model="current.color" column>
+      <v-chip-group v-model="current.color" column @update:model-value="changed = true">
         <v-chip
           v-for="item in paletteItems"
           :key="item.id"
@@ -19,26 +19,27 @@
         />
       </v-chip-group>
     </v-container>
-    <template #footer>
-      <v-fab
-        app
-        appear
-        class="me-4"
-        icon="$content-save"
-        location="bottom end"
-        size="large"
-        @click="save()"
-      />
-    </template>
-  </TdLayout>
+    <v-fab
+      app
+      appear
+      class="me-4"
+      icon="$content-save"
+      location="bottom end"
+      size="large"
+      @click="save()"
+    />
+  </v-main>
 </template>
 
 <script setup lang="ts">
   import { palette } from '@/core/dictionaries/colors'
   import TagModel from '@/core/entities/tag/TagModel'
   import { useAppStore } from '@/stores/app'
-  import { computed, ref } from 'vue'
-  import { onBeforeRouteLeave, useRoute } from 'vue-router'
+  import { onBeforeRouteLeave } from 'vue-router'
+
+  definePage({
+    meta: { title: 'Изменение метки', isBack: true },
+  })
 
   const route = useRoute()
   const appStore = useAppStore()
