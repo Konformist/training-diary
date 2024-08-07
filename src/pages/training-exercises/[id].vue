@@ -16,6 +16,7 @@
             mm: { mask: IMask.MaskedRange, from: 0, to: 60, autofix: true },
             ss: { mask: IMask.MaskedRange, from: 0, to: 60, autofix: true },
           }"
+          inputmode="numeric"
           label="Отдых"
           mask="mm:ss"
           @update:model-value="changed = true"

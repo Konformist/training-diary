@@ -17,11 +17,11 @@
       title="Здесь ничего нет"
     />
     <v-container v-else class="pb-16">
-      <v-slide-x-transition group>
+      <v-slide-x-transition group leave-absolute>
         <TrainingCard
-          v-for="(item, index) in list"
+          v-for="item in list"
           :key="item.id"
-          :class="index ? 'mt-4' : ''"
+          class="mb-4"
           :training="item"
           @change="moveItem($event)"
           @delete="delItem($event)"

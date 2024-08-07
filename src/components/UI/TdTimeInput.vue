@@ -42,8 +42,10 @@
 
   const sendValue = (val: string) => {
     const [hours, minutes] = val.split(':')
-    let newDate = date.setHours(props.modelValue, +hours) as Date
-    newDate = date.setMinutes(newDate, +minutes) as Date
+    const newDate = date.date(props.modelValue) as Date
+    newDate.setHours(+hours)
+    newDate.setMinutes(+minutes)
+    newDate.setSeconds(0)
     emit('update:modelValue', newDate)
     emit('change', newDate)
   }

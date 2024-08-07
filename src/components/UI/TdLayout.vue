@@ -49,17 +49,14 @@
       <slot />
     </v-main>
     <v-bottom-navigation grow tag="footer">
-      <v-btn class="w-0" :to="{ name: '/' }">
-        <v-icon icon="$home" />
-        <span class="text-caption">Главная</span>
-      </v-btn>
-      <v-btn class="w-0" :to="{ name: '/trainings/' }">
-        <v-icon icon="$format-list-bulleted" />
-        <span class="text-caption">Тренировки</span>
-      </v-btn>
-      <v-btn class="w-0" :to="{ name: '/settings' }">
-        <v-icon icon="$cog" />
-        <span class="text-caption">Настройки</span>
+      <v-btn
+        v-for="btn in footerItems"
+        :key="btn.text"
+        class="w-0"
+        :to="btn.to"
+      >
+        <v-icon :icon="btn.icon" />
+        <span class="text-caption">{{ btn.text }}</span>
       </v-btn>
     </v-bottom-navigation>
     <slot name="footer" />
@@ -99,5 +96,17 @@
     { text: 'Справочник упражнений', icon: '$list-box', to: { name: '/exercises/' } },
     { text: 'Настройки', icon: '$cog', to: { name: '/settings' }, separator: true },
     { text: 'О приложении', icon: '$information', to: { name: '/about' } },
+  ]
+
+  interface IFooterItem {
+    text: string
+    icon: string
+    to: RouteLocationRaw
+  }
+
+  const footerItems: IFooterItem[] = [
+    { to: { name: '/' }, icon: '$home', text: 'Главная' },
+    { to: { name: '/trainings/' }, icon: '$format-list-bulleted', text: 'Тренировки' },
+    { to: { name: '/settings' }, icon: '$cog', text: 'Настройки' },
   ]
 </script>

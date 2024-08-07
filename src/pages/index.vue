@@ -3,13 +3,14 @@
     <v-container class="pb-16">
       <TdDatePicker
         v-model="appStore.selectDate"
+        class="py-3 mb-4"
         :events="trainingDates"
       />
-      <v-slide-x-transition group>
+      <v-slide-x-transition group leave-absolute>
         <TrainingCard
           v-for="item in list"
           :key="item.id"
-          class="mt-4"
+          class="mb-4"
           :training="item"
           @change="moveItem($event)"
           @delete="delItem($event)"

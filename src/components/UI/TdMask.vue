@@ -8,6 +8,7 @@
         <imask-input
           v-bind="props"
           :blocks="blocks"
+          :inputmode="inputmode"
           :mask="mask"
           :model-value="modelValue"
           @blur="isActive = false"
@@ -24,6 +25,7 @@
     'update:modelValue': [string]
   }>()
   defineProps<{
+    inputmode?: string
     label?: string
     modelValue: string
     mask?: string

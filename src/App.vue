@@ -1,5 +1,7 @@
 <template>
-  <router-view />
+  <router-view v-slot="{ Component, route: routeLocal }">
+    <component :is="Component" :key="routeLocal.path" />
+  </router-view>
   <v-snackbar-queue
     v-model="appStore.toasts"
     close-on-content-click
@@ -37,6 +39,14 @@
   import { useAppStore } from '@/stores/app'
 
   const appStore = useAppStore()
+  const route = useRoute()
+  const router = useRouter()
+
+  window.addEventListener('popstate', evt => {
+    if (evt.state.current !== '/' && !route.name.includes('[id]')) {
+      router.push({ name: '/' })
+    }
+  })
 
   const dialog = ref(false)
   const fileVersionLink = ref('')

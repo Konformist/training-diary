@@ -1,6 +1,6 @@
 <template>
-  <v-card class="overflow-hidden">
-    <div class="d-flex align-center px-3 pb-3">
+  <v-card class="overflow-hidden d-flex flex-column align-center">
+    <div class="d-flex align-center pb-3 px-3" style="width: 328px">
       <v-btn
         :disabled="viewMode !== 'month'"
         icon="$chevron-left"

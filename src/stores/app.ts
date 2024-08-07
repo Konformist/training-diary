@@ -217,7 +217,6 @@ export const useAppStore = defineStore('app', {
       const ids = this.trainings.map(e => e.id)
 
       newItem.id = Math.max(...ids, 0) + 1
-      newItem.date = (new Date()).getTime()
       this.trainings.push(newItem)
 
       this.trainingExercises
