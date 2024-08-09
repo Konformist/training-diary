@@ -35,6 +35,10 @@
   import { useAppStore } from '@/stores/app'
   import { useDate } from 'vuetify'
 
+  definePage({
+    meta: { title: 'Главная' },
+  })
+
   const date = useDate()
   const router = useRouter()
   const appStore = useAppStore()

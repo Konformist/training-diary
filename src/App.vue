@@ -39,7 +39,7 @@
         @click="drawerNav = !drawerNav"
       />
       <v-app-bar-title>
-        {{ route.meta.title || appStore.appInfo.name }}
+        {{ route.meta.title }}
       </v-app-bar-title>
       <template #extension>
         <router-view name="header" />

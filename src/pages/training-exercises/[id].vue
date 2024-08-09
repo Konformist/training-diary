@@ -1,87 +1,87 @@
 <template>
   <v-main>
-    <v-container class="pa-0 pb-16">
-      <div class="pa-4 pb-0">
-        <v-autocomplete
-          v-model="current.exercise_id"
-          v-model:search="searchExercise"
-          :items="exerciseItems"
-          label="Упражнение"
-          @change="addExercise()"
+    <v-container>
+      <v-autocomplete
+        v-model="current.exercise_id"
+        v-model:search="searchExercise"
+        :items="exerciseItems"
+        label="Упражнение"
+        @change="addExercise()"
+        @update:model-value="changed = true"
+      />
+      <div class="d-flex">
+        <TdMask
+          v-model="current.rest_time"
+          :blocks="{
+            mm: { mask: IMask.MaskedRange, from: 0, to: 60, autofix: true },
+            ss: { mask: IMask.MaskedRange, from: 0, to: 60, autofix: true },
+          }"
+          class="mr-4"
+          inputmode="numeric"
+          label="Отдых"
+          mask="mm:ss"
           @update:model-value="changed = true"
         />
-        <div class="d-flex">
-          <TdMask
-            v-model="current.rest_time"
-            :blocks="{
-              mm: { mask: IMask.MaskedRange, from: 0, to: 60, autofix: true },
-              ss: { mask: IMask.MaskedRange, from: 0, to: 60, autofix: true },
-            }"
-            class="mr-4"
-            inputmode="numeric"
-            label="Отдых"
-            mask="mm:ss"
-            @update:model-value="changed = true"
-          />
-          <v-text-field
-            v-model.number="current.approaches"
-            label="Подходы"
-            type="number"
-            @update:model-value="changed = true"
-          />
-        </div>
-        <div class="d-flex">
-          <v-text-field
-            v-model.number="current.repetitions"
-            class="mr-4"
-            label="Повторы"
-            type="number"
-            @update:model-value="changed = true"
-          />
-          <v-text-field
-            v-model.number="current.weight"
-            label="Вес, кг"
-            type="number"
-            @update:model-value="changed = true"
-          />
-        </div>
-        <v-textarea
-          v-model="current.comment"
-          auto-grow
-          label="Комментарий"
-          max-rows="4"
-          rows="1"
-          @change="current.comment = current.comment.trim()"
+        <v-text-field
+          v-model.number="current.approaches"
+          label="Подходы"
+          type="number"
           @update:model-value="changed = true"
         />
       </div>
-      <v-table class="mb-4">
-        <caption class="py-3">
-          История
-        </caption>
-        <thead>
-          <tr class="text-center">
-            <th>Суперсет</th>
-            <th>Отдых</th>
-            <th>Подх.</th>
-            <th>Повт.</th>
-            <th>Вес, кг</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="item in history"
-            :key="item.id"
-            :class="item.id === current.id ? 'bg-primary' : ''"
-          >
-            <td class="text-center">{{ item.bind_next || item.bind_prev ? 'Да' : 'Нет' }}</td>
-            <td class="text-center">{{ item.rest_time || '—' }}</td>
-            <td class="text-right">{{ item.approaches || '—' }}</td>
-            <td class="text-right">{{ item.repetitions || '—' }}</td>
-            <td class="text-right">{{ item.weight || '—' }}</td>
-          </tr>
-        </tbody>
-      </v-table>
+      <div class="d-flex">
+        <v-text-field
+          v-model.number="current.repetitions"
+          class="mr-4"
+          label="Повторы"
+          type="number"
+          @update:model-value="changed = true"
+        />
+        <v-text-field
+          v-model.number="current.weight"
+          label="Вес, кг"
+          type="number"
+          @update:model-value="changed = true"
+        />
+      </div>
+      <v-textarea
+        v-model="current.comment"
+        auto-grow
+        label="Комментарий"
+        max-rows="4"
+        rows="1"
+        @change="current.comment = current.comment.trim()"
+        @update:model-value="changed = true"
+      />
+      <v-card class="mb-4">
+        <v-table>
+          <caption class="py-3">
+            История
+          </caption>
+          <thead>
+            <tr>
+              <th class="text-center">Суперсет</th>
+              <th class="text-center">Отдых</th>
+              <th class="text-center">Под.</th>
+              <th class="text-center">Пов.</th>
+              <th class="text-center">Вес, кг</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="item in history"
+              :key="item.id"
+              :class="item.id === current.id ? 'bg-primary' : ''"
+            >
+              <td class="text-center">{{ item.bind_next || item.bind_prev ? 'Да' : 'Нет' }}</td>
+              <td class="text-center">{{ item.rest_time || '—' }}</td>
+              <td class="text-right">{{ item.approaches || '—' }}</td>
+              <td class="text-right">{{ item.repetitions || '—' }}</td>
+              <td class="text-right">{{ item.weight || '—' }}</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </v-card>
     </v-container>
     <v-fab
       app
