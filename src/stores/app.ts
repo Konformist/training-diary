@@ -33,9 +33,11 @@ export interface IStorageTraining {
   trainingExercises: ITrainingExerciseStruct[]
 }
 
+export type TThemes = 'dark'|'light'
+
 export interface IStorageSettings {
   version: number
-  darkMode: boolean|'auto'
+  darkMode: TThemes
 }
 
 export interface IToast {
@@ -56,7 +58,7 @@ export const useAppStore = defineStore('app', {
     toasts: [] as Array<string|IToast>,
 
     version: VERSION_DB,
-    darkMode: 'auto' as boolean|'auto',
+    darkMode: 'myCustomDarkTheme' as TThemes,
 
     equipments: [] as EquipmentModel[],
     muscles: [] as MuscleModel[],

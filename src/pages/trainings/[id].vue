@@ -63,7 +63,7 @@
     </v-container>
     <v-speed-dial
       location="top end"
-      transition="fade-transition"
+      transition="scale-transition"
     >
       <template #activator="{ props: activatorProps, isActive }">
         <v-fab

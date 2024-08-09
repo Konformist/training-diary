@@ -8,8 +8,8 @@
         color="secondary"
         @update:model-value="setDarkMode($event)"
       >
-        <v-btn class="flex-grow-1" text="Светлая" :value="false" />
-        <v-btn class="flex-grow-1" text="Темная" :value="true" />
+        <v-btn class="flex-grow-1" text="Светлая" value="light" />
+        <v-btn class="flex-grow-1" text="Темная" value="dark" />
       </v-btn-toggle>
       <v-divider class="my-4" />
       <v-label class="mb-4" text="Экспорт и импорт данных" />
@@ -31,7 +31,7 @@
 <script setup lang="ts">
   import { StoreNames } from '@/core/dictionaries/storeNames'
   import { fileToJson } from '@/core/utils/files'
-  import { IStorageTraining, useAppStore } from '@/stores/app'
+  import { IStorageTraining, TThemes, useAppStore } from '@/stores/app'
   import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'
   import { useTheme } from 'vuetify'
 
@@ -89,8 +89,8 @@
     }
   }
 
-  const setDarkMode = (value: boolean|'auto') => {
-    theme.global.name.value = value ? 'myCustomDarkTheme' : 'light'
+  const setDarkMode = (value: TThemes) => {
+    theme.global.name.value = value
     appStore.darkMode = value
     appStore.saveSettings()
   }

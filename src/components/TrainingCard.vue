@@ -1,6 +1,6 @@
 <template>
   <v-card
-    :color="trainingTag ? palette[trainingTag.color] : undefined"
+    :color="trainingColor"
     variant="outlined"
   >
     <v-card-item>
@@ -77,6 +77,13 @@
   const trainingTag = computed(() => (
     appStore.tags.find(e => e.id === current.value.tag_id)
   ))
+
+  const trainingColor = computed(() => {
+    if (!trainingTag.value) return
+    return appStore.darkMode === 'light'
+      ? `${palette[trainingTag.value.color]}-darken-4`
+      : palette[trainingTag.value.color]
+  })
 
   const totalWeight = computed(() => (
     appStore.trainingExercises

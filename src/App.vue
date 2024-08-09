@@ -78,10 +78,12 @@
 <script lang="ts" setup>
   import { useAppStore } from '@/stores/app'
   import { RouteLocationRaw } from 'vue-router'
+  import { useTheme } from 'vuetify'
 
-  const appStore = useAppStore()
+  const theme = useTheme()
   const route = useRoute()
   const router = useRouter()
+  const appStore = useAppStore()
 
   window.addEventListener('popstate', evt => {
     if (evt.state.current !== '/' && !route.name.includes('[id]')) {
@@ -94,9 +96,13 @@
 
   const init = async () => {
     await appStore.getPlatformInfo()
-    appStore.loadSettings()
+    await appStore.loadSettings()
+
+    theme.global.name.value = appStore.darkMode
+
     await appStore.loadTrainings()
     await appStore.migrationDB()
+
     fileVersionLink.value = await appStore.checkVersion()
     dialog.value = !!fileVersionLink.value
   }
