@@ -10,33 +10,48 @@
           @change="addExercise()"
           @update:model-value="changed = true"
         />
-        <TdMask
-          v-model="current.rest_time"
-          :blocks="{
-            mm: { mask: IMask.MaskedRange, from: 0, to: 60, autofix: true },
-            ss: { mask: IMask.MaskedRange, from: 0, to: 60, autofix: true },
-          }"
-          inputmode="numeric"
-          label="Отдых"
-          mask="mm:ss"
-          @update:model-value="changed = true"
-        />
-        <v-text-field
-          v-model.number="current.approaches"
-          label="Подходы"
-          type="number"
-          @update:model-value="changed = true"
-        />
-        <v-text-field
-          v-model.number="current.repetitions"
-          label="Повторы"
-          type="number"
-          @update:model-value="changed = true"
-        />
-        <v-text-field
-          v-model.number="current.weight"
-          label="Вес, кг"
-          type="number"
+        <div class="d-flex">
+          <TdMask
+            v-model="current.rest_time"
+            :blocks="{
+              mm: { mask: IMask.MaskedRange, from: 0, to: 60, autofix: true },
+              ss: { mask: IMask.MaskedRange, from: 0, to: 60, autofix: true },
+            }"
+            class="mr-4"
+            inputmode="numeric"
+            label="Отдых"
+            mask="mm:ss"
+            @update:model-value="changed = true"
+          />
+          <v-text-field
+            v-model.number="current.approaches"
+            label="Подходы"
+            type="number"
+            @update:model-value="changed = true"
+          />
+        </div>
+        <div class="d-flex">
+          <v-text-field
+            v-model.number="current.repetitions"
+            class="mr-4"
+            label="Повторы"
+            type="number"
+            @update:model-value="changed = true"
+          />
+          <v-text-field
+            v-model.number="current.weight"
+            label="Вес, кг"
+            type="number"
+            @update:model-value="changed = true"
+          />
+        </div>
+        <v-textarea
+          v-model="current.comment"
+          auto-grow
+          label="Комментарий"
+          max-rows="4"
+          rows="1"
+          @change="current.comment = current.comment.trim()"
           @update:model-value="changed = true"
         />
       </div>

@@ -5,6 +5,8 @@ import { ITrainingExerciseStruct } from '@/core/entities/training-exercise/ITrai
 export default class TrainingExerciseModel extends EntityModel implements TEntityModel<ITrainingExerciseStruct> {
   training_id: number
 
+  comment: string
+
   exercise_id: number
 
   approaches: number
@@ -22,6 +24,7 @@ export default class TrainingExerciseModel extends EntityModel implements TEntit
   constructor (struct?: ITrainingExerciseStruct) {
     super(struct)
     this.training_id = struct?.training_id ?? 0
+    this.comment = struct?.comment ?? ''
     this.exercise_id = struct?.exercise_id ?? 0
     this.approaches = struct?.approaches ?? 0
     this.repetitions = struct?.repetitions ?? 0
@@ -35,6 +38,7 @@ export default class TrainingExerciseModel extends EntityModel implements TEntit
     return {
       ...super.getStruct(),
       training_id: this.training_id,
+      comment: this.comment,
       exercise_id: this.exercise_id,
       approaches: this.approaches,
       repetitions: this.repetitions,

@@ -4,6 +4,8 @@ import { IEntityStruct } from '@/core/entities/EntityStruct'
 export interface ITrainingExerciseStruct extends IEntityStruct {
   /** ID тренировки */
   training_id: number;
+  /** Комментарий к упражнению */
+  comment: string;
   /** ID упражнения */
   exercise_id: number;
   /** Количество подходов */

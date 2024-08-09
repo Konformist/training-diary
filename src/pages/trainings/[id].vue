@@ -15,13 +15,22 @@
           @update:model-value="changed = true"
         />
         <div class="d-flex">
-          <TdDateInput v-model="dateTime" class="mr-4" @change="changed = true" />
-          <TdTimeInput v-model="dateTime" @change="changed = true" />
+          <TdDateInput
+            v-model="dateTime"
+            class="mr-4"
+            label="Дата"
+            @change="changed = true"
+          />
+          <TdTimeInput
+            v-model="dateTime"
+            label="Время"
+            @change="changed = true"
+          />
         </div>
         <v-textarea
           v-model="current.comment"
           auto-grow
-          label="Комментарий к тренировке"
+          label="Комментарий"
           max-rows="4"
           rows="1"
           @change="current.comment = current.comment.trim()"
