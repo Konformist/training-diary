@@ -5,25 +5,17 @@
       text="Добавьте, чтобы было"
       title="Здесь ничего нет"
     />
-    <v-container v-else class="pb-16">
-      <v-row>
-        <v-slide-x-transition group leave-absolute>
-          <v-col
-            v-for="item in list"
-            :key="item.id"
-            cols="12"
-            lg="3"
-            md="4"
-            sm="6"
-          >
-            <TrainingCard
-              :training="item"
-              @change="moveItem($event)"
-              @delete="delItem($event)"
-            />
-          </v-col>
-        </v-slide-x-transition>
-      </v-row>
+    <v-container v-else class="pb-fab d-flex ga-4 flex-wrap">
+      <v-slide-x-transition group leave-absolute>
+        <TrainingCard
+          v-for="item in list"
+          :key="item.id"
+          class="flex-grow-1"
+          :training="item"
+          @change="moveItem($event)"
+          @delete="delItem($event)"
+        />
+      </v-slide-x-transition>
     </v-container>
     <v-fab
       app

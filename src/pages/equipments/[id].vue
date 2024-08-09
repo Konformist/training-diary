@@ -1,6 +1,6 @@
 <template>
   <v-main>
-    <v-container class="pb-16">
+    <v-container class="pb-fab">
       <v-text-field
         v-model="current.name"
         label="Имя"

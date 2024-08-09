@@ -1,15 +1,16 @@
 <template>
   <v-main>
-    <v-container>
+    <v-container class="pb-fab">
       <v-autocomplete
         v-model="current.exercise_id"
         v-model:search="searchExercise"
+        class="mb-4"
         :items="exerciseItems"
         label="Упражнение"
         @change="addExercise()"
         @update:model-value="changed = true"
       />
-      <div class="d-flex">
+      <div class="d-flex mb-4">
         <TdMask
           v-model="current.rest_time"
           :blocks="{
@@ -29,7 +30,7 @@
           @update:model-value="changed = true"
         />
       </div>
-      <div class="d-flex">
+      <div class="d-flex mb-4">
         <v-text-field
           v-model.number="current.repetitions"
           class="mr-4"
@@ -47,13 +48,14 @@
       <v-textarea
         v-model="current.comment"
         auto-grow
+        class="mb-4"
         label="Комментарий"
         max-rows="4"
         rows="1"
         @change="current.comment = current.comment.trim()"
         @update:model-value="changed = true"
       />
-      <v-card class="mb-4">
+      <v-card>
         <v-table>
           <caption class="py-3">
             История

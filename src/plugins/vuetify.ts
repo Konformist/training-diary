@@ -112,15 +112,17 @@ export default createVuetify({
   },
   defaults: {
     VField: { variant },
-    VTextField: { variant },
-    VTextarea: { variant },
+    VTextField: { variant, hideDetails: true },
+    VTextarea: { variant, hideDetails: true },
     VSelect: {
       variant,
+      hideDetails: true,
       itemValue: 'id',
       itemTitle: 'name',
     },
     VAutocomplete: {
       variant,
+      hideDetails: true,
       itemValue: 'id',
       itemTitle: 'name',
     },

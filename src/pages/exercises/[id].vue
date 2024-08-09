@@ -1,14 +1,16 @@
 <template>
   <v-main>
-    <v-container class="pb-16">
+    <v-container class="pb-fab">
       <v-text-field
         v-model="current.name"
+        class="mb-4"
         label="Имя"
         @change="current.name = current.name.trim()"
         @update:model-value="changed = true"
       />
       <v-select
         v-model="current.muscle_group_id"
+        class="mb-4"
         :items="musclesItems"
         label="Мышца"
         @update:model-value="changed = true"

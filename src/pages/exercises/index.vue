@@ -5,8 +5,8 @@
       text="Добавьте, чтобы было"
       title="Здесь ничего нет"
     />
-    <v-container v-else class="pa-0 pb-16">
-      <v-list class="mb-4">
+    <v-container v-else class="pa-0 pb-fab">
+      <v-list>
         <template
           v-for="item in list"
           :key="item[0]"

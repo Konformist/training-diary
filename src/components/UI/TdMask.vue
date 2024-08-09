@@ -1,5 +1,5 @@
 <template>
-  <v-input>
+  <v-input hide-details>
     <v-field
       :dirty="!!modelValue || isActive"
       :label="label"

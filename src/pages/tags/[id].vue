@@ -1,13 +1,14 @@
 <template>
   <v-main>
-    <v-container class="pb-16">
+    <v-container class="pb-fab">
       <v-text-field
         v-model="current.name"
+        class="mb-4"
         label="Имя"
         @change="current.name = current.name.trim()"
         @update:model-value="changed = true"
       />
-      <v-label class="mb-1" text="Цвет метки" />
+      <v-label text="Цвет метки" />
       <v-chip-group v-model="current.color" column @update:model-value="changed = true">
         <v-chip
           v-for="item in paletteItems"

@@ -1,43 +1,44 @@
 <template>
   <v-main>
-    <v-container class="pb-16">
-      <div class="q-pa-md">
-        <v-text-field
-          v-model="current.name"
-          label="Название тренировки"
-          @change="current.name = current.name.trim()"
-          @update:model-value="changed = true"
+    <v-container class="pb-fab">
+      <v-text-field
+        v-model="current.name"
+        class="mb-4"
+        label="Название тренировки"
+        @change="current.name = current.name.trim()"
+        @update:model-value="changed = true"
+      />
+      <v-select
+        v-model="current.tag_id"
+        class="mb-4"
+        :items="tagsItems"
+        label="Метка"
+        @update:model-value="changed = true"
+      />
+      <div class="d-flex mb-4">
+        <TdDateInput
+          v-model="dateTime"
+          class="mr-4"
+          label="Дата"
+          @change="changed = true"
         />
-        <v-select
-          v-model="current.tag_id"
-          :items="tagsItems"
-          label="Метка"
-          @update:model-value="changed = true"
-        />
-        <div class="d-flex">
-          <TdDateInput
-            v-model="dateTime"
-            class="mr-4"
-            label="Дата"
-            @change="changed = true"
-          />
-          <TdTimeInput
-            v-model="dateTime"
-            label="Время"
-            @change="changed = true"
-          />
-        </div>
-        <v-textarea
-          v-model="current.comment"
-          auto-grow
-          label="Комментарий"
-          max-rows="4"
-          rows="1"
-          @change="current.comment = current.comment.trim()"
-          @update:model-value="changed = true"
+        <TdTimeInput
+          v-model="dateTime"
+          label="Время"
+          @change="changed = true"
         />
       </div>
-      <v-card class="mb-4">
+      <v-textarea
+        v-model="current.comment"
+        auto-grow
+        class="mb-4"
+        label="Комментарий"
+        max-rows="4"
+        rows="1"
+        @change="current.comment = current.comment.trim()"
+        @update:model-value="changed = true"
+      />
+      <v-card>
         <v-list>
           <v-list-subheader>
             Упражнения
