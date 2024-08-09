@@ -58,7 +58,7 @@ export const useAppStore = defineStore('app', {
     toasts: [] as Array<string|IToast>,
 
     version: VERSION_DB,
-    darkMode: 'myCustomDarkTheme' as TThemes,
+    darkMode: 'dark' as TThemes,
 
     equipments: [] as EquipmentModel[],
     muscles: [] as MuscleModel[],
