@@ -66,8 +66,6 @@ export const useAppStore = defineStore('app', {
     tags: [] as TagModel[],
     trainings: [] as TrainingModel[],
     trainingExercises: [] as TrainingExerciseModel[],
-
-    selectDate: new Date(),
   }),
 
   getters: {

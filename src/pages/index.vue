@@ -1,8 +1,8 @@
 <template>
-  <v-main>
+  <v-main v-touch="{ left: nextDate, right: prevDate }">
     <v-container class="pb-16">
       <TdDatePicker
-        v-model="appStore.selectDate"
+        v-model="indexPageStore.selectDate"
         class="py-3 mb-4"
         :events="trainingDates"
       />
@@ -33,6 +33,7 @@
   import { palette } from '@/core/dictionaries/colors'
   import { sortByFields } from '@/core/utils/arrays'
   import { useAppStore } from '@/stores/app'
+  import useIndexPageStore from '@/stores/indexPage'
   import { useDate } from 'vuetify'
 
   definePage({
@@ -42,6 +43,7 @@
   const date = useDate()
   const router = useRouter()
   const appStore = useAppStore()
+  const indexPageStore = useIndexPageStore()
 
   const getTag = (id: number) => appStore.tags.find(e => e.id === id)
 
@@ -54,7 +56,7 @@
 
   const list = computed(() => {
     const arr = appStore.trainings.filter(e => (
-      date.format(new Date(e.date), 'keyboardDate') === date.format(appStore.selectDate, 'keyboardDate')
+      date.format(new Date(e.date), 'keyboardDate') === date.format(indexPageStore.selectDate, 'keyboardDate')
     ))
 
     return sortByFields(arr, ['date'], true)
@@ -65,7 +67,7 @@
   }
 
   const addItem = async () => {
-    const id = appStore.addTraining(appStore.selectDate)
+    const id = appStore.addTraining(indexPageStore.selectDate)
     await appStore.saveTrainings()
     moveItem(id)
     appStore.addToast('Успешно добавлено')
@@ -76,4 +78,7 @@
     await appStore.saveTrainings()
     appStore.addToast('Успешно удалено')
   }
+
+  const prevDate = () => indexPageStore.selectDate = date.addDays(indexPageStore.selectDate, -1) as Date
+  const nextDate = () => indexPageStore.selectDate = date.addDays(indexPageStore.selectDate, 1) as Date
 </script>
