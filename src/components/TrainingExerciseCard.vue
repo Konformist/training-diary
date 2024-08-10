@@ -6,6 +6,9 @@
     <v-list-item-subtitle @click="movePage()">
       {{ exerciseInfo }}
     </v-list-item-subtitle>
+    <v-list-item-subtitle @click="movePage()">
+      {{ current.comment }}
+    </v-list-item-subtitle>
     <template #append>
       <v-list-item-action end>
         <v-menu>

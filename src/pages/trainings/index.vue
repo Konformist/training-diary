@@ -35,7 +35,7 @@
   import useTrainingsPageStore from '@/stores/trainingsPage'
 
   definePage({
-    meta: { title: 'Список тренировок' },
+    meta: { title: 'Выполненные тренировки' },
   })
 
   const router = useRouter()

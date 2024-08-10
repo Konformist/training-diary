@@ -121,7 +121,7 @@
   }
 
   const menuItems: IMenuItem[] = [
-    { text: 'Список тренировок', icon: '$format-list-bulleted', to: { name: '/trainings/' } },
+    { text: 'Выполненные тренировки', icon: '$format-list-bulleted', to: { name: '/trainings/' } },
     { text: 'Справочники', separator: true },
     { text: 'Справочник меток', icon: '$list-box', to: { name: '/tags/' } },
     { text: 'Справочник мышц', icon: '$list-box', to: { name: '/muscles/' } },
