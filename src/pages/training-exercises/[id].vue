@@ -64,9 +64,10 @@
             <tr>
               <th class="text-center">Суперсет</th>
               <th class="text-center">Отдых</th>
-              <th class="text-center">Под.</th>
-              <th class="text-center">Пов.</th>
-              <th class="text-center">Вес, кг</th>
+              <th class="text-center">Подходы</th>
+              <th class="text-center">Повторы</th>
+              <th class="text-center text-no-wrap">Вес, кг</th>
+              <th class="text-center" style="min-width: 200px">Комментарий</th>
             </tr>
           </thead>
           <tbody>
@@ -80,6 +81,7 @@
               <td class="text-right">{{ item.approaches || '—' }}</td>
               <td class="text-right">{{ item.repetitions || '—' }}</td>
               <td class="text-right">{{ item.weight || '—' }}</td>
+              <td class="text-right">{{ item.comment || '—' }}</td>
             </tr>
           </tbody>
         </v-table>
