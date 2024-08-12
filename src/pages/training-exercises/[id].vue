@@ -56,32 +56,32 @@
         @update:model-value="changed = true"
       />
       <v-card>
-        <v-table>
-          <caption class="py-3">
-            История
-          </caption>
+        <p class="py-3 text-center">
+          История
+        </p>
+        <v-table density="compact">
           <thead>
             <tr>
-              <th class="text-center">Суперсет</th>
-              <th class="text-center">Отдых</th>
-              <th class="text-center">Подходы</th>
-              <th class="text-center">Повторы</th>
-              <th class="text-center text-no-wrap">Вес, кг</th>
-              <th class="text-center" style="min-width: 200px">Комментарий</th>
+              <th class="px-3 text-center">Сет</th>
+              <th class="px-3 text-center">Отдых</th>
+              <th class="px-3 text-center">Подходы</th>
+              <th class="px-3 text-center">Повторы</th>
+              <th class="px-3 text-center text-no-wrap">Вес, кг</th>
+              <th class="px-3 text-center" style="min-width: 200px">Комментарий</th>
             </tr>
           </thead>
           <tbody>
             <tr
-              v-for="item in history"
-              :key="item.id"
-              :class="item.id === current.id ? 'bg-primary' : ''"
+              v-for="item in exercisesHistory"
+              :key="item.trainingExercise.id"
+              :class="item.trainingExercise.id === current.id ? 'bg-primary' : ''"
             >
-              <td class="text-center">{{ item.bind_next || item.bind_prev ? 'Да' : 'Нет' }}</td>
-              <td class="text-center">{{ item.rest_time || '—' }}</td>
-              <td class="text-right">{{ item.approaches || '—' }}</td>
-              <td class="text-right">{{ item.repetitions || '—' }}</td>
-              <td class="text-right">{{ item.weight || '—' }}</td>
-              <td>{{ item.comment || '—' }}</td>
+              <td class="px-3 text-center">{{ item.trainingExercise.bind_next || item.trainingExercise.bind_prev ? 'Да' : 'Нет' }}</td>
+              <td class="px-3 text-center">{{ item.trainingExercise.rest_time || '—' }}</td>
+              <td class="px-3 text-right">{{ item.trainingExercise.approaches || '—' }}</td>
+              <td class="px-3 text-right">{{ item.trainingExercise.repetitions || '—' }}</td>
+              <td class="px-3 text-right">{{ item.trainingExercise.weight || '—' }}</td>
+              <td class="px-3">{{ item.trainingExercise.comment || '—' }}</td>
             </tr>
           </tbody>
         </v-table>
@@ -100,6 +100,7 @@
 </template>
 
 <script setup lang="ts">
+  import TrainingModel from '@/core/entities/training/TrainingModel'
   import { withZero } from '@/core/utils/items'
   import { useAppStore } from '@/stores/app'
   import { isIncludeString } from '@/core/utils/strings'
@@ -125,25 +126,18 @@
   ))
 
   const training = computed(() => appStore.trainings.find(e => e.id === current.value.training_id))
-  const trainingsIds = computed(() => (
-    appStore.trainings
-      .filter(e => e.tag_id === training.value?.tag_id)
-      .sort((a, b) => a.date - b.date)
-      .map(e => e.id)
-  ))
 
-  const history = computed(() => (
-    trainingsIds.value
-      .reduce((acc, cur) => {
-        appStore.trainingExercises.forEach(e => {
-          if (e.training_id === cur && e.exercise_id === current.value.exercise_id) {
-            acc.push(e)
-          }
-        })
-
-        return acc
-      }, [] as TrainingExerciseModel[])
-      .reverse()
+  const exercisesHistory = computed(() => (
+    appStore.trainingExercises
+      .map(item => ({
+        trainingExercise: item,
+        training: appStore.trainings.find(e => e.id === item.training_id) as TrainingModel,
+      }))
+      .filter(e => (
+        e.trainingExercise.exercise_id === current.value.exercise_id &&
+        e.training?.tag_id === training.value?.tag_id
+      ))
+      .sort((a, b) => b.training.date - a.training.date)
   ))
 
   const searchExercise = ref('')

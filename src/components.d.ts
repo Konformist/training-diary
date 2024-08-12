@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TdBottomSheetFilter: typeof import('./components/UI/TdBottomSheetFilter.vue')['default']
     TdDateInput: typeof import('./components/UI/TdDateInput.vue')['default']
     TdDatePicker: typeof import('./components/UI/TdDatePicker.vue')['default']
     TdDictionaryListItem: typeof import('./components/UI/TdDictionaryListItem.vue')['default']

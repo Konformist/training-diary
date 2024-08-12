@@ -18,12 +18,12 @@
           <v-list>
             <v-list-item
               :disabled="!hasPrev"
-              :title="current.bind_prev ? 'Отвязать от суперсета с предыдущим' : 'Связать в суперсет с предыдущим'"
+              :title="current.bind_prev ? 'Отвязать от сета с предыдущим' : 'Связать в сет с предыдущим'"
               @click="setBindPrev()"
             />
             <v-list-item
               :disabled="!hasNext"
-              :title="current.bind_next ? 'Отвязать от суперсета со следующим' : 'Связать в суперсет со следующим'"
+              :title="current.bind_next ? 'Отвязать от сета со следующим' : 'Связать в сет со следующим'"
               @click="setBindNext()"
             />
             <v-list-item

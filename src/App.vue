@@ -42,7 +42,9 @@
         {{ route.meta.title }}
       </v-app-bar-title>
       <template #extension>
-        <router-view name="header" />
+        <div class="px-4 overflow-x-auto d-flex">
+          <router-view name="header" />
+        </div>
       </template>
     </v-app-bar>
     <v-bottom-navigation grow tag="footer">
@@ -88,6 +90,7 @@
 
   const menuItems: IMenuItem[] = [
     { text: 'Выполненные тренировки', icon: '$format-list-bulleted', to: { name: '/trainings/' } },
+    { text: 'Выполненные упражнения', icon: '$format-list-bulleted', to: { name: '/training-exercises/' } },
     { text: 'Справочники', separator: true },
     { text: 'Справочник меток', icon: '$list-box', to: { name: '/tags/' } },
     { text: 'Справочник мышц', icon: '$list-box', to: { name: '/muscles/' } },
@@ -104,9 +107,10 @@
   }
 
   const footerItems: IFooterItem[] = [
-    { to: { name: '/' }, icon: '$home', text: 'Главная' },
-    { to: { name: '/trainings/' }, icon: '$format-list-bulleted', text: 'Тренировки' },
-    { to: { name: '/settings' }, icon: '$cog', text: 'Настройки' },
+    { text: 'Главная', icon: '$home', to: { name: '/' } },
+    { text: 'Тренировки', icon: '$format-list-bulleted', to: { name: '/trainings/' } },
+    { text: 'Упражнения', icon: '$format-list-bulleted', to: { name: '/training-exercises/' } },
+    { text: 'Настройки', icon: '$cog', to: { name: '/settings' } },
   ]
 
   const theme = useTheme()

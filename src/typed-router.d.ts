@@ -29,6 +29,7 @@ declare module 'vue-router/auto-routes' {
     '/settings': RouteRecordInfo<'/settings', '/settings', Record<never, never>, Record<never, never>>,
     '/tags/': RouteRecordInfo<'/tags/', '/tags', Record<never, never>, Record<never, never>>,
     '/tags/[id]': RouteRecordInfo<'/tags/[id]', '/tags/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    '/training-exercises/': RouteRecordInfo<'/training-exercises/', '/training-exercises', Record<never, never>, Record<never, never>>,
     '/training-exercises/[id]': RouteRecordInfo<'/training-exercises/[id]', '/training-exercises/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/trainings/': RouteRecordInfo<'/trainings/', '/trainings', Record<never, never>, Record<never, never>>,
     '/trainings/[id]': RouteRecordInfo<'/trainings/[id]', '/trainings/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,

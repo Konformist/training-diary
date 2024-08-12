@@ -1,33 +1,18 @@
 <template>
   <v-btn
     append-icon="$triangle-small-down"
-    class="ml-4"
     rounded="1"
     size="small"
     :text="tagName"
     variant="outlined"
     @click="dialogFilter = true"
   />
-  <v-bottom-sheet v-model="dialogFilter">
-    <v-card>
-      <v-list>
-        <v-list-subheader title="Метка" />
-        <v-list-item
-          v-for="tag in tagsItems"
-          :key="tag.id"
-          :active="trainingsPageStore.options.tagId === tag.id"
-          :title="tag.name"
-          @click="trainingsPageStore.options.tagId = tag.id"
-        >
-          <template #prepend="{ isActive }">
-            <v-list-item-action start>
-              <v-radio :model-value="isActive" />
-            </v-list-item-action>
-          </template>
-        </v-list-item>
-      </v-list>
-    </v-card>
-  </v-bottom-sheet>
+  <TdBottomSheetFilter
+    v-model="trainingsPageStore.options.tagId"
+    v-model:opened="dialogFilter"
+    :items="tagsItems"
+    title="Метка"
+  />
 </template>
 
 <script setup lang="ts">
