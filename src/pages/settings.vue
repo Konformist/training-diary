@@ -31,7 +31,9 @@
 <script setup lang="ts">
   import { StoreNames } from '@/core/dictionaries/storeNames'
   import { fileToJson } from '@/core/utils/files'
+  import { openLink } from '@/core/utils/links'
   import { IStorageTraining, TThemes, useAppStore } from '@/stores/app'
+  import { Capacitor } from '@capacitor/core'
   import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'
   import { useTheme } from 'vuetify'
 
@@ -58,14 +60,10 @@
   const fileName = `${StoreNames.TRAININGS}-${(new Date()).toLocaleDateString('ru')}.json`
 
   const backupWeb = () => {
-    const encodedUri = encodeURIComponent(JSON.stringify(appStore.savedData))
-    const link = document.createElement('a')
-
-    link.setAttribute('href', `data:text/json;charset=utf-8,${encodedUri}`)
-    link.setAttribute('download', fileName)
-    document.body.appendChild(link) // Required for FF
-    link.click()
-    document.body.removeChild(link) // Required for FF
+    openLink({
+      href: `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(appStore.savedData))}`,
+      download: fileName,
+    })
   }
 
   const backupFile = () => (
@@ -80,10 +78,9 @@
 
   const backup = async () => {
     try {
-      if (appStore.appInfo.platform === 'web') backupWeb()
-      else await backupFile()
+      if (Capacitor.isNativePlatform()) await backupFile()
+      else backupWeb()
       appStore.addToast('Данные успешно выгружены')
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       appStore.addToast({ color: 'negative', text: 'Не удалось выгрузить данные' })
     }

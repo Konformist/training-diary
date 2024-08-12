@@ -6,6 +6,7 @@
 
 // Plugins
 import { registerPlugins } from '@/plugins'
+import { useAppStore } from '@/stores/app'
 
 // Components
 import App from './App.vue'
@@ -17,4 +18,17 @@ const app = createApp(App)
 
 registerPlugins(app)
 
-app.mount('#app')
+const init = async () => {
+  const appStore = useAppStore()
+  await Promise.all([
+    appStore.getPlatformInfo(),
+    appStore.loadSettings(),
+    appStore.loadTrainings(),
+    appStore.checkVersion(),
+  ])
+  appStore.migrationDB()
+
+  app.mount('#app')
+}
+
+init()

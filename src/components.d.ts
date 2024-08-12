@@ -7,7 +7,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    DialogVersion: typeof import('./components/DialogVersion.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TdDateInput: typeof import('./components/UI/TdDateInput.vue')['default']

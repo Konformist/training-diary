@@ -15,33 +15,11 @@
       Тоннаж {{ totalWeight }} кг
     </v-card-text>
     <v-card-actions>
-      <v-dialog max-width="500">
-        <template #activator="{ props: activatorProps }">
-          <v-btn
-            color="red"
-            text="Удалить"
-            v-bind="activatorProps"
-          />
-        </template>
-        <template #default="{ isActive }">
-          <v-card title="Внимание!">
-            <v-card-text>
-              Действительно удалить?
-            </v-card-text>
-            <v-card-actions>
-              <v-btn
-                color="secondary"
-                text="Нет"
-                @click="isActive.value = false"
-              />
-              <v-btn
-                text="Да"
-                @click="$emit('delete', current.id)"
-              />
-            </v-card-actions>
-          </v-card>
-        </template>
-      </v-dialog>
+      <v-btn
+        color="red"
+        text="Удалить"
+        @click="clickDelete()"
+      />
       <v-spacer />
       <v-btn
         color="secondary"
@@ -54,6 +32,7 @@
 
 <script setup lang="ts">
   import { useAppStore } from '@/stores/app'
+  import { Dialog } from '@capacitor/dialog'
   import { computed } from 'vue'
   import { palette } from '@/core/dictionaries/colors'
   import TrainingModel from '@/core/entities/training/TrainingModel'
@@ -62,7 +41,7 @@
   const date = useDate()
   const appStore = useAppStore()
 
-  defineEmits<{
+  const emit = defineEmits<{
     delete: [number]
     change: [number]
   }>()
@@ -91,4 +70,10 @@
       .reduce((acc, cur) => (acc + (cur.approaches * cur.repetitions * cur.weight)), 0)
       .toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
   ))
+
+  const clickDelete = async () => {
+    if ((await Dialog.confirm({ message: 'Действительно удалить?' })).value) {
+      emit('delete', current.value.id)
+    }
+  }
 </script>

@@ -9,6 +9,7 @@ const config: CapacitorConfig = {
       enabled: true,
     },
   },
+  backgroundColor: '#A30000',
 }
 
 export default config

@@ -71,7 +71,6 @@
         <v-icon class="mr-2" icon="$window-close" />
       </template>
     </v-snackbar-queue>
-    <DialogVersion v-model="dialog" :link="fileVersionLink" />
   </v-app>
 </template>
 
@@ -79,39 +78,6 @@
   import { useAppStore } from '@/stores/app'
   import { RouteLocationRaw } from 'vue-router'
   import { useTheme } from 'vuetify'
-
-  const theme = useTheme()
-  const route = useRoute()
-  const router = useRouter()
-  const appStore = useAppStore()
-
-  window.addEventListener('popstate', evt => {
-    if (evt.state.current !== '/' && !route.name.includes('[id]')) {
-      router.push({ name: '/' })
-    }
-  })
-
-  const dialog = ref(false)
-  const fileVersionLink = ref('')
-
-  const init = async () => {
-    await appStore.getPlatformInfo()
-    await appStore.loadSettings()
-
-    theme.global.name.value = appStore.darkMode
-
-    await appStore.loadTrainings()
-    await appStore.migrationDB()
-
-    fileVersionLink.value = await appStore.checkVersion()
-    dialog.value = !!fileVersionLink.value
-  }
-
-  init()
-
-  const isHeader = computed(() => (route.matched[route.matched.length - 1]?.components?.header))
-
-  const drawerNav = ref(false)
 
   interface IMenuItem {
     text: string
@@ -142,4 +108,20 @@
     { to: { name: '/trainings/' }, icon: '$format-list-bulleted', text: 'Тренировки' },
     { to: { name: '/settings' }, icon: '$cog', text: 'Настройки' },
   ]
+
+  const theme = useTheme()
+  const route = useRoute()
+  const router = useRouter()
+  const appStore = useAppStore()
+
+  theme.global.name.value = appStore.darkMode
+
+  window.addEventListener('popstate', evt => {
+    if (evt.state.current !== '/' && !route.name.includes('[id]')) {
+      router.push({ name: '/' })
+    }
+  })
+
+  const drawerNav = ref(false)
+  const isHeader = computed(() => (route.matched[route.matched.length - 1]?.components?.header))
 </script>

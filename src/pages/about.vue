@@ -18,6 +18,7 @@
 
 <script setup lang="ts">
   import { useAppStore } from '@/stores/app'
+  import { Capacitor } from '@capacitor/core'
 
   definePage({
     meta: { title: 'О приложении' },
@@ -27,7 +28,7 @@
 
   const items = computed(() => {
     const arr = [{ key: 'Версия Web', value: appStore.appInfo.frontVersion }]
-    if (appStore.appInfo.platform !== 'web') arr.push({ key: 'Версия приложения', value: appStore.appInfo.platformAppVersion })
+    if (Capacitor.isNativePlatform()) arr.push({ key: 'Версия приложения', value: appStore.appInfo.platformAppVersion })
     return arr
   })
 </script>

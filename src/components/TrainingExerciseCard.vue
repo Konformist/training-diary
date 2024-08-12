@@ -26,33 +26,11 @@
               :title="current.bind_next ? 'Отвязать от суперсета со следующим' : 'Связать в суперсет со следующим'"
               @click="setBindNext()"
             />
-            <v-dialog max-width="500">
-              <template #activator="{ props: activatorProps }">
-                <v-list-item
-                  class="text-red"
-                  title="Удалить"
-                  v-bind="activatorProps"
-                />
-              </template>
-              <template #default="{ isActive }">
-                <v-card title="Внимание!">
-                  <v-card-text>
-                    Действительно удалить?
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-btn
-                      color="secondary"
-                      text="Нет"
-                      @click="isActive.value = false"
-                    />
-                    <v-btn
-                      text="Да"
-                      @click="$emit('delete', current.id)"
-                    />
-                  </v-card-actions>
-                </v-card>
-              </template>
-            </v-dialog>
+            <v-list-item
+              class="text-red"
+              title="Удалить"
+              @click="clickDelete()"
+            />
           </v-list>
         </v-menu>
       </v-list-item-action>
@@ -61,6 +39,7 @@
 </template>
 
 <script setup lang="ts">
+  import { Dialog } from '@capacitor/dialog'
   import { computed } from 'vue'
   import { useAppStore } from '@/stores/app'
   import TrainingExerciseModel from '@/core/entities/training-exercise/TrainingExerciseModel'
@@ -119,6 +98,12 @@
       emit('unbindNext', current.value.id)
     } else {
       emit('bindNext', current.value.id)
+    }
+  }
+
+  const clickDelete = async () => {
+    if ((await Dialog.confirm({ message: 'Действительно удалить?' })).value) {
+      emit('delete', current.value.id)
     }
   }
 </script>

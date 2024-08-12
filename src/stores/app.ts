@@ -12,12 +12,13 @@ import TrainingExerciseModel from '@/core/entities/training-exercise/TrainingExe
 import { ITrainingExerciseStruct } from '@/core/entities/training-exercise/ITrainingExerciseStruct'
 import TrainingModel from '@/core/entities/training/TrainingModel'
 import { ITrainingStruct } from '@/core/entities/training/TrainingStruct'
+import { openLink } from '@/core/utils/links'
 import { firstLetterUp } from '@/core/utils/strings'
 import { App } from '@capacitor/app'
-import { CapacitorHttp } from '@capacitor/core'
+import { Capacitor, CapacitorHttp } from '@capacitor/core'
+import { Dialog } from '@capacitor/dialog'
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'
 import { Preferences } from '@capacitor/preferences'
-import { Device } from '@capacitor/device'
 import { defineStore } from 'pinia'
 import { name, version } from '../../package.json'
 
@@ -99,12 +100,9 @@ export const useAppStore = defineStore('app', {
     },
 
     async getPlatformInfo () {
-      const device = await Device.getInfo()
-
-      this.appInfo.platform = device.platform
-
-      if (device.platform !== 'web') {
+      if (Capacitor.isNativePlatform()) {
         const info = await App.getInfo()
+        this.appInfo.platform = Capacitor.getPlatform()
         this.appInfo.platformAppVersion = info.version
       }
     },
@@ -112,9 +110,11 @@ export const useAppStore = defineStore('app', {
     async checkVersion () {
       const result = await CapacitorHttp.get({ url: 'https://api.github.com/repos/Konformist/training-diary/releases/latest' })
 
-      return result.data.tag_name !== `v${this.appInfo.frontVersion}`
-        ? result.data.assets[0].browser_download_url
-        : ''
+      if (result.data.tag_name === `v${this.appInfo.frontVersion}`) return
+
+      const confirm = await Dialog.confirm({ message: 'Доступна новая версия, скачать?' })
+
+      if (confirm.value) openLink({ href: result.data.assets[0].browser_download_url })
     },
 
     setSavedData (value: Partial<IStorageTraining>) {
@@ -127,7 +127,7 @@ export const useAppStore = defineStore('app', {
       this.trainings = (value.trainings || []).map(e => new TrainingModel(e))
     },
 
-    async migrationDB () {
+    migrationDB () {
       // empty
     },
 
@@ -155,6 +155,9 @@ export const useAppStore = defineStore('app', {
 
     delMuscle (id: number) {
       this.muscles = this.muscles.filter(e => e.id !== id)
+      this.exercises.forEach(e => {
+        if (e.muscle_group_id === id) e.muscle_group_id = 0
+      })
     },
 
     addEquipment () {
@@ -168,6 +171,9 @@ export const useAppStore = defineStore('app', {
 
     delEquipment (id: number) {
       this.equipments = this.equipments.filter(e => e.id !== id)
+      this.exercises.forEach(e => {
+        if (e.equipment_id === id) e.equipment_id = 0
+      })
     },
 
     addExercise (name?: string) {
@@ -182,6 +188,9 @@ export const useAppStore = defineStore('app', {
 
     delExercise (id: number) {
       this.exercises = this.exercises.filter(e => e.id !== id)
+      this.trainingExercises.forEach(e => {
+        if (e.exercise_id === id) e.exercise_id = 0
+      })
     },
 
     addTag () {
@@ -195,6 +204,9 @@ export const useAppStore = defineStore('app', {
 
     delTag (id: number) {
       this.tags = this.tags.filter(e => e.id !== id)
+      this.trainings.forEach(e => {
+        if (e.tag_id === id) e.tag_id = 0
+      })
     },
 
     addTraining (date?: Date) {

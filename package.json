@@ -16,7 +16,7 @@
     "@capacitor/android": "^6.1.1",
     "@capacitor/app": "^6.0.0",
     "@capacitor/core": "^6.1.1",
-    "@capacitor/device": "^6.0.0",
+    "@capacitor/dialog": "^6.0.1",
     "@capacitor/filesystem": "^6.0.0",
     "@capacitor/preferences": "^6.0.1",
     "@mdi/font": "7.4.47",

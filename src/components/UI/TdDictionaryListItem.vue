@@ -6,44 +6,33 @@
     <v-list-item-title @click="click()">
       {{ title || '—' }}
     </v-list-item-title>
+    <v-list-item-subtitle @click="click()">
+      {{ subtitle }}
+    </v-list-item-subtitle>
     <template #append>
       <v-list-item-action end>
-        <v-dialog max-width="500">
-          <template #activator="{ props: activatorProps }">
-            <v-btn color="error" icon="$delete" variant="text" v-bind="activatorProps" />
-          </template>
-          <template #default="{ isActive }">
-            <v-card title="Внимание!">
-              <v-card-text>
-                Действительно удалить?
-              </v-card-text>
-              <v-card-actions>
-                <v-btn
-                  color="secondary"
-                  text="Нет"
-                  @click="isActive.value = false"
-                />
-                <v-btn
-                  text="Да"
-                  @click="$emit('delete')"
-                />
-              </v-card-actions>
-            </v-card>
-          </template>
-        </v-dialog>
+        <v-btn color="error" icon="$delete" variant="text" @click="clickDelete()" />
       </v-list-item-action>
     </template>
   </v-list-item>
 </template>
 
 <script lang="ts" setup>
+  import { Dialog } from '@capacitor/dialog'
+
   const emit = defineEmits<{
     click: [void]
     delete: [void]
   }>()
   defineProps<{
     title?: string
+    subtitle?: string
   }>()
 
   const click = () => emit('click')
+  const clickDelete = async () => {
+    if ((await Dialog.confirm({ message: 'Действительно удалить?' })).value) {
+      emit('delete')
+    }
+  }
 </script>
