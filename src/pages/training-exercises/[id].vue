@@ -81,7 +81,7 @@
               <td class="text-right">{{ item.approaches || '—' }}</td>
               <td class="text-right">{{ item.repetitions || '—' }}</td>
               <td class="text-right">{{ item.weight || '—' }}</td>
-              <td class="text-right">{{ item.comment || '—' }}</td>
+              <td>{{ item.comment || '—' }}</td>
             </tr>
           </tbody>
         </v-table>
