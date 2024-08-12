@@ -11,7 +11,7 @@
           v-for="item in list"
           :key="item.trainingExercise.id"
           :subtitle="`${item.trainingExercise.approaches}x${item.trainingExercise.repetitions}x${item.trainingExercise.weight}`"
-          :title="item.exercise.name"
+          :title="item.exercise?.name"
           @click="moveItem(item.trainingExercise.id)"
           @delete="delItem(item.trainingExercise.id)"
         />
